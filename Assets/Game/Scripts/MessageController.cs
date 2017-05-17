@@ -16,7 +16,12 @@ public class MessageController : MonoBehaviour {
 	public void SendChatMessage ()
 	{
 		long timeStamp = (long)DateTime.Now.Ticks;
-		FirebaseDatabaseFacade.Instance.WriteNewMessage (GameManager.Instance.userName, message.text, timeStamp);
+//		FirebaseDatabaseFacade.Instance.WriteNewMessage (GameManager.Instance.userName, message.text, timeStamp);
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object>();
+		param ["message"] = message.text;
+		param ["timeStamp"] = timeStamp;
+		param ["userName"] = GameManager.Instance.userName;
+		RPC.Instance.Reducer (new RPCAction (GameManager.Instance.userName, "sendMessage", param));
 	}
 
 	public void GetChatMessage(Dictionary<string, System.Object> messageDetails){
