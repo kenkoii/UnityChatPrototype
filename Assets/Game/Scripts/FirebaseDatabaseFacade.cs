@@ -24,6 +24,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public RoomListBroadcast sendRoomList;
 	private List<string> roomList = new List<string>();
 
+
 	void Start ()
 	{
 		#if UNITY_EDITOR
