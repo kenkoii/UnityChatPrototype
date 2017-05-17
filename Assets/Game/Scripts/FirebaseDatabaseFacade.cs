@@ -32,24 +32,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		#endif
 		reference = FirebaseDatabase.DefaultInstance.RootReference;
 
-		DatabaseReference roomReference = reference.Child("chatroom");
-		roomReference.ValueChanged += HandleRoomValueChanged;
-
-
-	}
-
-	void HandleRoomValueChanged(object sender, ValueChangedEventArgs args) {
-		if (args.DatabaseError != null) {
-			Debug.LogError(args.DatabaseError.Message);
-			return;
-		}
-
-
-		foreach (DataSnapshot name in args.Snapshot.Children) {
-			roomList.Add (name.Key.ToString());
-		}
-
-		sendRoomList.Invoke (roomList);
+		DatabaseReference roomReference = reference;
+		roomReference.ChildAdded += HandleChatroomChildAdded;
+		roomReference.ChildRemoved += HandleChatroomChildAdded;
 
 	}
 		
@@ -60,9 +45,24 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 		receiveMessage = (Dictionary<string, System.Object>)args.Snapshot.Value;
 		sendMessage.Invoke (receiveMessage);
-		Debug.Log ("callTImes");
 
 	}
+
+	void HandleChatroomChildAdded(object sender, ChildChangedEventArgs args) {
+		if (args.DatabaseError != null) {
+			Debug.LogError(args.DatabaseError.Message);
+			return;
+		}
+	
+		var keyDictionary = args.Snapshot.Value;
+		Debug.Log (keyDictionary);
+		Dictionary<string, System.Object> newKeyDictionary = (Dictionary<string, System.Object>)keyDictionary;
+		List<string> keyList = new List<string> (newKeyDictionary.Keys);
+
+		sendRoomList.Invoke (keyList);
+
+	}
+		
 
 	public void CreateRoom(){
 			chatRoomKey = reference.Child ("chatroom").Push ().Key;
