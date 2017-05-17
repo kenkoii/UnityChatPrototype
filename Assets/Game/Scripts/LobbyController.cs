@@ -7,10 +7,15 @@ public class LobbyController : MonoBehaviour {
 
 	public GameObject chatRoom;
 	public GameObject lobbyRoom;
-	public InputField roomKey;
 	public InputField userName;
-	public Text roomListText;
+	public Dropdown roomListDropDown;
+	private string roomkeyName;
 
+	void Start(){
+//		roomListDropDown.onValueChanged.AddListener(delegate {
+//			RoomListDropDownValueChangedHandler(roomListDropDown);
+//		});
+	}
 
 
 	public void CreateRoom(){
@@ -20,17 +25,26 @@ public class LobbyController : MonoBehaviour {
 	}
 
 	public void JoinRoom(){
-		FirebaseDatabaseFacade.Instance.JoinRoom (roomKey.text);
+		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName);
 		GameManager.Instance.userName = userName.text;
 		GoToChatRoom();
 	}
 
+	public void RoomListDropDownValueChangedHandler() {
+
+		List<Dropdown.OptionData> menuOptions = roomListDropDown.options;
+		roomkeyName = menuOptions [roomListDropDown.value].text;
+		Debug.Log (roomkeyName);
+	}
+
 	public void ShowRoom(List<string> roomList){
-
+		roomListDropDown.options.Clear ();
 		for (int i = 0; i < roomList.Count; i++) {
-			roomListText.text += "" + roomList [i] + "\n";
+			roomListDropDown.options.Add(new Dropdown.OptionData(roomList[i]));
 		}
-
+		roomkeyName = roomList [0];
+		roomListDropDown.transform.Find("Label").GetComponent<Text>().text = "Select Room";
+		roomListDropDown.RefreshShownValue();
 	}
 
 	private void GoToChatRoom (){
