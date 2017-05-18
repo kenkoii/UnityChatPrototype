@@ -8,25 +8,21 @@ public class LobbyController : MonoBehaviour {
 	public GameObject chatRoom;
 	public GameObject lobbyRoom;
 	public InputField userName;
+	public InputField userLife;
 	public Dropdown roomListDropDown;
 	private string roomkeyName;
 
-	void Start(){
-//		roomListDropDown.onValueChanged.AddListener(delegate {
-//			RoomListDropDownValueChangedHandler(roomListDropDown);
-//		});
-	}
-
-
 	public void CreateRoom(){
-		FirebaseDatabaseFacade.Instance.CreateRoom ();
+		FirebaseDatabaseFacade.Instance.CreateRoom (GameManager.Instance.userName, GameManager.Instance.life);
 		GameManager.Instance.userName = userName.text;
+		GameManager.Instance.life = int.Parse(userLife.text);
 		GoToChatRoom();
 	}
 
 	public void JoinRoom(){
-		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName);
+		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName, GameManager.Instance.userName, GameManager.Instance.life);
 		GameManager.Instance.userName = userName.text;
+		GameManager.Instance.life = int.Parse(userLife.text);
 		GoToChatRoom();
 	}
 

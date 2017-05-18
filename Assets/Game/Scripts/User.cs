@@ -5,23 +5,20 @@ using System;
 
 public class User {
 	public string username;
-	public string message;
-	public long timeStamp;
+	public int life;
 
 	public User() {
 	}
 
-	public User(string username, string message, long timeStamp) {
+	public User(string username, int life) {
 		this.username = username;
-		this.message = message;
-		this.timeStamp = timeStamp;
+		this.life = life;
 	}
 
 	public Dictionary<string, System.Object> ToDictionary() {
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
 		result["username"] = username;
-		result["message"] = message;
-		result["timestamp"] = timeStamp;
+		result ["life"] = life;
 
 		return result;
 	}
