@@ -13,18 +13,7 @@ public class MessageController : MonoBehaviour {
 		messageBox.text = "";
 	}
 
-	public void SendChatMessage ()
-	{
-		long timeStamp = (long)DateTime.Now.Ticks;
-		FirebaseDatabaseFacade.Instance.WriteNewMessage (GameManager.Instance.userName, message.text, timeStamp);
-	}
 
-	public void GetChatMessage(Dictionary<string, System.Object> messageDetails){
-		
-		string username = (string)messageDetails["username"];
-		string message = (string)messageDetails["message"];
-//		long timeStamp = (long)messageDetails["timestamp"];
 
-		messageBox.text += "" + username + ": " + message + "\n";
-	}
+
 }
