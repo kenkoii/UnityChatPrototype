@@ -16,7 +16,7 @@ public class LobbyController : MonoBehaviour {
 	public void SearchRoom(){
 		GameManager.Instance.userName = userName.text;
 		GameManager.Instance.life = int.Parse(userLife.text);
-		FirebaseDatabaseFacade.Instance.SearchRoom (GameManager.Instance.userName, GameManager.Instance.life, delegate(bool result){
+		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result){
 			if(result){
 				GoToChatRoom();
 			}else{
@@ -29,13 +29,6 @@ public class LobbyController : MonoBehaviour {
 
 	public void CancelRoomSearch(){
 		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();
-	}
-
-	public void RoomListDropDownValueChangedHandler() {
-
-		List<Dropdown.OptionData> menuOptions = roomListDropDown.options;
-		roomkeyName = menuOptions [roomListDropDown.value].text;
-		Debug.Log (roomkeyName);
 	}
 		
 
