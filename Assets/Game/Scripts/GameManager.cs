@@ -9,5 +9,5 @@ public class GameManager : SingletonMonoBehaviour<GameManager> {
 	public bool isPlayerVisitor{ get; set;}
 
 	public string attackerName{ get; set; }
-
+	public Dictionary<string, System.Object> attackerParam{ get; set; }
 }

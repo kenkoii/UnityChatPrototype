@@ -94,10 +94,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		foreach (DataSnapshot dataSnapshot in keyDictionary) {
 			keyList.Add (dataSnapshot.Key.ToString ());;
 		}
-//		Debug.Log (keyDictionary);
-//		Dictionary<string, System.Object> newKeyDictionary = (Dictionary<string, System.Object>)keyDictionary;
-//		List<string> keyList = new List<string> (newKeyDictionary.Keys);
-
 		sendRoomList.Invoke (keyList);
 
 	}
@@ -112,6 +108,10 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Home/param/"] = entryValues;
 		reference.UpdateChildrenAsync(childUpdates);
+
+		//set room status to open when create
+		reference.Child("GameRoom").Child(gameRoomKey).Child("RoomStatus").SetValueAsync("Open");
+
 		InitialStateListener ();
 		GameManager.Instance.isPlayerVisitor = false;
 	}
@@ -126,6 +126,10 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Visitor/param/"] = entryValues;
 		reference.UpdateChildrenAsync(childUpdates);
+
+		//set room status to full when join
+		reference.Child("GameRoom").Child(gameRoomKey).Child("RoomStatus").SetValueAsync("Full");
+
 		InitialStateListener ();
 		GameManager.Instance.isPlayerVisitor = true;
 	}
