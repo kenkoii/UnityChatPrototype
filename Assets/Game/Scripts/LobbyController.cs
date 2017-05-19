@@ -12,19 +12,6 @@ public class LobbyController : MonoBehaviour {
 	public Dropdown roomListDropDown;
 	private string roomkeyName;
 
-//	public void CreateRoom(){
-//		GameManager.Instance.userName = userName.text;
-//		GameManager.Instance.life = int.Parse(userLife.text);
-//		FirebaseDatabaseFacade.Instance.CreateRoom (GameManager.Instance.userName, GameManager.Instance.life);
-//		GoToChatRoom();
-//	}
-//
-//	public void JoinRoom(){
-//		GameManager.Instance.userName = userName.text;
-//		GameManager.Instance.life = int.Parse(userLife.text);
-//		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName, GameManager.Instance.userName, GameManager.Instance.life);
-//		GoToChatRoom();
-//	}
 
 	public void SearchRoom(){
 		GameManager.Instance.userName = userName.text;
@@ -33,11 +20,15 @@ public class LobbyController : MonoBehaviour {
 			if(result){
 				GoToChatRoom();
 			}else{
-				
+				Debug.Log("Cancelled Search");
 			}
 			
 		});
 
+	}
+
+	public void CancelRoomSearch(){
+		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();
 	}
 
 	public void RoomListDropDownValueChangedHandler() {
