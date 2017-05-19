@@ -105,16 +105,13 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 						gameRoomKey = dataSnapshot.Key.ToString ();
 						JoinRoom ();
 						searchingRoom = false;
-						break;
+						return;
 					}
 
 				}
 
-				if (searchingRoom) {
-					CreateRoom ();
-					searchingRoom = false;
-				}
-
+				CreateRoom ();
+				searchingRoom = false;
 
 			} else {
 				Debug.Log ("has NO game rooms");
