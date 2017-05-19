@@ -30,6 +30,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public MessageBroadcast sendMessage;
 	public MessageBroadcast sendInitialHomeState;
 	public MessageBroadcast sendInitialVisitorState;
+	private Action<bool> onSuccessMatchMake;
+	private bool isMatchMakeSuccess = false;
 
 	[System.Serializable] public class RoomListBroadcast : UnityEvent<List<string>>
 	{
@@ -48,7 +50,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		reference = FirebaseDatabase.DefaultInstance.RootReference;
 
 		roomReference = reference.Child ("GameRoom");
-
 	}
 
 	void HandleChildAdded (object sender, ChildChangedEventArgs args)
@@ -81,7 +82,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 		receiveMessage = (Dictionary<string, System.Object>)args.Snapshot.Value;
 		sendInitialVisitorState.Invoke (receiveMessage);
-		onSuccessMatchMake (true);
+		isMatchMakeSuccess = true;
+		onSuccessMatchMake (isMatchMakeSuccess);
 	}
 
 	void HandleGameRoomValueChanged (object sender, ValueChangedEventArgs args)
@@ -120,9 +122,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	}
 
 
-	private Action<bool> onSuccessMatchMake;
-
-
 	public void SearchRoom (Action<bool> onResult)
 	{
 		//Order first to search fast
@@ -134,7 +133,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	public void CancelRoomSearch ()
 	{
-		if (onSuccessMatchMake == false) {
+		if (isMatchMakeSuccess) {
 			
 			if (isHost) {
 				DeleteRoom ();
