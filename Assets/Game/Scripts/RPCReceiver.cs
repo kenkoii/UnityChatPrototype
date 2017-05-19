@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver> {
 
-	BattleManager battleManager;
+	BattleController battleController;
 
 	void Start ()
 	{
-		battleManager = FindObjectOfType<BattleManager> ();
+		battleController = FindObjectOfType<BattleController> ();
 	}
 
 	public void ReceiveRPC(Dictionary<string, System.Object> rpcDetails){
@@ -16,14 +16,12 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver> {
 		int statusType = int.Parse(rpcDetails["statusType"].ToString());
 		StatusType newStatusType = (StatusType)statusType;
 		Dictionary<string, System.Object> param = JsonStrToDic((string)rpcDetails["param"]);
-
-
-		GameManager.Instance.attackerName = username;
 	
-
+		GameManager.Instance.attackerName = username;
+		GameManager.Instance.attackerParam = param;
 
 		switch (newStatusType) {
-		case StatusType.attack:
+		case StatusType.Attack:
 			ExecutionManager.Instance.ExecutePlayerAttack ();
 			break;
 		}
@@ -32,13 +30,13 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver> {
 	public void ReceiveInitialHomeState(Dictionary<string, System.Object> ititialState){
 		string username = (string)ititialState["username"];
 		int life = int.Parse(ititialState["life"].ToString());
-		battleManager.InitialHomeState (life, username);
+		battleController.InitialHomeState (life, username);
 	}
 
 	public void ReceiveInitialVisitorState(Dictionary<string, System.Object> ititialState){
 		string username = (string)ititialState["username"];
 		int life = int.Parse(ititialState["life"].ToString());
-		battleManager.InitialVisitorState (life, username);
+		battleController.InitialVisitorState (life, username);
 	}
 
 	private Dictionary<string, System.Object> JsonStrToDic (string param)

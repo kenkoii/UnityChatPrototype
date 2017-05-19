@@ -7,15 +7,15 @@ public class ExecutionManager : SingletonMonoBehaviour<ExecutionManager> {
 	private PlayerAttack playerAttack;
 	// Use this for initialization
 
-	BattleManager battleManager;
+	BattleController battleController;
 
 	void Start ()
 	{
-		battleManager = FindObjectOfType<BattleManager> ();
+		battleController = FindObjectOfType<BattleController> ();
 	}
 
 	public void ExecutePlayerAttack(){
 		playerAttack = new PlayerAttack ();
-		battleManager.SetExecution (playerAttack);
+		battleController.SetExecution (playerAttack);
 	}
 }

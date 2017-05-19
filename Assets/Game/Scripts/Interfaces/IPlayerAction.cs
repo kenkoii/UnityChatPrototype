@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IPlayerAction {
 
-	void Execute (GameObject entity, int actionValue);
+	void Execute (GameObject entity);
 }
