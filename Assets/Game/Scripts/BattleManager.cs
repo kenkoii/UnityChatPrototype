@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour {
 
@@ -9,6 +10,18 @@ public class BattleManager : MonoBehaviour {
 	public int visitorLife = 10;
 	public string homeName = "Anonymous1";
 	public string visitorName = "Anonymous2";
+
+	public Text homeNameText;
+	public Text homeLifeText;
+	public Text visitorNameText;
+	public Text visitorLifeText;
+
+	void Update(){
+		homeNameText.text = ""+homeName;
+		homeLifeText.text = ""+homeLife;
+		visitorNameText.text = ""+visitorName;
+		visitorLifeText.text = ""+visitorLife;
+	}
 
 	public void Execute(){
 		playerAction.Execute(this.gameObject, 10);
@@ -27,5 +40,6 @@ public class BattleManager : MonoBehaviour {
 	public void SetExecution(IPlayerAction playerAction)
 	{
 		this.playerAction = playerAction;
+		Execute ();
 	}
 }
