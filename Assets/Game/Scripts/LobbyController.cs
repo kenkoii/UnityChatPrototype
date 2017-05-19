@@ -13,16 +13,16 @@ public class LobbyController : MonoBehaviour {
 	private string roomkeyName;
 
 	public void CreateRoom(){
-		FirebaseDatabaseFacade.Instance.CreateRoom (GameManager.Instance.userName, GameManager.Instance.life);
 		GameManager.Instance.userName = userName.text;
 		GameManager.Instance.life = int.Parse(userLife.text);
+		FirebaseDatabaseFacade.Instance.CreateRoom (GameManager.Instance.userName, GameManager.Instance.life);
 		GoToChatRoom();
 	}
 
 	public void JoinRoom(){
-		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName, GameManager.Instance.userName, GameManager.Instance.life);
 		GameManager.Instance.userName = userName.text;
 		GameManager.Instance.life = int.Parse(userLife.text);
+		FirebaseDatabaseFacade.Instance.JoinRoom (roomkeyName, GameManager.Instance.userName, GameManager.Instance.life);
 		GoToChatRoom();
 	}
 

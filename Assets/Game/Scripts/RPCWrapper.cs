@@ -5,8 +5,15 @@ using System.IO;
 using System.IO.Compression;
 using System;
 
-public class RPCWrapper
+public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 {
+	//test attack
+	public void SumbitSignal(){
+		Dictionary<string, System.Object> submit = new Dictionary<string, System.Object>();
+		submit["damage"] = 10;
+
+		RPCWrap ((int)StatusType.attack, submit);
+	}
 
 	public void RPCWrap (StatusType type, Dictionary<string, System.Object> param)
 	{
