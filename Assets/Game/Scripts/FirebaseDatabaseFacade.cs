@@ -20,6 +20,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	Dictionary<string, System.Object> receiveMessage;
 	private bool isHasGameRooms = false;
 	private bool searchingRoom = false;
+	private bool isHost = false;
 
 	[System.Serializable] public class MessageBroadcast : UnityEvent<Dictionary<string, System.Object>>
 	{
@@ -80,10 +81,10 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 		receiveMessage = (Dictionary<string, System.Object>)args.Snapshot.Value;
 		sendInitialVisitorState.Invoke (receiveMessage);
-
+		onSuccessMatchMake (true);
 	}
 
-	void HandleChatroomChildAdded (object sender, ValueChangedEventArgs args)
+	void HandleGameRoomValueChanged (object sender, ValueChangedEventArgs args)
 	{
 		if (args.DatabaseError != null) {
 			Debug.LogError (args.DatabaseError.Message);
@@ -105,7 +106,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 						searchingRoom = false;
 						return;
 					}
-
 				}
 
 				CreateRoom ();
@@ -116,11 +116,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				CreateRoom ();
 				searchingRoom = false;
 			}
-
 		}
-
-
-
 	}
 
 
@@ -130,7 +126,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public void SearchRoom (Action<bool> onResult)
 	{
 		//Order first to search fast
-		roomReference.OrderByChild("RoomStatus").EqualTo("Open").ValueChanged += HandleChatroomChildAdded;
+		roomReference.OrderByChild ("RoomStatus").EqualTo ("Open").ValueChanged += HandleGameRoomValueChanged;
 		searchingRoom = true;
 		onSuccessMatchMake = onResult;
 
@@ -138,13 +134,27 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	public void CancelRoomSearch ()
 	{
-		onSuccessMatchMake (false);
-		searchingRoom = false;
+		if (onSuccessMatchMake == false) {
+			
+			if (isHost) {
+				DeleteRoom ();
+			} 
+
+			gameRoomKey = null;
+			searchingRoom = false;
+		}
+
+
 	}
 
-	public void CreateRoom ()
+	private void DeleteRoom ()
 	{
-		onSuccessMatchMake (true);
+		reference.Child ("GameRoom").Child (gameRoomKey).RemoveValueAsync ();
+	}
+
+	private void CreateRoom ()
+	{
+		isHost = true;
 		gameRoomKey = reference.Child ("GameRoom").Push ().Key;
 		MessageListener ();
 		User user = new User (GameManager.Instance.userName, GameManager.Instance.life);
@@ -160,9 +170,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		GameManager.Instance.isPlayerVisitor = false;
 	}
 
-	public void JoinRoom ()
+	private void JoinRoom ()
 	{
-		onSuccessMatchMake (true);
+		isHost = false;
 		MessageListener ();
 
 		User user = new User (GameManager.Instance.userName, GameManager.Instance.life);
@@ -206,7 +216,5 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 		reference.UpdateChildrenAsync (childUpdates);
 	}
-
-
 
 }
