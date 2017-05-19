@@ -91,8 +91,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	
 		var gameRoomList = args.Snapshot.Children;
-			
-
 		if (searchingRoom) {
 			
 			isHasGameRooms = args.Snapshot.HasChildren;
@@ -119,26 +117,21 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				searchingRoom = false;
 			}
 
-
-
 		}
 
 
 
 	}
 
-	private int userLife;
-	private string userName;
+
 	private Action<bool> onSuccessMatchMake;
 
 
-	public void SearchRoom (string name, int life, Action<bool> onResult)
+	public void SearchRoom (Action<bool> onResult)
 	{
-
-		roomReference.ValueChanged += HandleChatroomChildAdded;
+		//Order first to search fast
+		roomReference.OrderByChild("RoomStatus").EqualTo("Open").ValueChanged += HandleChatroomChildAdded;
 		searchingRoom = true;
-		userName = name;
-		userLife = life;
 		onSuccessMatchMake = onResult;
 
 	}
@@ -154,7 +147,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		onSuccessMatchMake (true);
 		gameRoomKey = reference.Child ("GameRoom").Push ().Key;
 		MessageListener ();
-		User user = new User (userName, userLife);
+		User user = new User (GameManager.Instance.userName, GameManager.Instance.life);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Home/param/"] = entryValues;
@@ -172,7 +165,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		onSuccessMatchMake (true);
 		MessageListener ();
 
-		User user = new User (userName, userLife);
+		User user = new User (GameManager.Instance.userName, GameManager.Instance.life);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Visitor/param/"] = entryValues;
