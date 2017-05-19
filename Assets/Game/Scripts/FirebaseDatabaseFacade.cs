@@ -15,8 +15,11 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 {
 
 	DatabaseReference reference;
+	DatabaseReference roomReference;
 	string gameRoomKey = null;
 	Dictionary<string, System.Object> receiveMessage;
+	private bool isHasGameRooms = false; 
+	private bool searchingRoom = false;
 
 	[System.Serializable] public class MessageBroadcast : UnityEvent<Dictionary<string, System.Object>>
 	{
@@ -26,7 +29,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public MessageBroadcast sendMessage;
 	public MessageBroadcast sendInitialHomeState;
 	public MessageBroadcast sendInitialVisitorState;
-	List<string> keyList = new List<string> ();
 	[System.Serializable] public class RoomListBroadcast : UnityEvent<List<string>>
 	{
 
@@ -43,9 +45,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		#endif
 		reference = FirebaseDatabase.DefaultInstance.RootReference;
 
-		DatabaseReference roomReference = reference.Child("GameRoom");
-		roomReference.ValueChanged += HandleChatroomChildAdded;
-		roomReference.ValueChanged += HandleChatroomChildAdded;
+		roomReference = reference.Child("GameRoom");
 
 	}
 
@@ -90,20 +90,66 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	
 		var keyDictionary = args.Snapshot.Children;
+			
 
-		foreach (DataSnapshot dataSnapshot in keyDictionary) {
-			keyList.Add (dataSnapshot.Key.ToString ());;
+		if (searchingRoom) {
+			
+			isHasGameRooms = args.Snapshot.HasChildren;
+
+			if (isHasGameRooms) {
+
+				Debug.Log ("has game rooms");
+				foreach (DataSnapshot dataSnapshot in keyDictionary) {
+					if (dataSnapshot.Child("RoomStatus").Value.ToString ().Equals ("Open")) {
+						gameRoomKey = dataSnapshot.Key.ToString ();
+						JoinRoom ();
+						searchingRoom = false;
+						break;
+					}
+
+				}
+
+				if (searchingRoom) {
+					CreateRoom ();
+					searchingRoom = false;
+				}
+
+
+			} else {
+				Debug.Log ("has NO game rooms");
+				CreateRoom ();
+				searchingRoom = false;
+			}
+
+
+
 		}
-		sendRoomList.Invoke (keyList);
+
+
 
 	}
 
+	private int userLife;
+	private string userName;
+	private Action<bool> onSuccessMatchMake;
 
-	public void CreateRoom (string name, int life)
+
+	public void SearchRoom(string name, int life, Action<bool> onResult){
+
+		roomReference.ValueChanged += HandleChatroomChildAdded;
+		searchingRoom = true;
+		userName = name;
+		userLife = life;
+		onSuccessMatchMake = onResult;
+
+	}
+
+	public void CreateRoom ()
 	{
+		onSuccessMatchMake (true);
 		gameRoomKey = reference.Child ("GameRoom").Push ().Key;
 		MessageListener ();
-		User user = new User (name, life);
+		User user = new User (userName, userLife);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Home/param/"] = entryValues;
@@ -116,12 +162,12 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		GameManager.Instance.isPlayerVisitor = false;
 	}
 
-	public void JoinRoom (string roomKey, string name, int life)
+	public void JoinRoom ()
 	{
-		gameRoomKey = roomKey;
+		onSuccessMatchMake (true);
 		MessageListener ();
 
-		User user = new User (name, life);
+		User user = new User (userName, userLife);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/GameRoom/" + gameRoomKey + "/InitialState/Visitor/param/"] = entryValues;
