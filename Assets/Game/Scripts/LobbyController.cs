@@ -6,12 +6,10 @@ using UnityEngine.UI;
 public class LobbyController : MonoBehaviour {
 
 	public GameObject loadingScreen;
-	public GameObject chatRoom;
+	public GameObject gameRoom;
 	public GameObject lobbyRoom;
 	public InputField userName;
 	public InputField userLife;
-
-	private string roomkeyName;
 
 
 	public void SearchRoom(){
@@ -21,15 +19,13 @@ public class LobbyController : MonoBehaviour {
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result){
 
 			if(result){
-				GoToChatRoom();
+				GoToGameRoom();
 			}else{
 				Debug.Log("Cancelled Search");
 			}
 
 			loadingScreen.SetActive(false);
-			
 		});
-
 	}
 
 	public void CancelRoomSearch(){
@@ -37,8 +33,8 @@ public class LobbyController : MonoBehaviour {
 	}
 		
 
-	private void GoToChatRoom (){
+	private void GoToGameRoom (){
 		lobbyRoom.SetActive (false);
-		chatRoom.SetActive (true);
+		gameRoom.SetActive (true);
 	}
 }
