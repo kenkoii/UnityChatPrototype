@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System;
 
+/* Handles wrapping and sending of RPC status */
 public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 {
 	/// <summary>

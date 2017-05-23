@@ -11,6 +11,7 @@ using Firebase.Unity.Editor;
 
 using System;
 
+/* Facade for Firebase Database */
 public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFacade>
 {
 
@@ -51,6 +52,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 		roomReference = reference.Child (MyConst.GAMEROOM_NAME);
 	}
+
 	/// <summary>
 	/// Handles the RPC added.
 	/// </summary>
@@ -66,6 +68,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		sendMessage.Invoke (receiveMessage);
 
 	}
+
 	/// <summary>
 	/// Handles the initial home child added.
 	/// </summary>
@@ -183,7 +186,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	private void CreateRoom ()
 	{
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
-		RoomCreateJoin (true, MyConst.GAMEROOM_HOME,MyConst.GAMEROOM_OPEN, false);
+		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN, false);
 	}
 
 	/// <summary>
@@ -191,7 +194,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	private void JoinRoom ()
 	{
-		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR,MyConst.GAMEROOM_FULL, true);
+		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL, true);
 	}
 
 	/// <summary>
@@ -201,13 +204,14 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// <param name="userPlace">User place.</param>
 	/// <param name="roomStatus">Room status.</param>
 	/// <param name="isPlayerVisitor">If set to <c>true</c> is player visitor.</param>
-	private void RoomCreateJoin(bool isHost,string userPlace , string roomStatus, bool isPlayerVisitor){
+	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus, bool isPlayerVisitor)
+	{
 		this.isHost = isHost;
 		MessageListener ();
 		User user = new User (GameManager.Instance.userName, GameManager.Instance.life);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
-		childUpdates ["/"+MyConst.GAMEROOM_NAME+"/" + gameRoomKey + "/"+MyConst.GAMEROOM_INITITAL_STATE+"/" +userPlace+"/param/"] = entryValues;
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/"] = entryValues;
 		reference.UpdateChildrenAsync (childUpdates);
 
 		//set room status to open when create room
@@ -251,7 +255,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		BattleStatus battleStatus = new BattleStatus (name, (int)statusType, param);
 		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
-		childUpdates ["/"+MyConst.GAMEROOM_NAME+"/" + gameRoomKey + "/"+MyConst.GAMEROOM_RPC+"/" + rpcKey] = entryValues;
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
 
 		reference.UpdateChildrenAsync (childUpdates);
 	}

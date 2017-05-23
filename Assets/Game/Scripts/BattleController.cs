@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleController : MonoBehaviour {
+/* Controls the battle */
+public class BattleController : MonoBehaviour
+{
 
 	IPlayerAction playerAction;
 	public int homeLife = 10;
@@ -16,37 +18,42 @@ public class BattleController : MonoBehaviour {
 	public Text visitorNameText;
 	public Text visitorLifeText;
 
-	void Update(){
-		homeNameText.text = ""+homeName;
-		homeLifeText.text = ""+homeLife;
-		visitorNameText.text = ""+visitorName;
-		visitorLifeText.text = ""+visitorLife;
+	void Update ()
+	{
+		homeNameText.text = "" + homeName;
+		homeLifeText.text = "" + homeLife;
+		visitorNameText.text = "" + visitorName;
+		visitorLifeText.text = "" + visitorLife;
 	}
 
-	public void Execute(){
-		playerAction.Execute(this.gameObject);
+	public void Execute ()
+	{
+		playerAction.Execute (this.gameObject);
 	}
 
-	public void InitialHomeState(int playerLife,string playerName){
+	public void InitialHomeState (int playerLife, string playerName)
+	{
 		this.homeLife = playerLife;
 		this.homeName = playerName;
 	}
 
-	public void InitialVisitorState(int enemyLife,string enemyName){
+	public void InitialVisitorState (int enemyLife, string enemyName)
+	{
 		this.visitorLife = enemyLife;
 		this.visitorName = enemyName;
 	}
 
-	public void SetExecution(IPlayerAction playerAction)
+	public void SetExecution (IPlayerAction playerAction)
 	{
 		this.playerAction = playerAction;
 		Execute ();
 	}
 
 	//test attack
-	public void SendAttack(){
-		Dictionary<string, System.Object> param = new Dictionary<string, System.Object>();
-		param[ParamNames.Damage.ToString()] = 10;
+	public void SendAttack ()
+	{
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+		param [ParamNames.Damage.ToString ()] = 10;
 		RPCWrapper.Instance.RPCWrap (StatusType.Attack, param);
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/* User Model */
 public class User {
 	public string username;
 	public int life;
