@@ -11,6 +11,10 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver> {
 		battleController = FindObjectOfType<BattleController> ();
 	}
 
+	/// <summary>
+	/// Receives the RPC status.
+	/// </summary>
+	/// <param name="rpcDetails">Rpc details.</param>
 	public void ReceiveRPC(Dictionary<string, System.Object> rpcDetails){
 		string username = (string)rpcDetails["username"];
 		int statusType = int.Parse(rpcDetails["statusType"].ToString());
@@ -27,18 +31,43 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver> {
 		}
 	}
 
+	/// <summary>
+	/// Receives the initial state of the home.
+	/// </summary>
+	/// <param name="ititialState">Ititial state.</param>
 	public void ReceiveInitialHomeState(Dictionary<string, System.Object> ititialState){
-		string username = (string)ititialState["username"];
-		int life = int.Parse(ititialState["life"].ToString());
-		battleController.InitialHomeState (life, username);
+		ReceivInitialState (ititialState, true);
 	}
-
+	/// <summary>
+	/// Receives the initial state of the visitor.
+	/// </summary>
+	/// <param name="ititialState">Ititial state.</param>
 	public void ReceiveInitialVisitorState(Dictionary<string, System.Object> ititialState){
-		string username = (string)ititialState["username"];
-		int life = int.Parse(ititialState["life"].ToString());
-		battleController.InitialVisitorState (life, username);
+		ReceivInitialState (ititialState, false);
 	}
 
+	/// <summary>
+	/// Receivs the initial state.
+	/// </summary>
+	/// <param name="ititialState">Ititial state.</param>
+	/// <param name="isHome">If set to <c>true</c> is home.</param>
+	private void ReceivInitialState(Dictionary<string, System.Object> ititialState,bool isHome){
+		string username = (string)ititialState["username"];
+		int life = int.Parse(ititialState["life"].ToString());
+
+		if (isHome) {
+			battleController.InitialHomeState (life, username);
+		} else {
+			battleController.InitialVisitorState (life, username);
+		}
+
+	}
+
+	/// <summary>
+	/// Converts Json String to Dictionary<string, System.Object>
+	/// </summary>
+	/// <returns>The string to dic.</returns>
+	/// <param name="param">Parameter.</param>
 	private Dictionary<string, System.Object> JsonStrToDic (string param)
 	{
 		Dictionary<string, System.Object> Dic = (Dictionary<string, System.Object>)MiniJSON.Json.Deserialize (param);
