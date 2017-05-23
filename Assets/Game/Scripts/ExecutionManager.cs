@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExecutionManager : SingletonMonoBehaviour<ExecutionManager> {
+/* Manages the executions of player actions */
+public class ExecutionManager : SingletonMonoBehaviour<ExecutionManager>
+{
 
 	private PlayerAttack playerAttack;
 	// Use this for initialization
@@ -14,7 +16,8 @@ public class ExecutionManager : SingletonMonoBehaviour<ExecutionManager> {
 		battleController = FindObjectOfType<BattleController> ();
 	}
 
-	public void ExecutePlayerAttack(){
+	public void ExecutePlayerAttack ()
+	{
 		playerAttack = new PlayerAttack ();
 		battleController.SetExecution (playerAttack);
 	}

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LobbyController : MonoBehaviour {
+/* UI For searching matches */
+public class LobbyController : MonoBehaviour
+{
 
 	public GameObject loadingScreen;
 	public GameObject gameRoom;
@@ -12,28 +14,31 @@ public class LobbyController : MonoBehaviour {
 	public InputField userLife;
 
 
-	public void SearchRoom(){
+	public void SearchRoom ()
+	{
 		GameManager.Instance.userName = userName.text;
-		GameManager.Instance.life = int.Parse(userLife.text);
+		GameManager.Instance.life = int.Parse (userLife.text);
 		loadingScreen.SetActive (true);
-		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result){
+		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
-			if(result){
-				GoToGameRoom();
-			}else{
-				Debug.Log("Cancelled Search");
+			if (result) {
+				GoToGameRoom ();
+			} else {
+				Debug.Log ("Cancelled Search");
 			}
 
-			loadingScreen.SetActive(false);
+			loadingScreen.SetActive (false);
 		});
 	}
 
-	public void CancelRoomSearch(){
+	public void CancelRoomSearch ()
+	{
 		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();
 	}
-		
 
-	private void GoToGameRoom (){
+
+	private void GoToGameRoom ()
+	{
 		lobbyRoom.SetActive (false);
 		gameRoom.SetActive (true);
 	}

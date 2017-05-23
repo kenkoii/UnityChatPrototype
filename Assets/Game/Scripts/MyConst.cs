@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MyConst {
+/* Handles Constants */
+public static class MyConst
+{
 
 	public const string URL_FIREBASE_DATABASE = "https://chatprototype-39807.firebaseio.com";
 	public const string GAMEROOM_NAME = "GameRoom";
