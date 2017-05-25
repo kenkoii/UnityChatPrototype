@@ -4,6 +4,7 @@ using UnityEngine;
 using Firebase;
 using Firebase.Database;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using Firebase.Unity.Editor;
@@ -17,11 +18,14 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	DatabaseReference reference;
 	DatabaseReference roomReference;
+	DatabaseReference connectionReference;
+
 	string gameRoomKey = null;
 	Dictionary<string, System.Object> receiveMessage;
 	private bool isHasGameRooms = false;
 	private bool searchingRoom = false;
 	private bool isHost = false;
+	private bool isOnline = false;
 
 	[System.Serializable] public class MessageBroadcast : UnityEvent<Dictionary<string, System.Object>>
 	{
@@ -34,24 +38,84 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	private Action<bool> onSuccessMatchMake;
 	private bool isMatchMakeSuccess = false;
 
+
 	[System.Serializable] public class RoomListBroadcast : UnityEvent<List<string>>
 	{
 
 	};
 
 	public RoomListBroadcast sendRoomList;
+	DependencyStatus dependencyStatus = DependencyStatus.UnavailableOther;
+
+
+	public Image dcImage;
 
 
 	void Start ()
 	{
+
+		dependencyStatus = FirebaseApp.CheckDependencies();
+		if (dependencyStatus != DependencyStatus.Available) {
+			FirebaseApp.FixDependenciesAsync().ContinueWith(task => {
+				dependencyStatus = FirebaseApp.CheckDependencies();
+				if (dependencyStatus == DependencyStatus.Available) {
+					InitializeFirebase();
+				} else {
+					Debug.LogError(
+						"Could not resolve all Firebase dependencies: " + dependencyStatus);
+				}
+			});
+		} else {
+			InitializeFirebase();
+		}
+	}
+
+	/// <summary>
+	/// Initializes the firebase.
+	/// </summary>
+	void InitializeFirebase() {
+
+
 		#if UNITY_EDITOR
 		// Set this before calling into the realtime database.
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl (MyConst.URL_FIREBASE_DATABASE);
 		#endif
+
+	
 		reference = FirebaseDatabase.DefaultInstance.RootReference;
 
 		roomReference = reference.Child (MyConst.GAMEROOM_NAME);
 	}
+
+	public void ConnectInternet(){
+		connectionReference = FirebaseDatabase.DefaultInstance.GetReferenceFromUrl (MyConst.URL_FIREBASE_DATABASE_CONNECTION);
+		connectionReference.ValueChanged += HandleDatabaseConnection;
+	}
+
+	/// <summary>
+	/// Handles the database connection.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="args">Arguments.</param>
+	void HandleDatabaseConnection (object sender, ValueChangedEventArgs args)
+	{
+		if (args.DatabaseError != null) {
+			Debug.LogError (args.DatabaseError.Message);
+			return;
+		}
+
+		bool connected = (bool)args.Snapshot.Value;
+		if (connected) {
+			isOnline = true;
+		} else {
+			isOnline = false;
+		}
+
+		Debug.Log ("DEVICE IS ONLINE?: " + isOnline);
+
+		dcImage.enabled = !isOnline;
+	}
+
 
 	/// <summary>
 	/// Handles the RPC added.
@@ -152,7 +216,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo (MyConst.GAMEROOM_OPEN).ValueChanged += HandleGameRoomValueChanged;
 		searchingRoom = true;
 		onSuccessMatchMake = onResult;
-
 	}
 
 	/// <summary>
@@ -162,13 +225,11 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	public void CancelRoomSearch ()
 	{
-		if (isMatchMakeSuccess) {
+		if (!isMatchMakeSuccess) {
 			
 			if (isHost) {
 				DeleteRoom ();
 			} 
-			gameRoomKey = null;
-			searchingRoom = false;
 		}
 	}
 
@@ -178,6 +239,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	private void DeleteRoom ()
 	{
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).RemoveValueAsync ();
+		gameRoomKey = null;
+		searchingRoom = false;
+		onSuccessMatchMake (false);
 	}
 
 	/// <summary>
@@ -250,14 +314,58 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// <param name="param">Parameter.</param>
 	public void AttackPlayer (string name, StatusType statusType, string param)
 	{
-		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
+		if(isOnline){
+			string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		BattleStatus battleStatus = new BattleStatus (name, (int)statusType, param);
-		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
-		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
-		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
+			BattleStatus battleStatus = new BattleStatus (name, (int)statusType, param);
+			Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
+			Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+			childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
 
-		reference.UpdateChildrenAsync (childUpdates);
+			reference.UpdateChildrenAsync (childUpdates);
+		}
 	}
+
+//	public void AttackPlayer (string name, StatusType statusType, string param){
+//
+//		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
+//		Debug.Log (rpcKey);
+//		Debug.Log ("hello");
+//		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC ).Child (rpcKey).RunTransaction(mutableData => {
+//			List<object> leaders = mutableData.Value as List<object>;
+////				if (leaders == null) {
+////					leaders = new List<object>();
+////				} else if (mutableData.ChildrenCount >= MaxScores) {
+////					long minScore = long.MaxValue;
+////					object minVal = null;
+////					foreach (var child in leaders) {
+////						if (!(child is Dictionary<string, object>)) continue;
+////						long childScore = (long)
+////							((Dictionary<string, object>)child)["score"];
+////						if (childScore < minScore) {
+////							minScore = childScore;
+////							minVal = child;
+////						}
+////					}
+////					if (minScore > score) {
+////						// The new score is lower than the existing 5 scores, abort.
+////						return TransactionResult.Abort();
+////					}
+////
+////					// Remove the lowest score.
+////					leaders.Remove(minVal);
+////				}
+//
+//					// Add the new high score.
+//
+//
+//			BattleStatus battleStatus = new BattleStatus (name, (int)statusType, param);
+//			Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
+//
+//			leaders.Add(entryValues);
+//			mutableData.Value = leaders;
+//			return TransactionResult.Success(mutableData);
+//		});
+//	}
 
 }
