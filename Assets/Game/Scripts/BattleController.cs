@@ -18,6 +18,9 @@ public class BattleController : MonoBehaviour
 	public Text visitorNameText;
 	public Text visitorLifeText;
 
+	public Text battleResultText;
+
+
 	void Update ()
 	{
 		homeNameText.text = "" + homeName;
@@ -43,10 +46,34 @@ public class BattleController : MonoBehaviour
 		this.visitorName = enemyName;
 	}
 
+	/// <summary>
+	/// Sets the execution of playerAction and execute. 
+	/// </summary>
+	/// <param name="playerAction">Player action.</param>
 	public void SetExecution (IPlayerAction playerAction)
 	{
-		this.playerAction = playerAction;
-		Execute ();
+		if (visitorLife > 0 && homeLife > 0) {
+			this.playerAction = playerAction;
+			Execute ();
+		} 
+		if (visitorLife > 0 && homeLife <= 0) {
+			if (GameManager.Instance.isPlayerVisitor) {
+				battleResultText.text = "WIN";
+			} else {
+				battleResultText.text = "LOSE";
+			}
+
+		} 
+		else if (homeLife > 0 && visitorLife <= 0) {
+			if (GameManager.Instance.isPlayerVisitor) {
+				battleResultText.text = "LOSE";
+			} else {
+				battleResultText.text = "WIN";
+			}
+
+		} 
+		battleResultText.enabled = true;
+
 	}
 
 	//test attack
