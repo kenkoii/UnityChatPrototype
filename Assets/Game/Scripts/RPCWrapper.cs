@@ -13,13 +13,11 @@ public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 	/// </summary>
 	/// <param name="type">Type.</param>
 	/// <param name="param">Parameter.</param>
-	public void RPCWrap (StatusType type, Dictionary<string, System.Object> param)
+	public void RPCWrap (Dictionary<string, System.Object> param)
 	{
-		switch (type) {
-		case StatusType.Attack:
-			FirebaseDatabaseFacade.Instance.AttackPlayer (GameManager.Instance.userName, type, DicToJsonStr (param));
-			break;
-		}
+
+		FirebaseDatabaseFacade.Instance.AttackPlayer (GameManager.Instance.userName,DicToJsonStr (param));
+
 	}
 
 	/// <summary>

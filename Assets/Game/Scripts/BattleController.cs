@@ -6,81 +6,118 @@ using UnityEngine.UI;
 /* Controls the battle */
 public class BattleController : MonoBehaviour
 {
+	ISkill skill;
+	public int playerHP = 10;
+	public int enemyHP = 10;
+	public int prepareTime = 3;
 
-	IPlayerAction playerAction;
-	public int homeLife = 10;
-	public int visitorLife = 10;
-	public string homeName = "Anonymous1";
-	public string visitorName = "Anonymous2";
+	private int playerMaxHP = 10;
+	private int enemyMaxHP = 10;
 
-	public Text homeNameText;
-	public Text homeLifeText;
-	public Text visitorNameText;
-	public Text visitorLifeText;
+	public Slider playerHPBar;
+	public Slider enemyHPBar;
+
+	public int playerGP = 10;
+	public Slider playerGPBar;
+
+	public string playerName = "Anonymous1";
+	public string enemyName = "Anonymous2";
+
+	public Text playerNameText;
+	public Text playerHPText;
+	public Text enemyNameText;
+	public Text enemyHPText;
 
 	public Text battleResultText;
 
+	public GameObject preBattleTimer;
+
+
+	void OnEnable(){
+		StartCoroutine (StartPreparationDelay(prepareTime));
+		
+	}
+
+	IEnumerator StartPreparationDelay(int timer){
+		preBattleTimer.SetActive (true);
+
+		while (timer > 0) {
+			preBattleTimer.transform.Find ("ReadyTime").GetComponent<Text> ().text = "" + timer;
+			timer--;
+			yield return new WaitForSeconds (1);
+		}
+
+		preBattleTimer.SetActive (false);
+
+	}
 
 	void Update ()
 	{
-		homeNameText.text = "" + homeName;
-		homeLifeText.text = "" + homeLife;
-		visitorNameText.text = "" + visitorName;
-		visitorLifeText.text = "" + visitorLife;
+		playerNameText.text = "" + playerName;
+		playerHPText.text = "" + playerHP + "/" + playerMaxHP;
+		enemyNameText.text = "" + enemyName;
+		enemyHPText.text = "" + enemyHP + "/" + enemyMaxHP;
+
+		playerHPBar.value = playerHP;
+		enemyHPBar.value = enemyHP;
+
+
 	}
 
-	public void Execute ()
+	public void Attack ()
 	{
-		playerAction.Execute (this.gameObject);
+		//attack logic here
 	}
 
-	public void InitialHomeState (int playerLife, string playerName)
+	public void InitialPlayerState (int playerHP, string playerName)
 	{
-		this.homeLife = playerLife;
-		this.homeName = playerName;
+		this.playerHP = playerHP;
+		this.playerName = playerName;
+		playerMaxHP = playerHP;
+		playerHPBar.maxValue = playerMaxHP;
 	}
 
-	public void InitialVisitorState (int enemyLife, string enemyName)
+	public void InitialEnemyState (int enemyHP, string enemyName)
 	{
-		this.visitorLife = enemyLife;
-		this.visitorName = enemyName;
+		this.enemyHP = enemyHP;
+		this.enemyName = enemyName;
+		enemyMaxHP = enemyHP;
+		enemyHPBar.maxValue = enemyMaxHP;
 	}
 
 	/// <summary>
-	/// Sets the execution of playerAction and execute. 
+	/// Attack enemy. 
 	/// </summary>
 	/// <param name="playerAction">Player action.</param>
-	public void SetExecution (IPlayerAction playerAction)
+	public void SetAttack ()
 	{
-		if (visitorLife > 0 && homeLife > 0) {
-			this.playerAction = playerAction;
-			Execute ();
+		if (enemyHP > 0 && playerHP > 0) {
+			Attack ();
+			return;
 		} 
-		if (visitorLife > 0 && homeLife <= 0) {
-			if (GameManager.Instance.isPlayerVisitor) {
-				battleResultText.text = "WIN";
-			} else {
-				battleResultText.text = "LOSE";
-			}
-
-		} 
-		else if (homeLife > 0 && visitorLife <= 0) {
-			if (GameManager.Instance.isPlayerVisitor) {
-				battleResultText.text = "LOSE";
-			} else {
-				battleResultText.text = "WIN";
-			}
-
+		if (enemyHP > 0 && playerHP <= 0) {
+			battleResultText.text = "LOSE";
+		} else if (playerHP > 0 && enemyHP <= 0) {
+			battleResultText.text = "WIN";
 		} 
 		battleResultText.enabled = true;
 
 	}
 
+	public void SetSkill (ISkill skill)
+	{
+		this.skill = skill;
+		skill.Activate ();
+
+	}
+
+
+
 	//test attack
-	public void SendAttack ()
+	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.Damage.ToString ()] = 10;
-		RPCWrapper.Instance.RPCWrap (StatusType.Attack, param);
+		RPCWrapper.Instance.RPCWrap (param);
 	}
 }
