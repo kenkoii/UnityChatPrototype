@@ -21,18 +21,12 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 	public void ReceiveRPC (Dictionary<string, System.Object> rpcDetails)
 	{
 		string username = (string)rpcDetails ["username"];
-		int statusType = int.Parse (rpcDetails ["statusType"].ToString ());
-		StatusType newStatusType = (StatusType)statusType;
 		Dictionary<string, System.Object> param = JsonStrToDic ((string)rpcDetails ["param"]);
 	
 		GameManager.Instance.attackerName = username;
 		GameManager.Instance.attackerParam = param;
 
-		switch (newStatusType) {
-		case StatusType.Attack:
-			ExecutionManager.Instance.ExecutePlayerAttack ();
-			break;
-		}
+
 	}
 
 	/// <summary>
@@ -64,9 +58,17 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		int life = int.Parse (ititialState ["life"].ToString ());
 
 		if (isHome) {
-			battleController.InitialHomeState (life, username);
+			if (GameManager.Instance.isPlayerVisitor) {
+				battleController.InitialEnemyState (life, username);
+			} else {
+				battleController.InitialPlayerState (life, username);
+			}
 		} else {
-			battleController.InitialVisitorState (life, username);
+			if (GameManager.Instance.isPlayerVisitor) {
+				battleController.InitialPlayerState (life, username);
+			} else {
+				battleController.InitialEnemyState (life, username);
+			}
 		}
 
 	}

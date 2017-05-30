@@ -10,6 +10,7 @@ public static class MyConst
 	public const string URL_FIREBASE_DATABASE_CONNECTION = "https://chatprototype-39807.firebaseio.com/.info/connected";
 	public const string GAMEROOM_NAME = "GameRoom";
 	public const string GAMEROOM_STATUS = "RoomStatus";
+	public const string GAMEROOM_BATTLE_STATUS = "BattleStatus";
 	public const string GAMEROOM_INITITAL_STATE = "InitialState";
 	public const string GAMEROOM_RPC = "RPC";
 	public const string GAMEROOM_HOME = "Home";

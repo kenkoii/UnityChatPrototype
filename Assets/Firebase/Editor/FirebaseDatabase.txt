@@ -42,11 +42,11 @@ Assets/Firebase/Plugins/Unity.Tasks.dll
 Assets/Firebase/Plugins/iOS/Firebase.App.dll
 Assets/Firebase/Plugins/iOS/Firebase.Auth.dll
 Assets/Firebase/Plugins/link.xml
-Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/3.0.1/firebase-app-unity-3.0.1.pom
-Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/3.0.1/firebase-app-unity-3.0.1.srcaar
+Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/3.0.3/firebase-app-unity-3.0.3.pom
+Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/3.0.3/firebase-app-unity-3.0.3.srcaar
 Assets/Firebase/m2repository/com/google/firebase/firebase-app-unity/maven-metadata.xml
-Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/3.0.1/firebase-auth-unity-3.0.1.pom
-Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/3.0.1/firebase-auth-unity-3.0.1.srcaar
+Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/3.0.3/firebase-auth-unity-3.0.3.pom
+Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/3.0.3/firebase-auth-unity-3.0.3.srcaar
 Assets/Firebase/m2repository/com/google/firebase/firebase-auth-unity/maven-metadata.xml
 Assets/PlayServicesResolver/Editor/Google.IOSResolver.dll
 Assets/PlayServicesResolver/Editor/Google.JarResolver.dll

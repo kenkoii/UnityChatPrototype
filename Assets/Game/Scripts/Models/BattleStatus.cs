@@ -6,17 +6,15 @@ using UnityEngine;
 public class BattleStatus
 {
 	public string username;
-	public int statusType;
 	public string param;
 
 	public BattleStatus ()
 	{
 	}
 
-	public BattleStatus (string username, int statusType, string param)
+	public BattleStatus (string username, string param)
 	{
 		this.username = username;
-		this.statusType = statusType;
 		this.param = param;
 	}
 
@@ -24,7 +22,6 @@ public class BattleStatus
 	{
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object> ();
 		result ["username"] = username;
-		result ["statusType"] = statusType;
 		result ["param"] = param;
 
 		return result;

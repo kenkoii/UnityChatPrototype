@@ -10,6 +10,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
 	public int life{ get; set; }
 
+	public int playerGP{ get; set; }
+
 	public bool isPlayerVisitor{ get; set; }
 
 	public string attackerName{ get; set; }

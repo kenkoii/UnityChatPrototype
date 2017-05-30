@@ -7,28 +7,32 @@ using UnityEngine.UI;
 public class LobbyController : MonoBehaviour
 {
 
-	public GameObject loadingScreen;
 	public GameObject gameRoom;
 	public GameObject lobbyRoom;
 	public InputField userName;
 	public InputField userLife;
+	public InputField playerGP;
 
 
 	public void SearchRoom ()
 	{
 		GameManager.Instance.userName = userName.text;
 		GameManager.Instance.life = int.Parse (userLife.text);
-		loadingScreen.SetActive (true);
+		GameManager.Instance.playerGP = int.Parse (playerGP.text);
+		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
 			if (result) {
-				GoToGameRoom ();
+					GoToGameRoom ();	
+
 			} else {
 				Debug.Log ("Cancelled Search");
 			}
 
-			loadingScreen.SetActive (false);
+			EffectManager.Instance.StopMatchingScreen ();
 		});
+
+
 	}
 
 	public void CancelRoomSearch ()
@@ -41,5 +45,6 @@ public class LobbyController : MonoBehaviour
 	{
 		lobbyRoom.SetActive (false);
 		gameRoom.SetActive (true);
+		EffectManager.Instance.StopLoadingScreen();
 	}
 }
