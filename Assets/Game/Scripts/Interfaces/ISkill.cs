@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ISkill {
 
-	void Activate ();
+	void Activate (GameObject entity);
 
 }

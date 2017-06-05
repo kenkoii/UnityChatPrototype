@@ -7,6 +7,7 @@ public class Phase2Controller : MonoBehaviour
 {
 
 	public int chooseSkillTimer = 5;
+	public Text skillTimerText;
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
@@ -14,36 +15,38 @@ public class Phase2Controller : MonoBehaviour
 	private Coroutine timerCoroutine;
 
 
-	void OnEnable ()
+	public void StartPhase2 ()
 	{
 		ButtonEnable (true);
-		timerCoroutine = StartCoroutine (StartTimer (chooseSkillTimer));
+		StartCoroutine (StartTimer (chooseSkillTimer));
 
 	}
 
 	private void ButtonEnable (bool buttonEnable)
 	{
-		skillButton1.enabled = buttonEnable;
-		skillButton2.enabled = buttonEnable;
-		skillButton2.enabled = buttonEnable;
+		skillButton1.interactable = buttonEnable;
+		skillButton2.interactable = buttonEnable;
+		skillButton3.interactable = buttonEnable;
 	}
 
 	public void SelectSkill1 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
-		StopTimer ();
+		ButtonEnable (false);
 
 	}
 
 	public void SelectSkill2 ()
 	{
-		StopTimer ();
+		SkillManager.Instance.ActivateSkill1 ();
+		ButtonEnable (false);
 
 	}
 
 	public void SelectSkill3 ()
 	{
-		StopTimer ();
+		SkillManager.Instance.ActivateSkill1 ();
+		ButtonEnable (false);
 
 	}
 
@@ -52,22 +55,19 @@ public class Phase2Controller : MonoBehaviour
 		int timer = timeReceive;
 
 		while (timer > 0) {
+			skillTimerText.text = "" + timer;
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
 			
-		StopTimer ();
+		ButtonEnable (false);
+		skillTimerText.text = "";
 
+		FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
 	}
 
 		
+		
 
-	private void StopTimer ()
-	{
-		StopCoroutine (timerCoroutine);
-		ButtonEnable (false);
 
-		//CHECK FIREBASE FOR STATUS FOR NEXT PHASE
-
-	}
 }

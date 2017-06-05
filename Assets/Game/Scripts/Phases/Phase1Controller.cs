@@ -9,22 +9,23 @@ public class Phase1Controller : MonoBehaviour
 	public GameObject questionSelect;
 	private bool hasAnswered = false;
 	private int questionCounter = 0;
-	private Coroutine timerCoroutine;
+	private int answerCounter = 0;
 	public int chooseQuestionFirstTime = 4;
 	public int chooseQuestionSecondTime = 3;
+	public int chooseAnswerTime = 15;
 
 
-	void OnEnable ()
+	public void StartPhase1 ()
 	{
-		timerCoroutine = StartCoroutine (StartTimer (chooseQuestionFirstTime));
+		StartCoroutine (StartTimer (chooseQuestionFirstTime));
 		questionSelect.SetActive (true);
 		
 	}
 
 	public void QuestionSelect ()
 	{
-		hasAnswered = true;
-		StopTimer ();
+		questionCounter = 1;
+		StartCoroutine (StartTimer (chooseAnswerTime));
 	}
 
 	IEnumerator StartTimer (int timeReceive)
@@ -37,11 +38,21 @@ public class Phase1Controller : MonoBehaviour
 			yield return new WaitForSeconds (1);
 		}
 
-		if (hasAnswered == false && questionCounter <1) {
+		if (questionCounter < 1) {
 			questionCounter++;
-			timerCoroutine = StartCoroutine (StartTimer (chooseQuestionSecondTime));
+			StartCoroutine (StartTimer (chooseQuestionSecondTime));
 		} else {
-			StopTimer ();
+			
+			if (answerCounter < 1) {
+				answerCounter++;
+				StartCoroutine (StartTimer (chooseAnswerTime));
+				//CALL QUESTION CLASS WITH CALLBACK HERE if answercounter >1 stoptimer
+
+				//StopTimer();
+			} else {
+				StopTimer ();
+
+			}
 		}
 
 	}
@@ -49,9 +60,10 @@ public class Phase1Controller : MonoBehaviour
 	private void StopTimer ()
 	{
 		questionCounter = 0;
-		StopCoroutine (timerCoroutine);
+		answerCounter = 0;
 		questionSelect.SetActive (false);
 
+		FirebaseDatabaseFacade.Instance.CheckAnswerPhase ();
 		//CHECK FIREBASE FOR STATUS FOR NEXT PHASE
 
 	}
