@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class PlayerAnimationController : MonoBehaviour {
+public class PlayerAnimationController : SingletonMonoBehaviour<PlayerAnimationController> {
 
 	private Animator anim;
 

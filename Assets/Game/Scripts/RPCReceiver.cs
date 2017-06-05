@@ -9,8 +9,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 	BattleController battleController;
 
-	void Start ()
-	{
+	void Start(){
 		battleController = FindObjectOfType<BattleController> ();
 	}
 
@@ -26,6 +25,38 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		GameManager.Instance.attackerName = username;
 		GameManager.Instance.attackerParam = param;
 
+		battleController.SetAttack ();
+
+
+	}
+
+	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
+	{
+		string battleState = battleStatusDetails["State"].ToString();
+		int battleCount = int.Parse(battleStatusDetails["Count"].ToString());
+
+
+		switch (battleState) {
+		case "answer":
+			if (battleCount > 1) {
+				PhaseManager.Instance.StartPhase2();
+			}
+			break;
+		case "skill":
+			if (battleCount > 1) {
+				PhaseManager.Instance.StartPhase3();
+			}
+			break;
+		case "attack":
+			if (battleCount > 1) {
+				PhaseManager.Instance.StartPhase1();
+			}
+			break;
+
+		}
+
+		GameManager.Instance.battleState = battleState;
+		GameManager.Instance.battleCount = battleCount;
 
 	}
 
@@ -54,18 +85,22 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 	/// <param name="isHome">If set to <c>true</c> is home.</param>
 	private void ReceivInitialState (Dictionary<string, System.Object> ititialState, bool isHome)
 	{
+		
+
 		string username = (string)ititialState ["username"];
 		int life = int.Parse (ititialState ["life"].ToString ());
+		int gp = int.Parse (ititialState ["gp"].ToString ());
+
 
 		if (isHome) {
 			if (GameManager.Instance.isPlayerVisitor) {
 				battleController.InitialEnemyState (life, username);
 			} else {
-				battleController.InitialPlayerState (life, username);
+				battleController.InitialPlayerState (life, username,gp);
 			}
 		} else {
 			if (GameManager.Instance.isPlayerVisitor) {
-				battleController.InitialPlayerState (life, username);
+				battleController.InitialPlayerState (life, username, gp);
 			} else {
 				battleController.InitialEnemyState (life, username);
 			}

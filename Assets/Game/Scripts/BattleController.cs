@@ -6,7 +6,6 @@ using UnityEngine.UI;
 /* Controls the battle */
 public class BattleController : MonoBehaviour
 {
-	ISkill skill;
 	public int playerHP = 10;
 	public int enemyHP = 10;
 	public int prepareTime = 3;
@@ -18,6 +17,7 @@ public class BattleController : MonoBehaviour
 	public Slider enemyHPBar;
 
 	public int playerGP = 10;
+	private int playerMaxGP = 10;
 	public Slider playerGPBar;
 
 	public string playerName = "Anonymous1";
@@ -25,6 +25,7 @@ public class BattleController : MonoBehaviour
 
 	public Text playerNameText;
 	public Text playerHPText;
+	public Text playerGPText;
 	public Text enemyNameText;
 	public Text enemyHPText;
 
@@ -33,12 +34,17 @@ public class BattleController : MonoBehaviour
 	public GameObject preBattleTimer;
 
 
-	void OnEnable(){
-		StartCoroutine (StartPreparationDelay(prepareTime));
+	/// <summary>
+	/// Delay before start of battle
+	/// </summary>
+	public void StartPreTimer ()
+	{
+		StartCoroutine (StartPreparationDelay (prepareTime));
 		
 	}
 
-	IEnumerator StartPreparationDelay(int timer){
+	IEnumerator StartPreparationDelay (int timer)
+	{
 		preBattleTimer.SetActive (true);
 
 		while (timer > 0) {
@@ -48,7 +54,7 @@ public class BattleController : MonoBehaviour
 		}
 
 		preBattleTimer.SetActive (false);
-
+		PhaseManager.Instance.StartPhase2 ();
 	}
 
 	void Update ()
@@ -58,21 +64,36 @@ public class BattleController : MonoBehaviour
 		enemyNameText.text = "" + enemyName;
 		enemyHPText.text = "" + enemyHP + "/" + enemyMaxHP;
 
+		playerGPText.text = "" + playerGP + "/" + playerMaxGP;
+
 		playerHPBar.value = playerHP;
 		enemyHPBar.value = enemyHP;
+
+		playerGPBar.value = playerGP;
 
 
 	}
 
 	public void Attack ()
 	{
-		//attack logic here
+		if (GameManager.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
+			int damage = int.Parse (GameManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
+
+			if (GameManager.Instance.attackerName.Equals (GameManager.Instance.playerName)) {
+				playerHP -= damage;
+			} else {
+				enemyHP -= damage;
+			}
+		}
 	}
 
-	public void InitialPlayerState (int playerHP, string playerName)
+	public void InitialPlayerState (int playerHP, string playerName, int playerGP)
 	{
 		this.playerHP = playerHP;
 		this.playerName = playerName;
+		this.playerGP = playerGP;
+		playerMaxGP = playerGP;
+		playerGPBar.maxValue = playerGP;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
 	}
@@ -106,9 +127,8 @@ public class BattleController : MonoBehaviour
 
 	public void SetSkill (ISkill skill)
 	{
-		this.skill = skill;
-		skill.Activate ();
-
+		skill.Activate (this.gameObject);
+	
 	}
 
 
@@ -118,6 +138,6 @@ public class BattleController : MonoBehaviour
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.Damage.ToString ()] = 10;
-		RPCWrapper.Instance.RPCWrap (param);
+		RPCWrapper.Instance.RPCWrapAttack (param);
 	}
 }

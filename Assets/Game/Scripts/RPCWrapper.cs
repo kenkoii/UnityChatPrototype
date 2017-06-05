@@ -13,12 +13,25 @@ public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 	/// </summary>
 	/// <param name="type">Type.</param>
 	/// <param name="param">Parameter.</param>
-	public void RPCWrap (Dictionary<string, System.Object> param)
+	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
-
-		FirebaseDatabaseFacade.Instance.AttackPlayer (GameManager.Instance.userName,DicToJsonStr (param));
+		FirebaseDatabaseFacade.Instance.AttackPhase (GameManager.Instance.playerName,DicToJsonStr (param));
 
 	}
+
+	public void RPCWrapSkill (Dictionary<string, System.Object> param)
+	{
+		FirebaseDatabaseFacade.Instance.SkillPhase (GameManager.Instance.playerName,DicToJsonStr (param));
+
+	}
+
+	public void RPCWrapAnswer (Dictionary<string, System.Object> param)
+	{
+		FirebaseDatabaseFacade.Instance.AnswerPhase (GameManager.Instance.playerName,DicToJsonStr (param));
+
+	}
+
+
 
 	/// <summary>
 	/// Converts Dictionary<string, System.Object> to string
