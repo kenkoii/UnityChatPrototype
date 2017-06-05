@@ -15,7 +15,7 @@ public class Phase2Controller : MonoBehaviour
 	private Coroutine timerCoroutine;
 
 
-	void OnEnable ()
+	public void StartPhase2 ()
 	{
 		ButtonEnable (true);
 		StartCoroutine (StartTimer (chooseSkillTimer));
@@ -38,12 +38,14 @@ public class Phase2Controller : MonoBehaviour
 
 	public void SelectSkill2 ()
 	{
+		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
 
 	}
 
 	public void SelectSkill3 ()
 	{
+		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
 
 	}

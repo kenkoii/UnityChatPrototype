@@ -53,8 +53,10 @@ public class BattleController : MonoBehaviour
 			yield return new WaitForSeconds (1);
 		}
 
-		preBattleTimer.SetActive (false);
+		//start first phase
 		PhaseManager.Instance.StartPhase2 ();
+		preBattleTimer.SetActive (false);
+
 	}
 
 	void Update ()
@@ -128,7 +130,7 @@ public class BattleController : MonoBehaviour
 	public void SetSkill (ISkill skill)
 	{
 		skill.Activate (this.gameObject);
-	
+		Debug.Log ("Setting Skill");
 	}
 
 

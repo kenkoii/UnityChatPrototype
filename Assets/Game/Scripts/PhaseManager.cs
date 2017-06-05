@@ -11,23 +11,24 @@ public class PhaseManager : SingletonMonoBehaviour<PhaseManager>
 	public Phase3Controller phase3;
 
 	public void StartPhase1(){
-		phase1.gameObject.SetActive (true);
-		phase2.gameObject.SetActive (false);
-		phase3.gameObject.SetActive (false);
+		Debug.Log ("Starting phase 1");
+		phase1.StartPhase1 ();
 	}
 
 	public void StartPhase2(){
-		phase1.gameObject.SetActive (false);
-		phase2.gameObject.SetActive (true);
-		phase3.gameObject.SetActive (false);
+		Debug.Log ("Starting phase 2");
+		phase2.StartPhase2 ();
 	}
 
 	public void StartPhase3(){
-		phase1.gameObject.SetActive (false);
-		phase2.gameObject.SetActive (false);
-		phase3.gameObject.SetActive (true);
+		Debug.Log ("Starting phase 3");
+		phase3.StartPhase3 ();
 
 	}
+
+
+
+
 
 
 		

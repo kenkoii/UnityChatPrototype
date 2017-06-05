@@ -15,7 +15,7 @@ public class Phase1Controller : MonoBehaviour
 	public int chooseAnswerTime = 15;
 
 
-	void OnEnable ()
+	public void StartPhase1 ()
 	{
 		StartCoroutine (StartTimer (chooseQuestionFirstTime));
 		questionSelect.SetActive (true);

@@ -52,7 +52,6 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 				PhaseManager.Instance.StartPhase1();
 			}
 			break;
-
 		}
 
 		GameManager.Instance.battleState = battleState;
