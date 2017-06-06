@@ -7,7 +7,7 @@ public class Phase1Controller : MonoBehaviour, IPhase
 {
 
 	public GameObject questionSelect;
-	public GameObject battleUI;
+	public GameObject[] battleUI;
 	private bool hasAnswered = false;
 
 
@@ -16,13 +16,18 @@ public class Phase1Controller : MonoBehaviour, IPhase
 	{
 		
 		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (5)); } );
-		battleUI.SetActive (false);
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI[i].SetActive (false);
+		}
+
 		questionSelect.SetActive (true);
 	
 	}
 
 	void OnDisable(){
-		questionSelect.SetActive (false);
+		if (questionSelect.activeInHierarchy) {
+			questionSelect.SetActive (false);
+		}
 	}
 
 	public void QuestionSelect ()
@@ -45,7 +50,9 @@ public class Phase1Controller : MonoBehaviour, IPhase
 		}
 
 		hasAnswered = true;
-		battleUI.SetActive (true);
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI[i].SetActive (true);
+		}
 		questionSelect.SetActive (false);
 		GameTimer.Instance.ToggleTimer (false);
 		FirebaseDatabaseFacade.Instance.CheckAnswerPhase ();

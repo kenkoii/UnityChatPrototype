@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Phase3Controller : MonoBehaviour, IPhase
 {
 	BattleController battleController;
+	public GameObject[] battleUI;
 
 	void Start(){
 		battleController = FindObjectOfType<BattleController> ();
@@ -13,7 +14,6 @@ public class Phase3Controller : MonoBehaviour, IPhase
 
 	public void StartPhase ()
 	{
-		
 		Attack ();
 	}
 
@@ -21,6 +21,10 @@ public class Phase3Controller : MonoBehaviour, IPhase
 	{
 		battleController.SendAttackToDatabase ();
 		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (3)); } );
+		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { 
+			for (int i = 0; i < battleUI.Length; i++) {
+				battleUI[i].SetActive (false);
+			};} );
 
 	}
 
@@ -32,9 +36,12 @@ public class Phase3Controller : MonoBehaviour, IPhase
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
+			
 		FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 		PhaseManager.Instance.StartPhase1 ();
-
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI[i].SetActive (true);
+		}
 	}
 		
 }
