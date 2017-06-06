@@ -33,6 +33,8 @@ public class BattleController : MonoBehaviour
 
 	public GameObject preBattleTimer;
 
+	private bool isEndBattle = false;
+
 
 	/// <summary>
 	/// Delay before start of battle
@@ -54,7 +56,7 @@ public class BattleController : MonoBehaviour
 		}
 
 		//start first phase
-		PhaseManager.Instance.StartPhase2 ();
+		PhaseManager.Instance.StartPhase1 ();
 		preBattleTimer.SetActive (false);
 
 	}
@@ -73,7 +75,20 @@ public class BattleController : MonoBehaviour
 
 		playerGPBar.value = playerGP;
 
+		if (enemyHP <= 0 || playerHP <= 0) {
+			if (isEndBattle == false) {
+				FirebaseDatabaseFacade.Instance.EndBattlePhase ();
 
+				if (enemyHP > 0 && playerHP <= 0) {
+					battleResultText.text = "LOSE";
+				} else if (playerHP > 0 && enemyHP <= 0) {
+					battleResultText.text = "WIN";
+				} 
+
+				battleResultText.enabled = true;
+				isEndBattle = true;
+			}
+		}
 	}
 
 	public void Attack ()
@@ -82,9 +97,9 @@ public class BattleController : MonoBehaviour
 			int damage = int.Parse (GameManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
 			if (GameManager.Instance.attackerName.Equals (GameManager.Instance.playerName)) {
-				playerHP -= damage;
-			} else {
 				enemyHP -= damage;
+			} else {
+				playerHP -= damage;
 			}
 		}
 	}
@@ -116,15 +131,8 @@ public class BattleController : MonoBehaviour
 	{
 		if (enemyHP > 0 && playerHP > 0) {
 			Attack ();
-			return;
 		} 
-		if (enemyHP > 0 && playerHP <= 0) {
-			battleResultText.text = "LOSE";
-		} else if (playerHP > 0 && enemyHP <= 0) {
-			battleResultText.text = "WIN";
-		} 
-		battleResultText.enabled = true;
-
+			
 	}
 
 	public void SetSkill (ISkill skill)

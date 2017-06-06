@@ -9,7 +9,8 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 	BattleController battleController;
 
-	void Start(){
+	void Start ()
+	{
 		battleController = FindObjectOfType<BattleController> ();
 	}
 
@@ -32,25 +33,27 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		string battleState = battleStatusDetails["State"].ToString();
-		int battleCount = int.Parse(battleStatusDetails["Count"].ToString());
-
+		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
+		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 		switch (battleState) {
-		case "answer":
+		case MyConst.BATTLE_STATUS_ANSWER:
 			if (battleCount > 1) {
-				PhaseManager.Instance.StartPhase2();
+				PhaseManager.Instance.StartPhase2 ();
 			}
 			break;
-		case "skill":
+		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
-				PhaseManager.Instance.StartPhase3();
+				PhaseManager.Instance.StartPhase3 ();
 			}
 			break;
-		case "attack":
+		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-				PhaseManager.Instance.StartPhase1();
+				PhaseManager.Instance.StartPhase1 ();
 			}
+			break;
+		case MyConst.BATTLE_STATUS_END:
+			//end battle
 			break;
 		}
 
@@ -95,7 +98,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			if (GameManager.Instance.isPlayerVisitor) {
 				battleController.InitialEnemyState (life, username);
 			} else {
-				battleController.InitialPlayerState (life, username,gp);
+				battleController.InitialPlayerState (life, username, gp);
 			}
 		} else {
 			if (GameManager.Instance.isPlayerVisitor) {

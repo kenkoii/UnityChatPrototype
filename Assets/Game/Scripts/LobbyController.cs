@@ -11,8 +11,6 @@ public class LobbyController : MonoBehaviour
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public InputField userName;
-	public InputField userLife;
-	public InputField playerGP;
 
 	BattleController battleController;
 
@@ -23,8 +21,8 @@ public class LobbyController : MonoBehaviour
 	public void SearchRoom ()
 	{
 		GameManager.Instance.playerName = userName.text;
-		GameManager.Instance.playerLife = int.Parse (userLife.text);
-		GameManager.Instance.playerGP = int.Parse (playerGP.text);
+		GameManager.Instance.playerLife = 30;
+		GameManager.Instance.playerGP = 0;
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
