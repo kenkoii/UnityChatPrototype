@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* Manages the player and enemy status */
-public class GameManager : SingletonMonoBehaviour<GameManager>
+public class StatusManager : SingletonMonoBehaviour<StatusManager>
 {
 
 	public string playerName{ get; set; }

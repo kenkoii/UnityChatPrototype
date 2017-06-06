@@ -20,9 +20,9 @@ public class LobbyController : MonoBehaviour
 
 	public void SearchRoom ()
 	{
-		GameManager.Instance.playerName = userName.text;
-		GameManager.Instance.playerLife = 30;
-		GameManager.Instance.playerGP = 0;
+		StatusManager.Instance.playerName = userName.text;
+		StatusManager.Instance.playerLife = 30;
+		StatusManager.Instance.playerGP = 0;
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
