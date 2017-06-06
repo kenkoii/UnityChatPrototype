@@ -31,8 +31,6 @@ public class BattleController : MonoBehaviour
 
 	public Text battleResultText;
 
-	public GameObject preBattleTimer;
-
 	private bool isEndBattle = false;
 
 
@@ -47,17 +45,17 @@ public class BattleController : MonoBehaviour
 
 	IEnumerator StartPreparationDelay (int timer)
 	{
-		preBattleTimer.SetActive (true);
-
+		
+		GameTimer.Instance.ToggleTimer (true);
 		while (timer > 0) {
-			preBattleTimer.transform.Find ("ReadyTime").GetComponent<Text> ().text = "" + timer;
+			GameTimer.Instance.gameTimerText.text = "" + timer;
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
 
 		//start first phase
 		PhaseManager.Instance.StartPhase1 ();
-		preBattleTimer.SetActive (false);
+		GameTimer.Instance.ToggleTimer (false);
 
 	}
 

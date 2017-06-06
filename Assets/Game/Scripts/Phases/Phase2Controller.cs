@@ -55,15 +55,16 @@ public class Phase2Controller : MonoBehaviour, IPhase
 	IEnumerator StartTimer (int timeReceive)
 	{
 		int timer = timeReceive;
+		GameTimer.Instance.ToggleTimer (true);
 
 		while (timer > 0) {
-			skillTimerText.text = "" + timer;
+			GameTimer.Instance.gameTimerText.text = "" + timer;
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
 			
 		ButtonEnable (false);
-		skillTimerText.text = "";
+		GameTimer.Instance.ToggleTimer (false);
 
 		FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
 	}

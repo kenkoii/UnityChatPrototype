@@ -53,7 +53,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			}
 			break;
 		case MyConst.BATTLE_STATUS_END:
-			//end battle
+			PhaseManager.Instance.StopAll ();
 			break;
 		}
 
