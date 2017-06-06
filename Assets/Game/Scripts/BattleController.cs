@@ -91,10 +91,10 @@ public class BattleController : MonoBehaviour
 
 	public void Attack ()
 	{
-		if (GameManager.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
-			int damage = int.Parse (GameManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
+		if (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
+			int damage = int.Parse (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
-			if (GameManager.Instance.attackerName.Equals (GameManager.Instance.playerName)) {
+			if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
 				enemyHP -= damage;
 			} else {
 				playerHP -= damage;

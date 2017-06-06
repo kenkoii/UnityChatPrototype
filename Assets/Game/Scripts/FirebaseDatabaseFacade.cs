@@ -48,6 +48,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public Image dcImage;
 
 
+	/// <summary>
+	/// Start this instance. Check for dependencies if none
+	/// </summary>
 	void Start ()
 	{
 		
@@ -72,7 +75,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	}
 
 	/// <summary>
-	/// Initializes the firebase.
+	/// Initializes the firebase database.
 	/// </summary>
 	void InitializeFirebase ()
 	{
@@ -94,6 +97,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		ConnectInternet ();
 	}
 
+	/// <summary>
+	/// Connects to the firebase database.
+	/// </summary>
 	public void ConnectInternet ()
 	{
 		connectionReference = FirebaseDatabase.DefaultInstance.GetReferenceFromUrl (MyConst.URL_FIREBASE_DATABASE_CONNECTION);
@@ -107,6 +113,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// <param name="args">Arguments.</param>
 	void HandleDatabaseConnection (object sender, ValueChangedEventArgs args)
 	{
+
 		if (args.DatabaseError != null) {
 			Debug.LogError (args.DatabaseError.Message);
 			return;
@@ -303,7 +310,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	{
 		this.isHost = isHost;
 		MessageListener ();
-		User user = new User (GameManager.Instance.playerName, GameManager.Instance.playerLife, GameManager.Instance.playerGP);
+		User user = new User (StatusManager.Instance.playerName, StatusManager.Instance.playerLife, StatusManager.Instance.playerGP);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/"] = entryValues;
@@ -316,7 +323,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		CheckInitialPhase ();
 
 		InitialStateListener ();
-		GameManager.Instance.isPlayerVisitor = !isHost;
+		StatusManager.Instance.isPlayerVisitor = !isHost;
 	}
 
 	public void UpdateBattleStatus (string stateName, int stateCount)
@@ -348,10 +355,33 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	}
 
+	/// <summary>
+	/// Sets the parameter to be sent to RPC table
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="param">Parameter.</param>
+	public void SetParam (string name, string param)
+	{
+
+		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
+
+		BattleStatus battleStatus = new BattleStatus (name, param);
+		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
+		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
+
+		reference.UpdateChildrenAsync (childUpdates);
+
+	}
+
+	/// <summary>
+	/// Checks the initial battle phase.
+	/// </summary>
 	public void CheckInitialPhase ()
 	{
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).RunTransaction (mutableData => {
 
+			//get the battlekey, create if host
 			if (mutableData.Value == null) {
 				UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 			} else {
@@ -365,10 +395,14 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).ChildAdded += HandleBattleStatusAdded;
 
+
 			return TransactionResult.Success (mutableData);
 		});
 	}
 
+	/// <summary>
+	/// Answer Phase Increment answer count  in battle status table
+	/// </summary>
 	public void AnswerPhase ()
 	{
 		if (isOnline) {
@@ -389,6 +423,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	}
 
+	/// <summary>
+	/// Checks the answer phase. If still no count, then proceed to next phase
+	/// </summary>
 	public void CheckAnswerPhase ()
 	{
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
@@ -402,25 +439,17 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				PhaseManager.Instance.StartPhase2 ();
 			} 
 
-			mutableData.Value = battleStatus;
 			return TransactionResult.Success (mutableData);
 		});
 	}
 
-	public void SetParam (string name, string param)
-	{
 
-		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		BattleStatus battleStatus = new BattleStatus (name, param);
-		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
-		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
-		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
-
-		reference.UpdateChildrenAsync (childUpdates);
-
-	}
-
+	/// <summary>
+	/// Skills Phase. Increment skill count in battle status table
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="param">Parameter.</param>
 	public void SkillPhase (string name, string param)
 	{
 		if (isOnline) {
@@ -443,7 +472,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	}
 
-
+	/// <summary>
+	/// Checks the skill phase. If still no count, then proceed to next phase
+	/// </summary>
 	public void CheckSkillPhase ()
 	{
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
@@ -456,14 +487,16 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
 				PhaseManager.Instance.StartPhase3 ();
 			} 
-
-			mutableData.Value = battleStatus;
+				
 			return TransactionResult.Success (mutableData);
 		});
 	}
 
-
-
+	/// <summary>
+	/// Skills Phase. Increment attack count in battle status table
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="param">Parameter.</param>
 	public void AttackPhase (string name, string param)
 	{
 		if (isOnline) {
@@ -484,6 +517,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		}
 	}
 
+	/// <summary>
+	/// Ends the battle Status.
+	/// </summary>
 	public void EndBattlePhase ()
 	{
 		UpdateBattleStatus (MyConst.BATTLE_STATUS_END, 0);
