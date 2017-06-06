@@ -20,41 +20,34 @@ public class Phase1Controller : MonoBehaviour, IPhase
 	
 	}
 
+	void OnDisable(){
+		questionSelect.SetActive (false);
+	}
+
 	public void QuestionSelect ()
 	{
-		
-
 		//call question callback here
 		RPCWrapper.Instance.RPCWrapAnswer();
-		StopTimer ();
+
 	}
 
 	IEnumerator StartTimer (int timeReceive)
 	{
 		hasAnswered = false;
 		int timer = timeReceive;
+		GameTimer.Instance.ToggleTimer (true);
 
 		while (timer > 0 && hasAnswered == false) {
-			questionSelect.transform.Find ("SelectTime").GetComponent<Text> ().text = "" + timer;
+			GameTimer.Instance.gameTimerText.text = "" + timer;
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
 
-		//choose a question if timeout
-		if (hasAnswered == false) {
-			QuestionSelect ();
-		}
-
-
-	}
-
-	private void StopTimer ()
-	{
 		hasAnswered = true;
 		questionSelect.SetActive (false);
-
+		GameTimer.Instance.ToggleTimer (false);
 		FirebaseDatabaseFacade.Instance.CheckAnswerPhase ();
-		//CHECK FIREBASE FOR STATUS FOR NEXT PHASE
 
 	}
+
 }

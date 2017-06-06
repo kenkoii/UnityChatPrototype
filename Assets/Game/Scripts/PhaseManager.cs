@@ -28,6 +28,7 @@ public class PhaseManager : SingletonMonoBehaviour<PhaseManager>
 
 	public void StopAll(){
 		Debug.Log ("Stopped phases");
+
 		phase1.gameObject.SetActive (false);
 		phase2.gameObject.SetActive (false);
 		phase3.gameObject.SetActive (false);
