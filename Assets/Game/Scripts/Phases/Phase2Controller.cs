@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase2Controller : MonoBehaviour
+public class Phase2Controller : MonoBehaviour, IPhase
 {
 
 	public int chooseSkillTimer = 5;
@@ -15,10 +15,12 @@ public class Phase2Controller : MonoBehaviour
 	private Coroutine timerCoroutine;
 
 
-	public void StartPhase2 ()
+	public void StartPhase ()
 	{
-		ButtonEnable (true);
-		StartCoroutine (StartTimer (chooseSkillTimer));
+		
+		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { ButtonEnable (true); } );
+		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (chooseSkillTimer)); } );
+
 
 	}
 

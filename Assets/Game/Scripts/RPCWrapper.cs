@@ -22,13 +22,12 @@ public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 	public void RPCWrapSkill (Dictionary<string, System.Object> param)
 	{
 		FirebaseDatabaseFacade.Instance.SkillPhase (GameManager.Instance.playerName,DicToJsonStr (param));
-		Debug.Log ("RPCWRAPSKILL");
 
 	}
 
-	public void RPCWrapAnswer (Dictionary<string, System.Object> param)
+	public void RPCWrapAnswer ()
 	{
-		FirebaseDatabaseFacade.Instance.AnswerPhase (GameManager.Instance.playerName,DicToJsonStr (param));
+		FirebaseDatabaseFacade.Instance.AnswerPhase ();
 
 	}
 

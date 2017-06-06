@@ -8,6 +8,7 @@ public static class MyConst
 
 	public const string URL_FIREBASE_DATABASE = "https://chatprototype-39807.firebaseio.com";
 	public const string URL_FIREBASE_DATABASE_CONNECTION = "https://chatprototype-39807.firebaseio.com/.info/connected";
+
 	public const string GAMEROOM_NAME = "GameRoom";
 	public const string GAMEROOM_STATUS = "RoomStatus";
 	public const string GAMEROOM_BATTLE_STATUS = "BattleStatus";
@@ -17,5 +18,13 @@ public static class MyConst
 	public const string GAMEROOM_VISITOR = "Visitor";
 	public const string GAMEROOM_OPEN = "Open";
 	public const string GAMEROOM_FULL = "Full";
+
+	public  const string BATTLE_STATUS_ANSWER = "answer";
+	public  const string BATTLE_STATUS_SKILL = "skill";
+	public  const string BATTLE_STATUS_ATTACK = "attack";
+	public  const string BATTLE_STATUS_END = "end";
+	public  const string BATTLE_STATUS_STATE = "State";
+	public  const string BATTLE_STATUS_COUNT = "Count";
+
 }
 

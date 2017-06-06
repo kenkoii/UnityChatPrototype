@@ -3,64 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase1Controller : MonoBehaviour
+public class Phase1Controller : MonoBehaviour, IPhase
 {
 
 	public GameObject questionSelect;
 	private bool hasAnswered = false;
-	private int questionCounter = 0;
-	private int answerCounter = 0;
-	public int chooseQuestionFirstTime = 4;
-	public int chooseQuestionSecondTime = 3;
-	public int chooseAnswerTime = 15;
 
 
-	public void StartPhase1 ()
+
+	public void StartPhase ()
 	{
-		StartCoroutine (StartTimer (chooseQuestionFirstTime));
-		questionSelect.SetActive (true);
 		
+		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (5)); } );
+
+		questionSelect.SetActive (true);
+	
 	}
 
 	public void QuestionSelect ()
 	{
-		questionCounter = 1;
-		StartCoroutine (StartTimer (chooseAnswerTime));
+		
+
+		//call question callback here
+		RPCWrapper.Instance.RPCWrapAnswer();
+		StopTimer ();
 	}
 
 	IEnumerator StartTimer (int timeReceive)
 	{
+		hasAnswered = false;
 		int timer = timeReceive;
 
-		while (timer > 0) {
+		while (timer > 0 && hasAnswered == false) {
 			questionSelect.transform.Find ("SelectTime").GetComponent<Text> ().text = "" + timer;
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
 
-		if (questionCounter < 1) {
-			questionCounter++;
-			StartCoroutine (StartTimer (chooseQuestionSecondTime));
-		} else {
-			
-			if (answerCounter < 1) {
-				answerCounter++;
-				StartCoroutine (StartTimer (chooseAnswerTime));
-				//CALL QUESTION CLASS WITH CALLBACK HERE if answercounter >1 stoptimer
-
-				//StopTimer();
-			} else {
-				StopTimer ();
-
-			}
+		//choose a question if timeout
+		if (hasAnswered == false) {
+			QuestionSelect ();
 		}
+
 
 	}
 
 	private void StopTimer ()
 	{
-		questionCounter = 0;
-		answerCounter = 0;
+		hasAnswered = true;
 		questionSelect.SetActive (false);
 
 		FirebaseDatabaseFacade.Instance.CheckAnswerPhase ();
