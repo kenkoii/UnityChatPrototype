@@ -42,15 +42,6 @@ public class QuestionController : MonoBehaviour
 		}
 
 	}
-	/*
-	public bool Stoptimer {
-		get { 
-			return stoptimer;
-		}
-		set { 
-			stoptimer = value;
-		}
-	}*/
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
 	{
