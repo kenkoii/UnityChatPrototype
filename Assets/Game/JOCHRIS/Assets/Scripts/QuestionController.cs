@@ -9,11 +9,10 @@ using UnityEngine.UI;
 public class QuestionController : MonoBehaviour
 {
 	private GameObject selectLetterIcon;
-
-	private Action<bool> onFinishQuestion;
+	public bool onFinishQuestion;
 	public static int getround;
 	private static int correctAnswers;
-	public static Boolean stoptimer = true;
+	public static bool stoptimer = true;
 	private static int timeLeft;
 	private static int timeDuration;
 	private GameObject timerObj;
@@ -23,6 +22,11 @@ public class QuestionController : MonoBehaviour
 	private static int questionsTime;
 	public static Action<int> onResult;
 	// Use this for initialization
+	public bool OnFinishQuestion{
+		get{ return onFinishQuestion;}
+		set{ onFinishQuestion = value;}
+
+	}
 	public Action<int> OnResult {
 		get { 
 			return onResult;
@@ -72,7 +76,7 @@ public class QuestionController : MonoBehaviour
 		timeDuration = questionsTime;
 
 	}
-	public IEnumerator StartTimer(Boolean stoptimer){
+	public IEnumerator StartTimer(bool stoptimer){
 		if (stoptimer) {
 
 			while (timeLeft > 0) {
@@ -107,9 +111,8 @@ public class QuestionController : MonoBehaviour
 
 	public void Returner (Action<bool> action, int round, int answerScore)
 	{
-		//callbackreturn
-		onFinishQuestion = action;
-		onFinishQuestion (true);
+		//action(true);
+		action(OnFinishQuestion);
 		getround = round;
 		correctAnswers = answerScore;
 		if (round > timeLimit) {

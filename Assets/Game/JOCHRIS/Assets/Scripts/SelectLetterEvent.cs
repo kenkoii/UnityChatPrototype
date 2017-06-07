@@ -50,12 +50,7 @@ public class SelectLetterEvent : MonoBehaviour {
 		modalRaise = true;
 		questionModal = GameObject.Find ("QuestionModal");
 	}
-
-	void Update () {
-
-	}
-
-
+		
 	public void GetAnswer(string answer){
 		questionAnswer = answer;
 	}
@@ -68,18 +63,13 @@ public class SelectLetterEvent : MonoBehaviour {
 		string answerclicked = "";
 		answerindex = 1;
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			
+			//CODE FOR CLICKING ON EMPTY
 		} else {
-
-
 			for (int i = 1; i < selectionButtons.Length+1; i++) {
 				if (EventSystem.current.currentSelectedGameObject.name == ("input" + i)) {
-					
-					//answerindex = i;
 					answerclicked = inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
 					inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
 					GameObject.Find (answerIdentifier [i - 1]).transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
-
 				}
 
 			}
@@ -120,40 +110,31 @@ public class SelectLetterEvent : MonoBehaviour {
 			answerIdentifier [(answerindex - 1)] = EventSystem.current.currentSelectedGameObject.name;
 			answerwrote = "";
 			inputButtons [(answerindex - 1)].transform.GetChild (0).
-			GetComponent<Text> ().text = EventSystem.current.currentSelectedGameObject.transform.GetChild (0).
-				GetComponent<Text> ().text;
+			GetComponent<Text> ().text 
+			= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
 			EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
 			for (int j = 0; j < questionAnswer.Length; j++) {
-
 				answerwrote = answerwrote + (GameObject.Find ("input" + (j + 1)).transform.GetChild (0).GetComponent<Text> ().text);
 			}
-			if (answerwrote.ToUpper() == questionAnswer.ToUpper()) {
-				correctAnswers = correctAnswers + 1;
-
-				clear ();
-				answerindex = 1;
-				GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
-				currentround = currentround + 1;
-				QuestionDoneCallback ();
-
-
-			} else {
-				answerindex = answerindex + 1;
-				if (answerwrote.Length == questionAnswer.Length) {
-					clear ();
+			if (answerwrote.Length == questionAnswer.Length) {
+				if (answerwrote.ToUpper () == questionAnswer.ToUpper ()) {
+					correctAnswers = correctAnswers + 1;
+					GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
+				} else {
 					GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
-					currentround = currentround + 1;
-					QuestionDoneCallback ();
 				}
-
+				Clear ();
+				answerindex = 1;
+				currentround = currentround + 1;
+				QuestionDoneCallback (true);
 			}
 		}
 	}
-	public void QuestionDoneCallback(){
+	public void QuestionDoneCallback(bool result){
 			QuestionController qc = new QuestionController ();
 			qc.Returner (
 				delegate {
-					bool result = true;
+				qc.OnFinishQuestion =true;
 					if (result) {
 					SelectLetterIcon sli = new SelectLetterIcon ();
 					if(currentround<=roundsLimit){
@@ -164,7 +145,7 @@ public class SelectLetterEvent : MonoBehaviour {
 			);
 	}
 
-	public void clear(){
+	public void Clear(){
 		
 		answerindex = 1;
 		for (int i = 0; i < selectionButtons.Length-1; i++) {

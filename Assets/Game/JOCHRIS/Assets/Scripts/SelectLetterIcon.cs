@@ -77,7 +77,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 			answerlist [i] = input;
 			input.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
-		shuffleAlgo ();
+		ShuffleAlgo ();
 		SelectLetterEvent sle = new SelectLetterEvent ();
 		sle.GetAnswer (questionlist[randomize].answer);
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
@@ -115,7 +115,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 
 	}
 
-	public void shuffleAlgo ()
+	public void ShuffleAlgo ()
 	{
 		int[] RandomExist = new int[questionAnswer.Length];
 		string temp = questionAnswer;
