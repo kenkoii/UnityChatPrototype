@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -48,7 +47,7 @@ public class QuestionController : MonoBehaviour
 
 	}
 
-	public Boolean Stoptimer {
+	public bool Stoptimer {
 		get { 
 			return stoptimer;
 		}
@@ -67,7 +66,7 @@ public class QuestionController : MonoBehaviour
 	{
 		ResetTime ();
 		timerObj = GameObject.Find ("Timer");
-		StartCoroutine (StartTimer(true));
+		StartCoroutine (StartTimer());
 	}
 		
 
@@ -76,7 +75,7 @@ public class QuestionController : MonoBehaviour
 		timeDuration = questionsTime;
 
 	}
-	public IEnumerator StartTimer(bool stoptimer){
+	public IEnumerator StartTimer(){
 		if (stoptimer) {
 
 			while (timeLeft > 0) {
@@ -86,18 +85,12 @@ public class QuestionController : MonoBehaviour
 
 			}
 			stoptimer = false;
-			ComputeScore ();
-			for (int i = 0; i < 12; i++) {
-				Destroy (GameObject.Find ("input" + i));
-			}
-			GameObject.Find ("QuestionModal").SetActive (false);
-		} else {
-			ComputeScore ();
-			GameObject.Find ("QuestionModal").SetActive (false);
-			for (int i = 0; i < 12; i++) {
-				Destroy (GameObject.Find ("input" + i));
-			}
+		} 
+		ComputeScore ();
+		for (int i = 0; i < 12; i++) {
+			Destroy (GameObject.Find ("input" + i));
 		}
+		GameObject.Find ("QuestionModal").SetActive (false);
 	}
 
 	public void ComputeScore ()
