@@ -27,14 +27,11 @@ public class CSVParser {
 					switch (fieldindexer) {
 					case 1:
 						questionData = field;
-
 						break;
 					case 2:
 						answerData = field;
-
 						break;
 					case 3:
-						
 						questions.Add (questionData + "]" + answerData);
 						break;
 					default:

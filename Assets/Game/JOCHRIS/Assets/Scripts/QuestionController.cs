@@ -10,8 +10,7 @@ public class QuestionController : MonoBehaviour
 {
 	private GameObject selectLetterIcon;
 
-	private bool Result;
-	private Action<bool> OnFinishQuestion;
+	private Action<bool> onFinishQuestion;
 	public static int getround;
 	private static int correctAnswers;
 	public static Boolean stoptimer = true;
@@ -62,41 +61,17 @@ public class QuestionController : MonoBehaviour
 
 	void Start ()
 	{
-		resetTime ();
+		ResetTime ();
 		timerObj = GameObject.Find ("Timer");
 		StartCoroutine (StartTimer(true));
 	}
 		
 
-	public void resetTime ()
+	public void ResetTime ()
 	{
 		timeDuration = questionsTime;
 
 	}
-
-//	public void Timer (Boolean timebool)
-//	{
-//		if (timebool) {
-//			if (timeLeft < 1) {
-//				//Destroy (GameObject.Find ("QuestionModal"));
-//				//clear();
-//				computeScore ();
-//				stoptimer = false;
-//				for (int i = 0; i < 12; i++) {
-//					Destroy (GameObject.Find ("input" + i));
-//				}
-//				GameObject.Find ("QuestionModal").SetActive (false);
-//
-//
-//			} else {
-//				timeLeft -= Time.deltaTime;
-//	
-//				GameObject.Find ("Timer").GetComponent<Text> ().text = Math.Truncate (timeLeft).ToString ();
-//
-//			}
-//		}
-//	}
-
 	public IEnumerator StartTimer(Boolean stoptimer){
 		if (stoptimer) {
 
@@ -107,13 +82,13 @@ public class QuestionController : MonoBehaviour
 
 			}
 			stoptimer = false;
-			computeScore ();
+			ComputeScore ();
 			for (int i = 0; i < 12; i++) {
 				Destroy (GameObject.Find ("input" + i));
 			}
 			GameObject.Find ("QuestionModal").SetActive (false);
 		} else {
-			computeScore ();
+			ComputeScore ();
 			GameObject.Find ("QuestionModal").SetActive (false);
 			for (int i = 0; i < 12; i++) {
 				Destroy (GameObject.Find ("input" + i));
@@ -121,50 +96,25 @@ public class QuestionController : MonoBehaviour
 		}
 	}
 
-	public void computeScore ()
+	public void ComputeScore ()
 	{
 		stoptimer = false;
 		SelectLetterIcon sli = new SelectLetterIcon ();
 		sli.QuestionsDone.Clear ();
 		onResult.Invoke (correctAnswers);
-		GameObject TextArea = Resources.Load ("Prefabs/TextArea") as GameObject;
-		GameObject TotalGP = Instantiate (TextArea) as GameObject;
-		GameObject canvas = GameObject.Find ("Canvas");
-		TotalGP.transform.position = new Vector2 (0, 180);
-		TotalGP.transform.SetParent (canvas.transform, false);
-		TotalGP.transform.localScale = new Vector3 (1, 1, 1);
-		TotalGP.name = "TextArea";
-
-		TotalGP.transform.GetChild (0).GetComponent<Text> ().text = 
-			"Earned " + "" + correctAnswers.ToString () + "GP!";
-		if (timeLeft > (timeDuration * 0.3)) {
-			TotalGP.transform.GetChild (1).GetComponent<Text> ().text = timeLeft + "s - Time Bonus!";
-		} else {
-			TotalGP.transform.GetChild (1).GetComponent<Text> ().text = "No Time Bonus!";
-		}
-		/*
-		GameObject debugger = Resources.Load ("Prefabs/DebugMode") as GameObject;
-		GameObject spawnDebugger = Instantiate (debugger) as GameObject;
-		spawnDebugger.transform.position = new Vector2 (0, -180f);
-		spawnDebugger.transform.SetParent (canvas.transform, false);
-		spawnDebugger.transform.localScale = new Vector3 (1, 1, 1);
-		spawnDebugger.name = "DebugMode";
-		spawnDebugger.transform.GetChild (0).GetComponent<Button> ().onClick.AddListener (() => {
-			GameObject.Find ("SelectLetterIcon").GetComponent<SelectLetterEvent> ().DebugOnClick ();
-		});*/
 		correctAnswers = 0;
 	}
 
 	public void Returner (Action<bool> action, int round, int answerScore)
 	{
 		//callbackreturn
-		OnFinishQuestion = action;
-		OnFinishQuestion (true);
+		onFinishQuestion = action;
+		onFinishQuestion (true);
 		getround = round;
 		correctAnswers = answerScore;
 		if (round > timeLimit) {
 			stoptimer = false;
-			computeScore ();
+			ComputeScore ();
 
 			GameObject.Find ("QuestionModal").SetActive (false);
 		} 
