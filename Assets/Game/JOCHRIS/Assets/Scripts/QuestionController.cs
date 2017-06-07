@@ -8,10 +8,9 @@ using UnityEngine.UI;
 public class QuestionController : MonoBehaviour
 {
 	private GameObject selectLetterIcon;
-	public bool onFinishQuestion;
 	public static int getround;
 	private static int correctAnswers;
-	public static bool stoptimer = true;
+
 	private static int timeLeft;
 	private static int timeDuration;
 	private GameObject timerObj;
@@ -21,11 +20,8 @@ public class QuestionController : MonoBehaviour
 	private static int questionsTime;
 	public static Action<int> onResult;
 	// Use this for initialization
-	public bool OnFinishQuestion{
-		get{ return onFinishQuestion;}
-		set{ onFinishQuestion = value;}
-
-	}
+	public bool onFinishQuestion {get;set;}
+	public bool stopTimer{ get;set;}
 	public Action<int> OnResult {
 		get { 
 			return onResult;
@@ -46,7 +42,7 @@ public class QuestionController : MonoBehaviour
 		}
 
 	}
-
+	/*
 	public bool Stoptimer {
 		get { 
 			return stoptimer;
@@ -54,7 +50,7 @@ public class QuestionController : MonoBehaviour
 		set { 
 			stoptimer = value;
 		}
-	}
+	}*/
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
 	{
@@ -64,6 +60,7 @@ public class QuestionController : MonoBehaviour
 
 	void Start ()
 	{
+		stopTimer = true;
 		ResetTime ();
 		timerObj = GameObject.Find ("Timer");
 		StartCoroutine (StartTimer());
@@ -76,7 +73,7 @@ public class QuestionController : MonoBehaviour
 
 	}
 	public IEnumerator StartTimer(){
-		if (stoptimer) {
+		if (stopTimer) {
 
 			while (timeLeft > 0) {
 				timerObj.GetComponent<Text> ().text = "" + timeLeft;
@@ -84,7 +81,7 @@ public class QuestionController : MonoBehaviour
 				timeLeft--;
 
 			}
-			stoptimer = false;
+			stopTimer = false;
 		} 
 		ComputeScore ();
 		for (int i = 0; i < 12; i++) {
@@ -95,7 +92,7 @@ public class QuestionController : MonoBehaviour
 
 	public void ComputeScore ()
 	{
-		stoptimer = false;
+		stopTimer = false;
 		SelectLetterIcon sli = new SelectLetterIcon ();
 		sli.QuestionsDone.Clear ();
 		onResult.Invoke (correctAnswers);
@@ -105,11 +102,11 @@ public class QuestionController : MonoBehaviour
 	public void Returner (Action<bool> action, int round, int answerScore)
 	{
 		//action(true);
-		action(OnFinishQuestion);
+		action(onFinishQuestion);
 		getround = round;
 		correctAnswers = answerScore;
 		if (round > timeLimit) {
-			stoptimer = false;
+			stopTimer = false;
 			ComputeScore ();
 
 			GameObject.Find ("QuestionModal").SetActive (false);

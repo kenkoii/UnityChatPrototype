@@ -134,7 +134,7 @@ public class SelectLetterEvent : MonoBehaviour {
 			QuestionController qc = new QuestionController ();
 			qc.Returner (
 				delegate {
-				qc.OnFinishQuestion =true;
+				qc.onFinishQuestion =true;
 					if (result) {
 					SelectLetterIcon sli = new SelectLetterIcon ();
 					if(currentround<=roundsLimit){
