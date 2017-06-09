@@ -19,7 +19,6 @@ public class SelectLetterEvent : MonoBehaviour {
 	public static string questionString;
 	public static float timeLeft;
 	public static int correctAnswers;
-	public Boolean stoptimer = true;
 	private Boolean modalRaise = false;
 	private static Boolean modalHide = false;
 	private GameObject questionModal;
@@ -48,7 +47,7 @@ public class SelectLetterEvent : MonoBehaviour {
 	}
 	void Start () {
 		modalRaise = true;
-		questionModal = GameObject.Find ("QuestionModal");
+		questionModal = GameObject.Find ("SelectLetterIconModal");
 	}
 		
 	public void GetAnswer(string answer){
@@ -87,6 +86,7 @@ public class SelectLetterEvent : MonoBehaviour {
 
 	public void LetterOnClick ()
 	{
+		
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
 		else {
@@ -137,8 +137,11 @@ public class SelectLetterEvent : MonoBehaviour {
 				qc.onFinishQuestion =true;
 					if (result) {
 					SelectLetterIcon sli = new SelectLetterIcon ();
-					if(currentround<=roundsLimit){
-					sli.NextRound (currentround);
+					if(currentround>roundsLimit){
+						currentround = 1;
+					}
+					else{
+						sli.NextRound (currentround);
 					}
 					}
 			},currentround,correctAnswers

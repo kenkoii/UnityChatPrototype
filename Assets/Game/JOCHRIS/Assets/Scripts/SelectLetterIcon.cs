@@ -37,24 +37,23 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 		}
 	}
 	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+		round = 1;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
-
-		//onResult.Invoke (5);
 	}
-
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="round">Round.</param>
 	public void NextRound(int round){
 	//		Debug.Log (GetCSV("https://docs.google.com/spreadsheets/d/19cKJ0YqMbNQWQmW_ZuEj4h9AHeyC_-H899MRE1F3rkw/edit#gid=0"));
-
 		questionlist = new List<Question> ();
 
 		PopulateQuestionList ();
 		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
 		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
 		questionString = questionlist [randomize].question;
-
-
 		while (questionsDone.Contains (questionString)) {
 			randomize = UnityEngine.Random.Range (0, questionlist.Count);
 			questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
@@ -65,7 +64,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 			} 
 		questionsDone.Add (questionString);
 		GameObject questionInput = Resources.Load ("Prefabs/inputContainer") as GameObject;
-		GameObject questionModal = GameObject.Find("QuestionModal");
+		GameObject questionModal = GameObject.Find("SelectLetterIconModal");
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			GameObject input = Instantiate (questionInput) as GameObject; 
 			input.transform.SetParent (questionModal.transform.GetChild (1).
@@ -83,25 +82,14 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
 	
 	}
-	public string GetCSV(string url)
-	{
-		HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-		HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-
-		StreamReader sr = new StreamReader(resp.GetResponseStream());
-		string results = sr.ReadToEnd();
-		sr.Close();
-
-		return results;
-	} 
 	public void PopulateQuestionList(){
 
 		CSVParser cs = new CSVParser ();
-		List<string> databundle = cs.GetQuestions ();
+		List<string> databundle = cs.GetQuestions ("wingquestion");
 		int i = 0;
 		foreach(string questions in databundle ){
 		string[] splitter = databundle[i].Split (']');	
-		
+
 			questionData = splitter [0];
 			answerData = splitter [1];
 			if ((i % 2)==0) {

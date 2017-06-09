@@ -2,26 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
 public class QuestionController : MonoBehaviour
 {
 	private GameObject selectLetterIcon;
+	private GameObject orderIcon;
+	private GameObject changeOrderIcon;
 	public static int getround;
 	private static int correctAnswers;
-
+	private static bool stoptimer = false;
 	private static int timeLeft;
 	private static int timeDuration;
 	private GameObject timerObj;
 	private static GameObject[] inputButton;
-	private float timeLimit = 3;
+	private float roundlimit = 3;
 	private int totalGP;
+	private static string questionType = "";
 	private static int questionsTime;
 	public static Action<int> onResult;
 	// Use this for initialization
-	public bool onFinishQuestion {get;set;}
-	public bool stopTimer{ get;set;}
+	public bool onFinishQuestion {
+		get;
+		set;
+	}
 	public Action<int> OnResult {
 		get { 
 			return onResult;
@@ -43,64 +49,85 @@ public class QuestionController : MonoBehaviour
 
 	}
 
+	public bool Stoptimer {
+		get { 
+			return stoptimer;
+		}
+		set { 
+			stoptimer = value;
+		}
+	}
+
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
 	{
-		questiontype.Activate (selectLetterIcon, qTime, Result);
-		questionsTime = qTime;
+		GameObject entity = selectLetterIcon;
+		string entityChosen = questiontype.GetType ().ToString ();
+		string modalName = "";
+		switch (entityChosen) {
+		case "OrderIcon":
+			entity = orderIcon;
+			modalName = "OrderModal";
+			break;
+		case "SelectLetterIcon":
+			entity = selectLetterIcon;
+			modalName = "SelectLetterIconModal";
+			break;
+		case "ChangeOrderIcon":
+			entity = changeOrderIcon;
+			modalName = "ChangeOrderModal";
+			break;
+		}
+
+		timeLeft = qTime;
+		questionType = modalName;
+		questiontype.Activate (entity, qTime, Result);
+		stoptimer = true;
+		//stoptimer = true;
+
 	}
 
 	void Start ()
 	{
-		stopTimer = true;
-		ResetTime ();
+		InvokeRepeating("StartTimer", 1, 1);
+	}
+
+	private void StartTimer(){
 		timerObj = GameObject.Find ("Timer");
-		StartCoroutine (StartTimer());
-	}
-		
-
-	public void ResetTime ()
-	{
-		timeDuration = questionsTime;
-
-	}
-	public IEnumerator StartTimer(){
-		if (stopTimer) {
-
-			while (timeLeft > 0) {
-				timerObj.GetComponent<Text> ().text = "" + timeLeft;
-				yield return new WaitForSeconds (1);
+		if (stoptimer) {
+			if (timeLeft > 0) {
 				timeLeft--;
+				timerObj.GetComponent<Text> ().text = "" + timeLeft;
 
-			}
-			stopTimer = false;
-		} 
-		ComputeScore ();
+			} else {
+				stoptimer = false;
+				ComputeScore ();
+		
+		  }
+		}
+	}
+	public void ComputeScore ()
+	{
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}
-		GameObject.Find ("QuestionModal").SetActive (false);
-	}
-
-	public void ComputeScore ()
-	{
-		stopTimer = false;
-		SelectLetterIcon sli = new SelectLetterIcon ();
-		sli.QuestionsDone.Clear ();
+		for (int i = 0; i < 12; i++) {
+			Destroy (GameObject.Find ("output" + i));
+		}
 		onResult.Invoke (correctAnswers);
 		correctAnswers = 0;
+
 	}
+
 
 	public void Returner (Action<bool> action, int round, int answerScore)
 	{
-		//action(true);
 		action(onFinishQuestion);
 		getround = round;
 		correctAnswers = answerScore;
-		if (round > timeLimit) {
-			stopTimer = false;
+		if (round > roundlimit) {
+			stoptimer = false;
 			ComputeScore ();
 
-			GameObject.Find ("QuestionModal").SetActive (false);
 		} 
 
 	}
