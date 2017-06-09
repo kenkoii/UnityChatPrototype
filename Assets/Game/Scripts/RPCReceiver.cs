@@ -25,9 +25,9 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 	
 		StatusManager.Instance.attackerName = username;
 		StatusManager.Instance.attackerParam = param;
-
+		Debug.Log ("receive RPC");
 		battleController.SetAttack ();
-
+	
 
 	}
 
@@ -36,21 +36,26 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
+
+
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 			if (battleCount > 1) {
+				
 				PhaseManager.Instance.StartPhase2 ();
 			}
 			break;
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
+				
 				PhaseManager.Instance.StartPhase3 ();
 			}
 			break;
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-				PhaseManager.Instance.StartPhase1 ();
+				battleController.CheckBattleStatus ();
 			}
+		
 			break;
 		case MyConst.BATTLE_STATUS_END:
 			PhaseManager.Instance.StopAll ();
