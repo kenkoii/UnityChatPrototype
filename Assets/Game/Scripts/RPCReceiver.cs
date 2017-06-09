@@ -39,7 +39,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 			if (battleCount > 1) {
-				
+				Debug.Log ("RECEIVED ANSWER!");
 				PhaseManager.Instance.StartPhase2 ();
 			}
 			break;

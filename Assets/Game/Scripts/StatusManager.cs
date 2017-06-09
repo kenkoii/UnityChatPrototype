@@ -12,6 +12,8 @@ public class StatusManager : SingletonMonoBehaviour<StatusManager>
 
 	public int playerGP{ get; set; }
 
+	public int playerMaxGP{ get; set; }
+
 	public bool isPlayerVisitor{ get; set; }
 
 	public string attackerName{ get; set; }

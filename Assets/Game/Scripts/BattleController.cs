@@ -125,15 +125,19 @@ public class BattleController : MonoBehaviour
 
 	}
 
+	public void SetPlayerGP(int playerGP){
+		this.playerGP += playerGP;
+	}
+
 	public void InitialPlayerState (int playerHP, string playerName, int playerGP)
 	{
 		this.playerHP = playerHP;
 		this.playerName = playerName;
 		this.playerGP = playerGP;
-		playerMaxGP = playerGP;
-		playerGPBar.maxValue = playerGP;
+		playerGPBar.maxValue = StatusManager.Instance.playerMaxGP;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
+		playerMaxGP = StatusManager.Instance.playerMaxGP;
 	}
 
 	public void InitialEnemyState (int enemyHP, string enemyName)
@@ -150,7 +154,7 @@ public class BattleController : MonoBehaviour
 	/// <param name="playerAction">Player action.</param>
 	public void SetAttack ()
 	{
-			Attack ();
+		Attack ();
 	}
 
 	public void SetSkill (ISkill skill)

@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase3Controller : MonoBehaviour, IPhase
+public class Phase3Controller : MonoBehaviour
 {
 	BattleController battleController;
 	public GameObject[] battleUI;
 
-	void Start(){
-		battleController = FindObjectOfType<BattleController> ();
-	}
 
-	public void StartPhase ()
+	public void OnEnable ()
 	{
-		
+		battleController = FindObjectOfType<BattleController> ();
 		Attack ();
 	}
 
