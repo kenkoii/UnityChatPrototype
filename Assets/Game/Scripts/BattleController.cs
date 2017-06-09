@@ -31,7 +31,8 @@ public class BattleController : MonoBehaviour
 
 	public Text battleResultText;
 
-	private bool isEndBattle = false;
+
+	private int attackCounter = 0;
 
 
 	/// <summary>
@@ -73,24 +74,12 @@ public class BattleController : MonoBehaviour
 
 		playerGPBar.value = playerGP;
 
-		if (enemyHP <= 0 || playerHP <= 0) {
-			if (isEndBattle == false) {
-				FirebaseDatabaseFacade.Instance.EndBattlePhase ();
 
-				if (enemyHP > 0 && playerHP <= 0) {
-					battleResultText.text = "LOSE";
-				} else if (playerHP > 0 && enemyHP <= 0) {
-					battleResultText.text = "WIN";
-				} 
-
-				battleResultText.enabled = true;
-				isEndBattle = true;
-			}
-		}
 	}
 
 	public void Attack ()
 	{
+		
 		if (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
@@ -100,6 +89,40 @@ public class BattleController : MonoBehaviour
 				playerHP -= damage;
 			}
 		}
+
+	}
+
+	public void CheckBattleStatus ()
+	{
+		StartCoroutine (CheckbattlestatusDelay (5));
+	}
+
+	/// <summary>
+	/// Add timer for animation effects
+	/// </summary>
+	/// <returns>The delay.</returns>
+	/// <param name="timer">Timer.</param>
+	IEnumerator CheckbattlestatusDelay (int timer)
+	{
+		yield return new WaitForSeconds (timer);
+		if (enemyHP <= 0 || playerHP <= 0) {
+			if (enemyHP > 0 && playerHP <= 0) {
+				battleResultText.text = "LOSE";
+			} else if (playerHP > 0 && enemyHP <= 0) {
+				battleResultText.text = "WIN";
+			} else {
+				battleResultText.text = "DRAW";
+			}
+
+			battleResultText.enabled = true;
+
+		} else {
+			if (FirebaseDatabaseFacade.Instance.isHost) {
+				FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+			}
+			PhaseManager.Instance.StartPhase1 ();
+		}
+
 	}
 
 	public void InitialPlayerState (int playerHP, string playerName, int playerGP)
@@ -127,16 +150,12 @@ public class BattleController : MonoBehaviour
 	/// <param name="playerAction">Player action.</param>
 	public void SetAttack ()
 	{
-		if (enemyHP > 0 && playerHP > 0) {
 			Attack ();
-		} 
-			
 	}
 
 	public void SetSkill (ISkill skill)
 	{
 		skill.Activate (this.gameObject);
-		Debug.Log ("Setting Skill");
 	}
 
 

@@ -17,11 +17,9 @@ public class Phase2Controller : MonoBehaviour, IPhase
 
 	public void StartPhase ()
 	{
-		
+		Debug.Log ("phase2 started");
 		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { ButtonEnable (true); } );
 		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (chooseSkillTimer)); } );
-
-
 
 	}
 
