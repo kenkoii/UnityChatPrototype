@@ -16,7 +16,6 @@ public class QuestionController : MonoBehaviour
 	private static bool stoptimer = false;
 	private static int timeLeft;
 	private static int timeDuration;
-	private GameObject timerObj;
 	private static GameObject[] inputButton;
 	private float roundlimit = 3;
 	private int totalGP;
@@ -60,6 +59,9 @@ public class QuestionController : MonoBehaviour
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
 	{
+		GameTimer.Instance.ToggleTimer (true);
+		InvokeRepeating("StartTimer", 1, 1);
+
 		GameObject entity = selectLetterIcon;
 		string entityChosen = questiontype.GetType ().ToString ();
 		string modalName = "";
@@ -85,20 +87,17 @@ public class QuestionController : MonoBehaviour
 		//stoptimer = true;
 
 	}
-
-	void Start ()
-	{
-		InvokeRepeating("StartTimer", 1, 1);
-	}
+		
 
 	private void StartTimer(){
-		timerObj = GameObject.Find ("Timer");
+		
 		if (stoptimer) {
 			if (timeLeft > 0) {
 				timeLeft--;
-				timerObj.GetComponent<Text> ().text = "" + timeLeft;
+				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
 
 			} else {
+				GameTimer.Instance.ToggleTimer (false);
 				stoptimer = false;
 				ComputeScore ();
 		
@@ -107,6 +106,7 @@ public class QuestionController : MonoBehaviour
 	}
 	public void ComputeScore ()
 	{
+		
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}

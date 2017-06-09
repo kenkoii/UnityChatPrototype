@@ -36,8 +36,6 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-
-
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 			if (battleCount > 1) {

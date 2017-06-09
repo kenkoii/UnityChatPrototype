@@ -5,7 +5,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class QuestionManager : MonoBehaviour
+public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 {
 	private static int questiontype = 0;
 	public GameObject[] questionTypeModals = new GameObject[4];
@@ -14,7 +14,7 @@ public class QuestionManager : MonoBehaviour
 	private List<string> questionTypeName = new List<string>();
 	void Start ()
 	{
-		questionTypeModals [3].SetActive (true);
+		//questionTypeModals [3].SetActive (true);
 		questionTypeName.Add ("SelectLetterIconModal");
 		questionTypeName.Add ("OrderModal");
 		questionTypeName.Add ("ChangeOrderModal");
