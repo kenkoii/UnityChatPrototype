@@ -8,7 +8,7 @@ public class GameTimer : SingletonMonoBehaviour<GameTimer> {
 	public Text gameTimerText;
 	private Image gameTimerImage;
 
-	void OnEnable(){
+	void Awake(){
 		gameTimerText = this.transform.GetChild (0).GetComponent<Text> ();
 		gameTimerImage = this.GetComponent<Image> ();
 	}

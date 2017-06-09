@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase2Controller : MonoBehaviour, IPhase
+public class Phase2Controller : MonoBehaviour
 {
-
+	public GameObject[] battleUI;
 	public int chooseSkillTimer = 5;
 	public Text skillTimerText;
 	public Button skillButton1;
@@ -15,11 +15,15 @@ public class Phase2Controller : MonoBehaviour, IPhase
 	private Coroutine timerCoroutine;
 
 
-	public void StartPhase ()
+	public void OnEnable ()
 	{
+		
 		Debug.Log ("phase2 started");
-		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { ButtonEnable (true); } );
-		DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine (StartTimer (chooseSkillTimer)); } );
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI [i].SetActive (true);
+		}
+		ButtonEnable (true);
+		StartCoroutine (StartTimer (chooseSkillTimer));
 
 	}
 
@@ -32,21 +36,21 @@ public class Phase2Controller : MonoBehaviour, IPhase
 
 	public void SelectSkill1 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+//		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
 
 	}
 
 	public void SelectSkill2 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+//		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
 
 	}
 
 	public void SelectSkill3 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+//		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
 
 	}
@@ -54,6 +58,7 @@ public class Phase2Controller : MonoBehaviour, IPhase
 	IEnumerator StartTimer (int timeReceive)
 	{
 		int timer = timeReceive;
+		yield return new WaitForSeconds (0.1f);
 		GameTimer.Instance.ToggleTimer (true);
 
 		while (timer > 0) {

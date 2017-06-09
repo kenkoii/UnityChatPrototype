@@ -102,13 +102,13 @@ public class QuestionController : MonoBehaviour
 				GameTimer.Instance.ToggleTimer (false);
 				stoptimer = false;
 				ComputeScore ();
-				QuestionManager.Instance.QuestionHide ();
+
 		  }
 		}
 	}
 	public void ComputeScore ()
 	{
-		
+		QuestionManager.Instance.QuestionHide ();
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}

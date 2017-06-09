@@ -22,11 +22,11 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 		// 0 = SelectLetter
 		// 1 = Order
 		// 2 = ChangeOrder
-		questiontype = 2;
-
-		SetQuestionEntry (questiontype, 3, delegate(int result) {
-			
-		});
+//		questiontype = 0;
+//
+//		SetQuestionEntry (questiontype, 3, delegate(int result) {
+//			
+//		});
 	}
 
 	public void QuestionHide(){
