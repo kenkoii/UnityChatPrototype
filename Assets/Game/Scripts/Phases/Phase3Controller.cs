@@ -14,6 +14,7 @@ public class Phase3Controller : MonoBehaviour, IPhase
 
 	public void StartPhase ()
 	{
+		
 		Attack ();
 	}
 
@@ -36,12 +37,8 @@ public class Phase3Controller : MonoBehaviour, IPhase
 			timer--;
 			yield return new WaitForSeconds (1);
 		}
-			
-		FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
-		PhaseManager.Instance.StartPhase1 ();
-		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI[i].SetActive (true);
-		}
+//		FirebaseDatabaseFacade.Instance.CheckAttackPhase ();
+
 	}
 		
 }

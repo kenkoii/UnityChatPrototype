@@ -22,12 +22,15 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	string gameRoomKey = null;
 	string	battleStatusKey = null;
+	string receiveBattleKey = null;
+	string receivePreviousKey = null;
 	Dictionary<string, System.Object> receiveMessage;
-	Dictionary<string, System.Object> receiveBattleStatus;
+	Dictionary<string, System.Object> receiveBattleStatus = null;
 	private bool isHasGameRooms = false;
 	private bool searchingRoom = false;
-	private bool isHost = false;
+	public bool isHost = false;
 	private bool isOnline = false;
+
 
 	[System.Serializable] public class MessageBroadcast : UnityEvent<Dictionary<string, System.Object>>
 	{
@@ -160,8 +163,21 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 			Debug.LogError (args.DatabaseError.Message);
 			return;
 		}
-		receiveBattleStatus = (Dictionary<string, System.Object>)args.Snapshot.Value;
-		sendBattleStatus.Invoke (receiveBattleStatus);
+		receiveBattleKey = args.Snapshot.Key;
+	}
+
+
+	void HandleBattleStatusValueChanged (object sender, ValueChangedEventArgs args)
+	{
+		if (args.DatabaseError != null) {
+			Debug.LogError (args.DatabaseError.Message);
+			return;
+		}
+	
+		receiveBattleStatus = (Dictionary<string, System.Object>)args.Snapshot.Child (receiveBattleKey).Value;
+		if (receiveBattleStatus != null) {
+			sendBattleStatus.Invoke (receiveBattleStatus);
+		}
 
 	}
 
@@ -329,9 +345,12 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public void UpdateBattleStatus (string stateName, int stateCount)
 	{
 		battleStatusKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Push ().Key;
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).Child (MyConst.BATTLE_STATUS_STATE).SetValueAsync (stateName);
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).Child (MyConst.BATTLE_STATUS_COUNT).SetValueAsync ("" + stateCount);
-
+		Dictionary<string, System.Object> entryValues = new Dictionary<string, System.Object> ();
+		entryValues.Add (MyConst.BATTLE_STATUS_STATE, stateName);
+		entryValues.Add (MyConst.BATTLE_STATUS_COUNT, "" + stateCount);
+		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_BATTLE_STATUS + "/" + battleStatusKey + "/"] = entryValues;
+		reference.UpdateChildrenAsync (childUpdates);
 	}
 
 	/// <summary>
@@ -394,7 +413,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 			}
 
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).ChildAdded += HandleBattleStatusAdded;
-
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).ValueChanged += HandleBattleStatusValueChanged;
 
 			return TransactionResult.Success (mutableData);
 		});
@@ -413,7 +432,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER)) {
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount++.ToString ();
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 
 				} 
 
@@ -428,19 +448,22 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	public void CheckAnswerPhase ()
 	{
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
-			Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+		if (isHost) {
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
-			string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-			int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-			if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
-				UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-				PhaseManager.Instance.StartPhase2 ();
-			} 
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+				} 
+				mutableData.Value = battleStatus;
+				return TransactionResult.Success (mutableData);
+			});
+		}
 
-			return TransactionResult.Success (mutableData);
-		});
 	}
 
 
@@ -461,8 +484,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 			
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL)) {
-
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount++.ToString ();
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 
 				} 
 
@@ -477,19 +500,48 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	public void CheckSkillPhase ()
 	{
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
-			Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+		if (isHost) {
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
-			string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-			int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-			if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
-				UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-				PhaseManager.Instance.StartPhase3 ();
-			} 
+				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+				} 
+				mutableData.Value = battleStatus;
+				return TransactionResult.Success (mutableData);
+			});
+		}
+
+	}
+
+	private void GetLatestAttackKey (Action<string> action)
+	{
+		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).GetValueAsync ().ContinueWith (task => {
+
+			if (task.IsFaulted || task.IsFaulted) {
 				
-			return TransactionResult.Success (mutableData);
+			} else {
+				DataSnapshot snapshot = task.Result;
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)snapshot.Value;
+
+				string latestKey = "";
+
+				if ((float)battleStatus.Count % 3 == 0) {
+
+					foreach (KeyValuePair<string , System.Object> battleKey in battleStatus) {
+						latestKey = battleKey.Key;
+					}
+					action (latestKey);
+				} else {
+					GetLatestAttackKey (action);
+				}
+			}
 		});
+			
 	}
 
 	/// <summary>
@@ -499,32 +551,53 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// <param name="param">Parameter.</param>
 	public void AttackPhase (string name, string param)
 	{
-		if (isOnline) {
+		GetLatestAttackKey (delegate(string resultString) {
+			
+			Debug.Log (resultString);
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+
+				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)) {
+					SetParam (name, param);
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
+				} 
+
+				mutableData.Value = battleStatus;
+				return TransactionResult.Success (mutableData);
+			});
+
+
+		});
+			
+
+	}
+		
+
+	public void CheckAttackPhase ()
+	{
+		if (isHost) {
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
 				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)) {
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount++.ToString ();
-					SetParam (name, param);
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+//					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				} 
-
 				mutableData.Value = battleStatus;
 				return TransactionResult.Success (mutableData);
 			});
 		}
+
 	}
 
-	/// <summary>
-	/// Ends the battle Status.
-	/// </summary>
-	public void EndBattlePhase ()
-	{
-		UpdateBattleStatus (MyConst.BATTLE_STATUS_END, 0);
-		PhaseManager.Instance.StopAll ();
-	}
-		
+
 
 }
