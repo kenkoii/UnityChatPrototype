@@ -21,7 +21,7 @@ public class Phase1Controller : MonoBehaviour, IPhase
 		}
 
 		questionSelect.SetActive (true);
-	
+		
 	}
 
 	void OnDisable(){
@@ -30,12 +30,49 @@ public class Phase1Controller : MonoBehaviour, IPhase
 		}
 	}
 
-	public void QuestionSelect ()
+	public void QuestionSelect1 ()
 	{
 		//call question callback here
-		RPCWrapper.Instance.RPCWrapAnswer();
+		QuestionManager.Instance.SetQuestionEntry (0, 40, delegate(int gp) {
+			StatusManager.Instance.playerGP = gp;
 
+		});
+//		RPCWrapper.Instance.RPCWrapAnswer();
+		questionSelect.SetActive (false);
 	}
+
+	public void QuestionSelect2 ()
+	{
+		//call question callback here
+		QuestionManager.Instance.SetQuestionEntry (1, 40, delegate(int gp) {
+			StatusManager.Instance.playerGP = gp;
+
+		});
+		//		RPCWrapper.Instance.RPCWrapAnswer();
+		questionSelect.SetActive (false);
+	}
+	public void QuestionSelect3 ()
+	{
+		//call question callback here
+		//		RPCWrapper.Instance.RPCWrapAnswer();
+		questionSelect.SetActive (false);
+	}
+
+	public void QuestionSelect4 ()
+	{
+		//call question callback here
+		//		RPCWrapper.Instance.RPCWrapAnswer();
+		questionSelect.SetActive (false);
+	}
+
+	public void QuestionSelect5 ()
+	{
+		//call question callback here
+		//		RPCWrapper.Instance.RPCWrapAnswer();
+		questionSelect.SetActive (false);
+	}
+
+
 
 	IEnumerator StartTimer (int timeReceive)
 	{
