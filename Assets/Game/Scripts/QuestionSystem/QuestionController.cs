@@ -57,11 +57,12 @@ public class QuestionController : MonoBehaviour
 		}
 	}
 
+	void OnEnable(){
+		InvokeRepeating("StartTimer",0,1);
+	}
+
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
 	{
-		GameTimer.Instance.ToggleTimer (true);
-		InvokeRepeating("StartTimer", 1, 1);
-
 		GameObject entity = selectLetterIcon;
 		string entityChosen = questiontype.GetType ().ToString ();
 		string modalName = "";
@@ -90,17 +91,18 @@ public class QuestionController : MonoBehaviour
 		
 
 	private void StartTimer(){
-		
+
 		if (stoptimer) {
+			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
-				timeLeft--;
 				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
 
 			} else {
 				GameTimer.Instance.ToggleTimer (false);
 				stoptimer = false;
 				ComputeScore ();
-		
+				QuestionManager.Instance.QuestionHide ();
 		  }
 		}
 	}

@@ -24,10 +24,15 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 		// 2 = ChangeOrder
 		questiontype = 2;
 
-		/*SetQuestionEntry (questiontype, 15, delegate(int result) {
-			Debug.Log("Total score is: " + result);
-			DeployDebugger();
-		});*/
+		SetQuestionEntry (questiontype, 3, delegate(int result) {
+			
+		});
+	}
+
+	public void QuestionHide(){
+		for (int i = 0; i < questionTypeModals.Length; i++) {
+			questionTypeModals [i].SetActive (false);
+		}
 	}
 
 	public void SetQuestionEntry(int questionType, int questionTime, Action<int> onResult){
