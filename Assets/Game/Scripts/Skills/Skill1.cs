@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill1 : ISkill {
-	private int skillCost = 1;
+public class Skill1 : ISkill
+{
+	private int skillCost = 3;
 
-	public void Activate(GameObject entity){
+	public void Activate (GameObject entity)
+	{
+
+		StatusManager.Instance.playerDamage += 10;
 		PlayerAnimationController.Instance.Skill1Animate ();
 		entity.GetComponent<BattleController> ().playerGP -= skillCost;
 
@@ -14,4 +18,6 @@ public class Skill1 : ISkill {
 
 		RPCWrapper.Instance.RPCWrapSkill (param);
 	}
+
+
 }

@@ -541,8 +541,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 	}
 
-
-
 	/// <summary>
 	/// Skills Phase. Increment attack count in battle status table
 	/// </summary>
@@ -590,7 +588,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
 						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-//					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 					} 
 					mutableData.Value = battleStatus;
 					return TransactionResult.Success (mutableData);

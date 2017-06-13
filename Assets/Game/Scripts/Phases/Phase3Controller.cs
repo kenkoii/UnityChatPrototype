@@ -10,30 +10,27 @@ public class Phase3Controller : MonoBehaviour
 	private static bool stoptimer = false;
 	private static int timeLeft;
 
-	public void OnEnable ()
+	void OnEnable ()
 	{
-		//stoptimer = true;
 
+		stoptimer = true;
+		timeLeft = 10;
+		InvokeRepeating ("StartTimer", 0, 1);
 		battleController = FindObjectOfType<BattleController> ();
-		Attack ();
-	}
-
-	private void Attack ()
-	{
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI [i].SetActive (false);
+		}
 		battleController.SendAttackToDatabase ();
-	
-			stoptimer = true;
-			timeLeft = 3;
-			InvokeRepeating("StartTimer",0,1);
-
-			for (int i = 0; i < battleUI.Length; i++) {
-				battleUI[i].SetActive (false);
-			}
-
 	}
 
 
-	private void StartTimer(){
+
+	void OnDisable(){
+		stoptimer = false;
+	}
+
+	private void StartTimer ()
+	{
 		if (stoptimer) {
 			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
@@ -41,6 +38,8 @@ public class Phase3Controller : MonoBehaviour
 				timeLeft--;
 				return;
 			} 
+
+			FirebaseDatabaseFacade.Instance.CheckAttackPhase();
 
 			GameTimer.Instance.ToggleTimer (false);
 			stoptimer = false;

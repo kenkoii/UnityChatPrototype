@@ -29,6 +29,6 @@ public class StatusManager : SingletonMonoBehaviour<StatusManager>
 
 
 	public void ResetPlayerStats(){
-		playerDamage = 10;
+		playerDamage = 5;
 	}
 }
