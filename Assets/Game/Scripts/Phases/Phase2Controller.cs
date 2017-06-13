@@ -18,11 +18,14 @@ public class Phase2Controller : MonoBehaviour
 	private BattleController battleController;
 
 
+
 	public void OnEnable ()
 	{
 		
+
 		battleController = FindObjectOfType<BattleController> ();
-		if (skill1GPCost > battleController.playerGP) {
+
+		if (skill1GPCost > StatusManager.Instance.playerGP) {
 			skillButton1.interactable = false;
 		} else {
 			skillButton1.interactable = true;
@@ -54,8 +57,6 @@ public class Phase2Controller : MonoBehaviour
 
 	void OnDisable(){
 		CancelInvoke ("StartTimer");
-		//Invoke
-
 	}
 
 	private void ButtonEnable (bool buttonEnable)
@@ -96,6 +97,7 @@ public class Phase2Controller : MonoBehaviour
 			GameTimer.Instance.ToggleTimer (false);
 				
 			FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 
 		}
