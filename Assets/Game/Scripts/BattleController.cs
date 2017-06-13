@@ -85,9 +85,18 @@ public class BattleController : MonoBehaviour
 			int damage = int.Parse (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
 			if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
-				enemyHP -= damage;
+				if (enemyHP > 0) {
+					enemyHP -= damage;
+				} else {
+					enemyHP = 0;
+				}
+
 			} else {
-				playerHP -= damage;
+				if (playerHP > 0) {
+					playerHP -= damage;
+				} else {
+					playerHP = 0;
+				}
 			}
 		}
 		//reset effects done by skill
@@ -128,6 +137,7 @@ public class BattleController : MonoBehaviour
 	}
 
 	public void SetPlayerGP(int playerGP){
+		Debug.Log ("GP EARNED" + playerGP);
 		this.playerGP += playerGP;
 	}
 
