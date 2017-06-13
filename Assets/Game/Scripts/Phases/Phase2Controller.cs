@@ -21,8 +21,6 @@ public class Phase2Controller : MonoBehaviour
 
 	public void OnEnable ()
 	{
-		
-
 		battleController = FindObjectOfType<BattleController> ();
 
 		if (skill1GPCost > StatusManager.Instance.playerGP) {
@@ -55,7 +53,8 @@ public class Phase2Controller : MonoBehaviour
 	
 	}
 
-	void OnDisable(){
+	void OnDisable ()
+	{
 		CancelInvoke ("StartTimer");
 	}
 

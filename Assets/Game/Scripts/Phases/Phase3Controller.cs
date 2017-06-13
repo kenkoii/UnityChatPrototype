@@ -5,22 +5,24 @@ using UnityEngine.UI;
 
 public class Phase3Controller : MonoBehaviour
 {
-	BattleController battleController;
+	private BattleController battleController;
 	public GameObject[] battleUI;
 	private bool stoptimer = false;
 	private int timeLeft;
 
 	void OnEnable ()
 	{
-
+		Debug.Log ("phase3 started");
+		battleController = FindObjectOfType<BattleController> ();
 		stoptimer = true;
 		timeLeft = 10;
 		InvokeRepeating ("StartTimer", 0, 1);
-		battleController = FindObjectOfType<BattleController> ();
+
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (false);
 		}
 		battleController.SendAttackToDatabase ();
+		Debug.Log ("phase3 started...");
 	}
 
 
