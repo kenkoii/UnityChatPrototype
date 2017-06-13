@@ -80,18 +80,25 @@ public class QuestionController : MonoBehaviour
 			modalName = "ChangeOrderModal";
 			break;
 		}
-
+		for (int i = 0; i < 12; i++) {
+			Destroy (GameObject.Find ("input" + i));
+			Destroy (GameObject.Find ("output" + i));
+			if (i < 3) {
+				GameObject.Find ("Indicator" + (i + 1)).GetComponent<Image> ().color = Color.gray;
+			}
+		}
+			
 		timeLeft = qTime;
 		questionType = modalName;
 		questiontype.Activate (entity, qTime, Result);
 		stoptimer = true;
+
 		//stoptimer = true;
 
 	}
 		
 
 	private void StartTimer(){
-
 		if (stoptimer) {
 			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
@@ -99,11 +106,11 @@ public class QuestionController : MonoBehaviour
 				timeLeft--;
 
 			} else {
+				
 				GameTimer.Instance.ToggleTimer (false);
 				stoptimer = false;
 				ComputeScore ();
-
-		  }
+				  }
 		}
 	}
 	public void ComputeScore ()
