@@ -24,6 +24,7 @@ public class LobbyController : MonoBehaviour
 		StatusManager.Instance.playerLife = 30;
 		StatusManager.Instance.playerGP = 0;
 		StatusManager.Instance.playerMaxGP = 9;
+		StatusManager.Instance.playerDamage = 5;
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 

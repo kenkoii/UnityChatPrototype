@@ -424,24 +424,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	public void AnswerPhase ()
 	{
-//		if (isOnline) {
-//			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
-//				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-//
-//				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-//				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-//
-//				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER)) {
-//					battleCount++;
-//					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-//
-//				} 
-//
-//				mutableData.Value = battleStatus;
-//				return TransactionResult.Success (mutableData);
-//			});
-//		}
-
 		GetLatestKey (1, delegate(string resultString) {
 
 			Debug.Log (resultString);
@@ -476,18 +458,20 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public void CheckAnswerPhase ()
 	{
 		if (isHost) {
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
-				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+			GetLatestKey (1, delegate(string resultString) {
+				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
+					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
-				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-				} 
-				mutableData.Value = battleStatus;
-				return TransactionResult.Success (mutableData);
+					if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
+						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+					} 
+					mutableData.Value = battleStatus;
+					return TransactionResult.Success (mutableData);
+				});
 			});
 		}
 
@@ -505,7 +489,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		GetLatestKey (2, delegate(string resultString) {
 
 			Debug.Log (resultString);
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
 				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
@@ -513,6 +497,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 			
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL)) {
+
+					SetParam (name, param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 					if (battleCount == 2) {
@@ -535,18 +521,80 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	public void CheckSkillPhase ()
 	{
 		if (isHost) {
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
+			GetLatestKey (2, delegate(string resultString) {
+				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
+					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+
+					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+					if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
+						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+					} 
+					mutableData.Value = battleStatus;
+
+					return TransactionResult.Success (mutableData);
+				});
+			});
+		}
+
+	}
+
+
+
+	/// <summary>
+	/// Skills Phase. Increment attack count in battle status table
+	/// </summary>
+	/// <param name="name">Name.</param>
+	/// <param name="param">Parameter.</param>
+	public void AttackPhase (string name, string param)
+	{
+		GetLatestKey (3, delegate(string resultString) {
+			
+			Debug.Log (resultString);
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
 				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)) {
+					SetParam (name, param);
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				} 
+
 				mutableData.Value = battleStatus;
 				return TransactionResult.Success (mutableData);
+			});
+
+
+		});
+			
+
+	}
+
+
+	public void CheckAttackPhase ()
+	{
+		
+		if (isHost) {
+			GetLatestKey (3, delegate(string resultString) {
+				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
+					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+
+					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
+						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
+//					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+					} 
+					mutableData.Value = battleStatus;
+					return TransactionResult.Success (mutableData);
+				});
 			});
 		}
 
@@ -557,7 +605,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).GetValueAsync ().ContinueWith (task => {
 
 			if (task.IsFaulted || task.IsFaulted) {
-				
+
 			} else {
 				DataSnapshot snapshot = task.Result;
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)snapshot.Value;
@@ -602,60 +650,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 			}
 		});
-			
-	}
-
-	/// <summary>
-	/// Skills Phase. Increment attack count in battle status table
-	/// </summary>
-	/// <param name="name">Name.</param>
-	/// <param name="param">Parameter.</param>
-	public void AttackPhase (string name, string param)
-	{
-		GetLatestKey (3, delegate(string resultString) {
-			
-			Debug.Log (resultString);
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
-				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)) {
-					SetParam (name, param);
-					battleCount++;
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-				} 
-
-				mutableData.Value = battleStatus;
-				return TransactionResult.Success (mutableData);
-			});
-
-
-		});
-			
-
-	}
-
-
-	public void CheckAttackPhase ()
-	{
-		if (isHost) {
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (battleStatusKey).RunTransaction (mutableData => {
-				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-//					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
-				} 
-				mutableData.Value = battleStatus;
-				return TransactionResult.Success (mutableData);
-			});
-		}
 
 	}
 

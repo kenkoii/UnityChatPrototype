@@ -148,10 +148,11 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 				qc.onFinishQuestion =true;
 				if (result) {
 					if(currentround>roundlimit){
-						questionModal.SetActive(false);
+						
 						for(int i = 1;i<=3;i++){
 							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
 						}
+						questionModal.SetActive(false);
 					}
 					else{
 						NextRound (currentround);
@@ -170,10 +171,10 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 
 			questionData = splitter [0];
 			answerData = splitter [1];
-			if ((i % 2)==0) {
+			//if ((i % 2)==0) {
 				questionlist.Add (new Question (questionData, answerData, 0));
 
-			}
+			//}
 
 			i+=1;
 		}
