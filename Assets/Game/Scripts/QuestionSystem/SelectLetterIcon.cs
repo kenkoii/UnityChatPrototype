@@ -92,10 +92,10 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 
 			questionData = splitter [0];
 			answerData = splitter [1];
-			if ((i % 2)==0) {
+			//if ((i % 2)==0) {
 				questionlist.Add (new Question (questionData, answerData, 0));
 
-			}
+			//}
 
 			i+=1;
 		}

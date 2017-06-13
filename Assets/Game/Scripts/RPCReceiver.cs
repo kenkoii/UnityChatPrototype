@@ -25,10 +25,20 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 	
 		StatusManager.Instance.attackerName = username;
 		StatusManager.Instance.attackerParam = param;
-		Debug.Log ("receive RPC");
-		battleController.SetAttack ();
-	
 
+		foreach (KeyValuePair<string, System.Object> newParam in param) {
+			if (newParam.Key == ParamNames.Damage.ToString ()) {
+				battleController.SetAttack ();
+			}
+
+			else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
+				if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
+					StatusManager.Instance.playerDamage += 10;
+				} 
+			}
+				
+		}
+			
 	}
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)

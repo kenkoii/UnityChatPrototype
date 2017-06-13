@@ -14,6 +14,8 @@ public class StatusManager : SingletonMonoBehaviour<StatusManager>
 
 	public int playerMaxGP{ get; set; }
 
+	public float playerDamage{ get; set; }
+
 	public bool isPlayerVisitor{ get; set; }
 
 	public string attackerName{ get; set; }
@@ -23,4 +25,10 @@ public class StatusManager : SingletonMonoBehaviour<StatusManager>
 	public int battleCount{ get; set; }
 
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
+
+
+
+	public void ResetPlayerStats(){
+		playerDamage = 10;
+	}
 }

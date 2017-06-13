@@ -76,6 +76,7 @@ public class BattleController : MonoBehaviour
 
 
 	}
+		
 
 	public void Attack ()
 	{
@@ -89,7 +90,8 @@ public class BattleController : MonoBehaviour
 				playerHP -= damage;
 			}
 		}
-
+		//reset effects done by skill
+		StatusManager.Instance.ResetPlayerStats();
 	}
 
 	public void CheckBattleStatus ()
@@ -168,7 +170,7 @@ public class BattleController : MonoBehaviour
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = 10;
+		param [ParamNames.Damage.ToString ()] = StatusManager.Instance.playerDamage;
 		RPCWrapper.Instance.RPCWrapAttack (param);
 	}
 }

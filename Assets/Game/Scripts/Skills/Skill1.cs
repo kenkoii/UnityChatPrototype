@@ -11,7 +11,7 @@ public class Skill1 : ISkill {
 
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.SkillDamage.ToString ()] = 10;
-		Debug.Log ("passing skill1");
+
 		RPCWrapper.Instance.RPCWrapSkill (param);
 	}
 }
