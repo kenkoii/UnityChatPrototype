@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using UnityEngine.EventSystems;
 
 public class Phase1Controller : MonoBehaviour
 {
@@ -10,19 +12,21 @@ public class Phase1Controller : MonoBehaviour
 	public GameObject[] battleUI;
 	private bool hasAnswered = false;
 	BattleController battleController;
-
+	private static bool stoptimer = false;
+	private static int timeLeft;
 
 	public void OnEnable ()
 	{
 		battleController = FindObjectOfType<BattleController> ();
 		hasAnswered = false;
-		StartCoroutine (StartTimer (5));
+		timeLeft = 5;
+		stoptimer = true;
+		InvokeRepeating("StartTimer2",0,1);
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI[i].SetActive (false);
 		}
-
 		questionSelect.SetActive (true);
-		
+
 	}
 
 	void OnDisable(){
@@ -31,6 +35,21 @@ public class Phase1Controller : MonoBehaviour
 		}
 	}
 
+	public void OnQuestionSelect(){
+		stoptimer = false;
+		string questionSelectedName = EventSystem.current.currentSelectedGameObject.name;
+		int questionNumber = Int32.Parse(questionSelectedName[questionSelectedName.Length-1].ToString())-1;	
+		hasAnswered = true;
+		questionSelect.SetActive (false);
+		//call question callback here
+		QuestionManager.Instance.SetQuestionEntry (questionNumber, 40, delegate(int gp) {
+			RPCWrapper.Instance.RPCWrapAnswer();
+			battleController.SetPlayerGP(gp);
+			NextPhase();
+		});
+
+	}
+	/*
 	public void QuestionSelect1 ()
 	{
 		hasAnswered = true;
@@ -74,7 +93,28 @@ public class Phase1Controller : MonoBehaviour
 		
 	}
 
+	*/
 
+	private void StartTimer2(){
+		if (stoptimer) {
+			GameTimer.Instance.ToggleTimer (true);
+			if (timeLeft > 0 && hasAnswered == false) {
+				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
+
+			} else {
+				GameTimer.Instance.ToggleTimer (false);
+				stoptimer = false;
+				if (hasAnswered) {
+					QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), 40, delegate(int gp) {
+						RPCWrapper.Instance.RPCWrapAnswer();
+						battleController.SetPlayerGP(gp);
+						NextPhase();
+					});
+				}
+			}
+		}
+	}
 
 	IEnumerator StartTimer (int timeReceive)
 	{
@@ -89,9 +129,9 @@ public class Phase1Controller : MonoBehaviour
 		}
 
 		if (hasAnswered == false) {
-			NextPhase ();
+			//NextPhase ();
 			GameTimer.Instance.ToggleTimer (false);
-
+			/*
 			switch (UnityEngine.Random.Range (1, 2)) {
 			case 1:
 				QuestionSelect1 ();
@@ -100,7 +140,12 @@ public class Phase1Controller : MonoBehaviour
 			case 2:
 				QuestionSelect2 ();
 				break;
-			}
+			}*/
+			QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), 40, delegate(int gp) {
+				RPCWrapper.Instance.RPCWrapAnswer();
+				battleController.SetPlayerGP(gp);
+				NextPhase();
+			});
 		
 		}
 	}

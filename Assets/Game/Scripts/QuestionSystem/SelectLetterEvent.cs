@@ -23,7 +23,7 @@ public class SelectLetterEvent : MonoBehaviour {
 	private static Boolean modalHide = false;
 	private GameObject questionModal;
 	private int roundsLimit = 3;
-
+	private GameObject[] indicators = new GameObject[3];
 
 	public void GetTimeDuration(float duration){
 		timeLeft = duration;
@@ -48,6 +48,9 @@ public class SelectLetterEvent : MonoBehaviour {
 	void Start () {
 		modalRaise = true;
 		questionModal = GameObject.Find ("SelectLetterIconModal");
+		for (int i = 0; i < indicators.Length; i++) {
+			indicators [i] = GameObject.Find ("Indicator" + (i + 1));
+		}
 	}
 		
 	public void GetAnswer(string answer){
@@ -63,6 +66,7 @@ public class SelectLetterEvent : MonoBehaviour {
 		answerindex = 1;
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			//CODE FOR CLICKING ON EMPTY
+
 		} else {
 			for (int i = 1; i < selectionButtons.Length+1; i++) {
 				if (EventSystem.current.currentSelectedGameObject.name == ("input" + i)) {
@@ -139,6 +143,9 @@ public class SelectLetterEvent : MonoBehaviour {
 					SelectLetterIcon sli = new SelectLetterIcon ();
 					if(currentround>roundsLimit){
 						currentround = 1;
+						for(int i = 1;i<=3;i++){
+							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
+						}
 					}
 					else{
 						sli.NextRound (currentround);
