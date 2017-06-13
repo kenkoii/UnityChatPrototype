@@ -23,7 +23,7 @@ public class Phase2Controller : MonoBehaviour
 	{
 		battleController = FindObjectOfType<BattleController> ();
 
-		if (skill1GPCost > StatusManager.Instance.playerGP) {
+		if (skill1GPCost > battleController.playerGP) {
 			skillButton1.interactable = false;
 		} else {
 			skillButton1.interactable = true;

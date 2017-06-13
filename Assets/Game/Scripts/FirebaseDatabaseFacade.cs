@@ -496,17 +496,16 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 			
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL)) {
-
-					SetParam (name, param);
-					battleCount++;
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-					/*
-					if (battleCount == 2) {
-						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-					} 
-					*/
-				} 
+//				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL)) {
+//
+//					SetParam (name, param);
+//					battleCount++;
+//					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
+//
+//					if (battleCount == 2) {
+//						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+//					} 
+//				} 
 
 				mutableData.Value = battleStatus;
 				return TransactionResult.Success (mutableData);
