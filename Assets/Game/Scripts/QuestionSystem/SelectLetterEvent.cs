@@ -24,6 +24,13 @@ public class SelectLetterEvent : MonoBehaviour {
 	private GameObject questionModal;
 	private int roundsLimit = 3;
 	private GameObject[] indicators = new GameObject[3];
+	public int CorrectAnswers{
+		get{ return correctAnswers;
+		}
+		set{ 
+			correctAnswers = value;
+		}
+	}
 	public int Currentround{
 		get{ 
 			return currentround;
@@ -137,6 +144,7 @@ public class SelectLetterEvent : MonoBehaviour {
 				answerindex = 1;
 				currentround = currentround + 1;
 				QuestionDoneCallback (true);
+
 			}
 		}
 	}
@@ -150,6 +158,7 @@ public class SelectLetterEvent : MonoBehaviour {
 					if(currentround>roundsLimit){
 						currentround = 1;
 						answerindex = 1;
+						correctAnswers = 1;
 						for(int i = 1;i<=3;i++){
 							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
 						}

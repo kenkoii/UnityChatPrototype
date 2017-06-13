@@ -41,6 +41,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 		answerindex = 1;
 		SelectLetterEvent sle = new SelectLetterEvent ();
 		sle.Currentround = 1;
+		sle.CorrectAnswers = 0;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
