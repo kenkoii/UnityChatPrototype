@@ -16,7 +16,7 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 	{
 		//questionTypeModals [3].SetActive (true);
 		questionTypeName.Add ("SelectLetterIconModal");
-		questionTypeName.Add ("OrderModal");
+		questionTypeName.Add ("TypingModal");
 		questionTypeName.Add ("ChangeOrderModal");
 		numberofQuestionTypes = questionTypeName.Count;
 		// 0 = SelectLetter
@@ -47,9 +47,9 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 
 			break;
 		case 1:
-			OrderIcon orderIcon = new OrderIcon ();
+			TypingIcon typingicon = new TypingIcon ();
 			//questionTypeModals[1].SetActive (true);
-			qc.SetQuestion (orderIcon, questionTime, onResult);
+			qc.SetQuestion (typingicon, questionTime, onResult);
 			qc.TimeLeft = questionTime;
 			break;
 		case 2:

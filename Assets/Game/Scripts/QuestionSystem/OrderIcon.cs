@@ -45,7 +45,7 @@ public class OrderIcon : MonoBehaviour, IQuestion {
 		} 
 		questionsDone.Add (questionString);
 		GameObject questionInput = Resources.Load ("Prefabs/Letter") as GameObject;
-		GameObject questionModal = GameObject.Find("OrderModal");
+		GameObject questionModal = GameObject.Find("TypingModal");
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			if (questionAnswer [i] == ',' || i==questionAnswer.Length-1) {
 				GameObject input = Instantiate (questionInput) as GameObject; 

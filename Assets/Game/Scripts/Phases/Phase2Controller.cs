@@ -11,6 +11,8 @@ public class Phase2Controller : MonoBehaviour
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
+	private static bool stoptimer = false;
+	private static int timeLeft;
 
 	private Coroutine timerCoroutine;
 
@@ -23,7 +25,12 @@ public class Phase2Controller : MonoBehaviour
 			battleUI [i].SetActive (true);
 		}
 		ButtonEnable (true);
-		StartCoroutine (StartTimer (chooseSkillTimer));
+		//StartCoroutine (StartTimer (chooseSkillTimer));
+
+		timeLeft = 5;
+		stoptimer = true;
+		InvokeRepeating("StartTimer2",0,1);
+		Debug.Log ("phase2 started......");
 
 	}
 
@@ -54,9 +61,27 @@ public class Phase2Controller : MonoBehaviour
 		ButtonEnable (false);
 
 	}
+	private void StartTimer2(){
+		if (stoptimer) {
+			GameTimer.Instance.ToggleTimer (true);
+			if (timeLeft > 0) {
+				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
+				return;
+			} 
+				ButtonEnable (false);
+				GameTimer.Instance.ToggleTimer (false);
+				
+				FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+				Debug.Log ("stopped phase2 timer");
+				stoptimer = false;
+
+		}
+	}
 
 	IEnumerator StartTimer (int timeReceive)
 	{
+		
 		int timer = timeReceive;
 		yield return new WaitForSeconds (0.1f);
 		GameTimer.Instance.ToggleTimer (true);

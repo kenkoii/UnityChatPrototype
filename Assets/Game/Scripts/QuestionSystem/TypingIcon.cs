@@ -5,7 +5,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ChangeOrderIcon : MonoBehaviour, IQuestion{
+public class TypingIcon : MonoBehaviour, IQuestion{
 	private static int round = 1;
 	private Action<int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
@@ -46,14 +46,17 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 				break;
 			}
 		} 
+		foreach (Question q in questionlist) {
+			//Debug.Log (q.question);
+		}
 
 		questionsDone.Add (questionString);
 		GameObject questionInput = Resources.Load ("Prefabs/inputContainer") as GameObject;
-		GameObject greenInput = Resources.Load ("Prefabs/inputContainerUI") as GameObject;
-		questionModal = GameObject.Find("ChangeOrderModal");
+		questionModal = GameObject.Find("TypingModal");
 		inputlist.Clear ();
 		outputlist.Clear ();
 		for (int i = 0; i < questionAnswer.Length; i++) {
+			/*
 			GameObject input = Instantiate (greenInput) as GameObject; 
 			input.transform.SetParent (questionModal.transform.GetChild (2).
 				transform.GetChild (0).GetChild (0).transform, false);
@@ -65,13 +68,13 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 			});
 			inputlist.Add(input);
 			input.transform.GetChild (0).GetComponent<Text> ().text = "";
-
+			*/
 			GameObject output = Instantiate (questionInput) as GameObject; 
 			output.transform.SetParent (questionModal.transform.GetChild (1).
 				transform.GetChild (0).GetChild (0).transform, false);
 			output.name = "output" + (i + 1);
 			output.GetComponent<Button>().onClick.AddListener (() => {
-				GameObject.Find("ChangeOrderModal").GetComponent<ChangeOrderIcon>().OutputOnClick();
+				questionModal.GetComponent<TypingIcon>().OutputOnClick();
 			});
 			outputlist.Add(output);
 
@@ -79,6 +82,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 		}
 		ShuffleAlgo ();
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
+
 
 	}
 
@@ -94,10 +98,9 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 					outputlist [(answerindex - 1)].transform.GetChild (0).
 					GetComponent<Text> ().text 
 					= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
-					EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
 					break;
 				} else {
-					
+
 				}
 				k++;
 			}
@@ -106,15 +109,13 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 			}
 			answerIdentifier [(answerindex - 1)] = EventSystem.current.currentSelectedGameObject.name;
 			if (answerwrote.Length == questionAnswer.Length) {
-				
+
 				if (answerwrote.ToUpper () == questionAnswer.ToUpper ()) {
 					correctAnswers = correctAnswers + 1;
 					Debug.Log (currentround-1);
 					indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
-					//GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
 				} else {
 					indicators[currentround-1].GetComponent<Image> ().color = Color.red;
-					//GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
 				}
 
 				Clear ();
@@ -127,17 +128,9 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	public void OutputOnClick(){
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			//CODE FOR CLICKING ON EMPTY
+			
 		} else {
-			for (int i = 1; i < inputlist.Count+1; i++) {
-				if (EventSystem.current.currentSelectedGameObject.name == ("output" + i)) {
-					answerclicked = outputlist [i-1].transform.GetChild (0).GetComponent<Text> ().text;
-					outputlist [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
-					GameObject.Find (answerIdentifier [i-1]).transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
-					Debug.Log (answerIdentifier [i - 1]);
-				}
-
-			}
+			EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
 	}
 
@@ -148,10 +141,10 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 				qc.onFinishQuestion =true;
 				if (result) {
 					if(currentround>roundlimit){
-						questionModal.SetActive(false);
 						for(int i = 1;i<=3;i++){
 							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
 						}
+						questionModal.SetActive(false);
 					}
 					else{
 						NextRound (currentround);
@@ -181,6 +174,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 
 	public void ShuffleAlgo ()
 	{
+		/*
 		List<int> RandomExist = new List<int>();
 		string temp = questionAnswer;
 
@@ -206,14 +200,10 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 				temp[randomnum].ToString().ToUpper();
 			RandomExist.Add (randomnum);
 			letterno = letterno + 1;
-		}
+		}*/
 	}
 	public void Clear(){
-
 		answerindex = 1;
-		foreach (GameObject i in inputlist) {
-			Destroy (i);
-		}
 		foreach (GameObject o in outputlist) {
 			Destroy (o);
 		}
