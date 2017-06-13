@@ -15,6 +15,7 @@ public class Phase2Controller : MonoBehaviour
 	public Button skillButton3;
 	private bool stoptimer = false;
 	private int timeLeft;
+	private BattleController battleController;
 
 
 
@@ -22,19 +23,21 @@ public class Phase2Controller : MonoBehaviour
 	{
 		
 
+		battleController = FindObjectOfType<BattleController> ();
+
 		if (skill1GPCost > StatusManager.Instance.playerGP) {
 			skillButton1.interactable = false;
 		} else {
 			skillButton1.interactable = true;
 		}
 
-		if (skill2GPCost > StatusManager.Instance.playerGP) {
+		if (skill2GPCost > battleController.playerGP) {
 			skillButton2.interactable = false;
 		} else {
 			skillButton2.interactable = true;
 		}
 
-		if (skill3GPCost > StatusManager.Instance.playerGP) {
+		if (skill3GPCost > battleController.playerGP) {
 			skillButton3.interactable = false;
 		} else {
 			skillButton3.interactable = true;
@@ -52,6 +55,10 @@ public class Phase2Controller : MonoBehaviour
 	
 	}
 
+	void OnDisable(){
+		CancelInvoke ("StartTimer");
+	}
+
 	private void ButtonEnable (bool buttonEnable)
 	{
 		skillButton1.interactable = buttonEnable;
@@ -63,24 +70,18 @@ public class Phase2Controller : MonoBehaviour
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
 
 	public void SelectSkill2 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
 
 	public void SelectSkill3 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
 
 	private void StartTimer ()

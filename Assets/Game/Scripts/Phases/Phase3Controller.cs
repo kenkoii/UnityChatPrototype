@@ -26,23 +26,22 @@ public class Phase3Controller : MonoBehaviour
 
 
 	void OnDisable(){
-		stoptimer = false;
+		CancelInvoke ("StartTimer");
+
 	}
 
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
-				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 
 			FirebaseDatabaseFacade.Instance.CheckAttackPhase();
 
-			GameTimer.Instance.ToggleTimer (false);
 			stoptimer = false;
+
 		}
 	}
 		

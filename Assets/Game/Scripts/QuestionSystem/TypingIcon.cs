@@ -28,12 +28,16 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	public void Activate(GameObject entity,float timeduration,Action<int> Result){
 		round = 1;
 		currentround = 1;
+		answerindex = 1;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
 	}
 
 	public void NextRound(int round){
+		if (round == 1) {
+			answerindex = 1;
+		}
 		PopulateQuestionList ();
 		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
 		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
@@ -141,6 +145,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 				qc.onFinishQuestion =true;
 				if (result) {
 					if(currentround>roundlimit){
+						answerindex = 1;
 						for(int i = 1;i<=3;i++){
 							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
 						}

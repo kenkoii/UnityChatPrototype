@@ -34,6 +34,8 @@ public class Phase1Controller : MonoBehaviour
 		if (questionSelect.activeInHierarchy) {
 			questionSelect.SetActive (false);
 		}
+		CancelInvoke ("StartTimer");
+
 	}
 
 	public void OnQuestionSelect ()
@@ -51,51 +53,7 @@ public class Phase1Controller : MonoBehaviour
 		});
 
 	}
-	/*
-	public void QuestionSelect1 ()
-	{
-		hasAnswered = true;
-	
-		questionSelect.SetActive (false);
-		//call question callback here
-		QuestionManager.Instance.SetQuestionEntry (0, 40, delegate(int gp) {
-			RPCWrapper.Instance.RPCWrapAnswer();
-			battleController.SetPlayerGP(gp);
-			NextPhase();
-		});
 
-
-	}
-
-	public void QuestionSelect2 ()
-	{
-		hasAnswered = true;
-	
-		questionSelect.SetActive (false);
-		//call question callback here
-		QuestionManager.Instance.SetQuestionEntry (1, 40, delegate(int gp) {
-			RPCWrapper.Instance.RPCWrapAnswer();
-			battleController.SetPlayerGP(gp);
-			NextPhase();
-		});
-
-	}
-	public void QuestionSelect3 ()
-	{
-
-	}
-
-	public void QuestionSelect4 ()
-	{
-
-	}
-
-	public void QuestionSelect5 ()
-	{
-		
-	}
-
-	*/
 
 	private void StartTimer ()
 	{
@@ -117,8 +75,7 @@ public class Phase1Controller : MonoBehaviour
 
 			GameTimer.Instance.ToggleTimer (false);
 			stoptimer = false;
-
-			
+		
 		}
 	}
 
