@@ -12,8 +12,8 @@ public class Phase1Controller : MonoBehaviour
 	public GameObject[] battleUI;
 	private bool hasAnswered = false;
 	BattleController battleController;
-	private static bool stoptimer = false;
-	private static int timeLeft;
+	private bool stoptimer = false;
+	private int timeLeft;
 
 	public void OnEnable ()
 	{
