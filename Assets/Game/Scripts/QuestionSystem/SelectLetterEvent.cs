@@ -11,7 +11,7 @@ public class SelectLetterEvent : MonoBehaviour {
 	public static int lettercount = 12;
 	private GameObject[] selectionButtons = new GameObject[13];
 	private GameObject[] inputButtons = new GameObject[13];
-	public int currentround = 1;
+	private static int currentround = 1;
 	public static int answerindex = 1;
 	public List<string> answerIdentifier;
 	public string answerwrote;
@@ -24,7 +24,14 @@ public class SelectLetterEvent : MonoBehaviour {
 	private GameObject questionModal;
 	private int roundsLimit = 3;
 	private GameObject[] indicators = new GameObject[3];
-
+	public int Currentround{
+		get{ 
+			return currentround;
+		}
+		set{ 
+			currentround = value;
+		}
+	}
 	public void GetTimeDuration(float duration){
 		timeLeft = duration;
 	}
@@ -90,12 +97,11 @@ public class SelectLetterEvent : MonoBehaviour {
 
 	public void LetterOnClick ()
 	{
-		
+		Debug.Log (currentround);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
 		else {
 			//SelectLetterIcon sli = new SelectLetterIcon ();
-
 			for (int i = 0; i < selectionButtons.Length - 1; i++) {
 				selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
 				if (i <= inputButtons.Length) {
@@ -104,7 +110,6 @@ public class SelectLetterEvent : MonoBehaviour {
 			}
 			for(int j=1;j<=questionAnswer.Length+1;j++){
 				GameObject findEmpty = inputButtons [j-1].transform.GetChild (0).gameObject;
-
 				if (findEmpty.GetComponent<Text> ().text == "") {
 					answerindex = j;
 					break;
@@ -128,6 +133,7 @@ public class SelectLetterEvent : MonoBehaviour {
 					GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
 				}
 				Clear ();
+
 				answerindex = 1;
 				currentround = currentround + 1;
 				QuestionDoneCallback (true);
@@ -143,6 +149,7 @@ public class SelectLetterEvent : MonoBehaviour {
 					SelectLetterIcon sli = new SelectLetterIcon ();
 					if(currentround>roundsLimit){
 						currentround = 1;
+						answerindex = 1;
 						for(int i = 1;i<=3;i++){
 							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
 						}

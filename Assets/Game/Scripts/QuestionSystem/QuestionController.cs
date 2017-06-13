@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class QuestionController : MonoBehaviour
 {
 	private GameObject selectLetterIcon;
-	private GameObject orderIcon;
+	private GameObject typingIcon;
 	private GameObject changeOrderIcon;
 	public static int getround;
 	private static int correctAnswers;
@@ -27,6 +27,7 @@ public class QuestionController : MonoBehaviour
 		get;
 		set;
 	}
+
 	public Action<int> OnResult {
 		get { 
 			return onResult;
@@ -57,8 +58,9 @@ public class QuestionController : MonoBehaviour
 		}
 	}
 
-	void OnEnable(){
-		InvokeRepeating("StartTimer",0,1);
+	void OnEnable ()
+	{
+		InvokeRepeating ("StartTimer", 0, 1);
 	}
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
@@ -67,9 +69,9 @@ public class QuestionController : MonoBehaviour
 		string entityChosen = questiontype.GetType ().ToString ();
 		string modalName = "";
 		switch (entityChosen) {
-		case "OrderIcon":
-			entity = orderIcon;
-			modalName = "OrderModal";
+		case "TypingIcon":
+			entity = typingIcon;
+			modalName = "TypingModal";
 			break;
 		case "SelectLetterIcon":
 			entity = selectLetterIcon;
@@ -87,32 +89,30 @@ public class QuestionController : MonoBehaviour
 				GameObject.Find ("Indicator" + (i + 1)).GetComponent<Image> ().color = Color.gray;
 			}
 		}
-			
 		timeLeft = qTime;
 		questionType = modalName;
 		questiontype.Activate (entity, qTime, Result);
 		stoptimer = true;
-
-		//stoptimer = true;
-
 	}
-		
 
-	private void StartTimer(){
+
+	private void StartTimer ()
+	{
 		if (stoptimer) {
 			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
 				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
-
-			} else {
+				return;
+			} 
 				
-				GameTimer.Instance.ToggleTimer (false);
-				stoptimer = false;
-				ComputeScore ();
-				  }
+			GameTimer.Instance.ToggleTimer (false);
+			stoptimer = false;
+			ComputeScore ();
+				  
 		}
 	}
+
 	public void ComputeScore ()
 	{
 		QuestionManager.Instance.QuestionHide ();
@@ -130,7 +130,7 @@ public class QuestionController : MonoBehaviour
 
 	public void Returner (Action<bool> action, int round, int answerScore)
 	{
-		action(onFinishQuestion);
+		action (onFinishQuestion);
 		getround = round;
 		correctAnswers = answerScore;
 		if (round > roundlimit) {

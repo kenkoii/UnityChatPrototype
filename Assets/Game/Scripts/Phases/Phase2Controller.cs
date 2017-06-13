@@ -13,25 +13,31 @@ public class Phase2Controller : MonoBehaviour
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
-	private static bool stoptimer = false;
-	private static int timeLeft;
-
+	private bool stoptimer = false;
+	private int timeLeft;
+	private BattleController battleController;
 
 
 	public void OnEnable ()
 	{
-		ButtonEnable (true);
-
-		if (skill1GPCost > StatusManager.Instance.playerGP) {
+		
+		battleController = FindObjectOfType<BattleController> ();
+		if (skill1GPCost > battleController.playerGP) {
 			skillButton1.interactable = false;
+		} else {
+			skillButton1.interactable = true;
 		}
 
-		if (skill2GPCost > StatusManager.Instance.playerGP) {
+		if (skill2GPCost > battleController.playerGP) {
 			skillButton2.interactable = false;
+		} else {
+			skillButton2.interactable = true;
 		}
 
-		if (skill3GPCost > StatusManager.Instance.playerGP) {
+		if (skill3GPCost > battleController.playerGP) {
 			skillButton3.interactable = false;
+		} else {
+			skillButton3.interactable = true;
 		}
 
 		for (int i = 0; i < battleUI.Length; i++) {
@@ -41,9 +47,15 @@ public class Phase2Controller : MonoBehaviour
 
 		timeLeft = 5;
 		stoptimer = true;
-		InvokeRepeating("StartTimer",0,1);
+		InvokeRepeating ("StartTimer", 0, 1);
 
 	
+	}
+
+	void OnDisable(){
+		CancelInvoke ("StartTimer");
+		//Invoke
+
 	}
 
 	private void ButtonEnable (bool buttonEnable)
@@ -57,26 +69,22 @@ public class Phase2Controller : MonoBehaviour
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
 
 	public void SelectSkill2 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
 
 	public void SelectSkill3 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
-		stoptimer = false;
-		GameTimer.Instance.ToggleTimer (false);
 	}
-	private void StartTimer(){
+
+	private void StartTimer ()
+	{
 		if (stoptimer) {
 			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
@@ -84,12 +92,11 @@ public class Phase2Controller : MonoBehaviour
 				timeLeft--;
 				return;
 			} 
-				ButtonEnable (false);
-				GameTimer.Instance.ToggleTimer (false);
+			ButtonEnable (false);
+			GameTimer.Instance.ToggleTimer (false);
 				
-				FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
-				Debug.Log ("stopped phase2 timer");
-				stoptimer = false;
+			FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+			stoptimer = false;
 
 		}
 	}

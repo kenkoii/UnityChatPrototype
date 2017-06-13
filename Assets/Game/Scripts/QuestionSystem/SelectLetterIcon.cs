@@ -13,7 +13,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 	private string questionData = "";
 	private string answerData = "";
 	public string questionAnswer; 
-	public int answerindex = 1;
+	private static int answerindex = 1;
 	//private int selectionlistcount = 13;
 	private GameObject[] answerlist = new GameObject[13];
 	private GameObject[] selectionlist = new GameObject[13];
@@ -38,6 +38,9 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 	}
 	public void Activate(GameObject entity,float timeduration,Action<int> Result){
 		round = 1;
+		answerindex = 1;
+		SelectLetterEvent sle = new SelectLetterEvent ();
+		sle.Currentround = 1;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
@@ -47,6 +50,9 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 	/// </summary>
 	/// <param name="round">Round.</param>
 	public void NextRound(int round){
+		if (round == 1) {
+			answerindex = 1;
+		}
 	//		Debug.Log (GetCSV("https://docs.google.com/spreadsheets/d/19cKJ0YqMbNQWQmW_ZuEj4h9AHeyC_-H899MRE1F3rkw/edit#gid=0"));
 		questionlist = new List<Question> ();
 

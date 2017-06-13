@@ -501,10 +501,11 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 					SetParam (name, param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
+					/*
 					if (battleCount == 2) {
 						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
 					} 
-
+					*/
 				} 
 
 				mutableData.Value = battleStatus;
