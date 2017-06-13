@@ -13,25 +13,31 @@ public class Phase2Controller : MonoBehaviour
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
-	private static bool stoptimer = false;
-	private static int timeLeft;
+	private bool stoptimer = false;
+	private int timeLeft;
 
 
 
 	public void OnEnable ()
 	{
-		ButtonEnable (true);
+		
 
 		if (skill1GPCost > StatusManager.Instance.playerGP) {
 			skillButton1.interactable = false;
+		} else {
+			skillButton1.interactable = true;
 		}
 
 		if (skill2GPCost > StatusManager.Instance.playerGP) {
 			skillButton2.interactable = false;
+		} else {
+			skillButton2.interactable = true;
 		}
 
 		if (skill3GPCost > StatusManager.Instance.playerGP) {
 			skillButton3.interactable = false;
+		} else {
+			skillButton3.interactable = true;
 		}
 
 		for (int i = 0; i < battleUI.Length; i++) {
@@ -41,7 +47,7 @@ public class Phase2Controller : MonoBehaviour
 
 		timeLeft = 5;
 		stoptimer = true;
-		InvokeRepeating("StartTimer",0,1);
+		InvokeRepeating ("StartTimer", 0, 1);
 
 	
 	}
@@ -76,7 +82,9 @@ public class Phase2Controller : MonoBehaviour
 		stoptimer = false;
 		GameTimer.Instance.ToggleTimer (false);
 	}
-	private void StartTimer(){
+
+	private void StartTimer ()
+	{
 		if (stoptimer) {
 			GameTimer.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
@@ -84,12 +92,12 @@ public class Phase2Controller : MonoBehaviour
 				timeLeft--;
 				return;
 			} 
-				ButtonEnable (false);
-				GameTimer.Instance.ToggleTimer (false);
+			ButtonEnable (false);
+			GameTimer.Instance.ToggleTimer (false);
 				
-				FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
-				Debug.Log ("stopped phase2 timer");
-				stoptimer = false;
+			FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+			Debug.Log ("stopped phase2 timer");
+			stoptimer = false;
 
 		}
 	}

@@ -7,8 +7,8 @@ public class Phase3Controller : MonoBehaviour
 {
 	BattleController battleController;
 	public GameObject[] battleUI;
-	private static bool stoptimer = false;
-	private static int timeLeft;
+	private bool stoptimer = false;
+	private int timeLeft;
 
 	void OnEnable ()
 	{
