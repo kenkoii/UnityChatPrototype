@@ -25,8 +25,8 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		string username = (string)rpcDetails ["username"];
 		Dictionary<string, System.Object> param = JsonStrToDic ((string)rpcDetails ["param"]);
 	
-		StatusManager.Instance.attackerName = username;
-		StatusManager.Instance.attackerParam = param;
+		MyGlobalVariables.Instance.attackerName = username;
+		MyGlobalVariables.Instance.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
@@ -37,7 +37,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			}
 
 			else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-				if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
+				if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
 					//skill here
 				} 
 			}
@@ -74,8 +74,8 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			break;
 		}
 
-		StatusManager.Instance.battleState = battleState;
-		StatusManager.Instance.battleCount = battleCount;
+		MyGlobalVariables.Instance.battleState = battleState;
+		MyGlobalVariables.Instance.battleCount = battleCount;
 
 	}
 
@@ -112,13 +112,13 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 
 		if (isHome) {
-			if (StatusManager.Instance.isPlayerVisitor) {
+			if (MyGlobalVariables.Instance.isPlayerVisitor) {
 				battleController.InitialEnemyState (life, username);
 			} else {
 				battleController.InitialPlayerState (life, username, gp);
 			}
 		} else {
-			if (StatusManager.Instance.isPlayerVisitor) {
+			if (MyGlobalVariables.Instance.isPlayerVisitor) {
 				battleController.InitialPlayerState (life, username, gp);
 			} else {
 				battleController.InitialEnemyState (life, username);
