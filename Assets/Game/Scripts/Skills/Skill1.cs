@@ -9,7 +9,7 @@ public class Skill1 : ISkill
 	public void Activate (GameObject entity)
 	{
 
-		StatusManager.Instance.playerDamage += 10;
+		MyGlobalVariables.Instance.playerDamage += 10;
 		PlayerAnimationController.Instance.Skill1Animate ();
 		entity.GetComponent<BattleController> ().playerGP -= skillCost;
 

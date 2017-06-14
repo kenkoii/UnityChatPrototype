@@ -326,7 +326,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	{
 		this.isHost = isHost;
 		MessageListener ();
-		User user = new User (StatusManager.Instance.playerName, StatusManager.Instance.playerLife, StatusManager.Instance.playerGP);
+		User user = new User (MyGlobalVariables.Instance.playerName, MyGlobalVariables.Instance.playerLife, MyGlobalVariables.Instance.playerGP);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/"] = entryValues;
@@ -339,7 +339,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		CheckInitialPhase ();
 
 		InitialStateListener ();
-		StatusManager.Instance.isPlayerVisitor = !isHost;
+		MyGlobalVariables.Instance.isPlayerVisitor = !isHost;
 	}
 
 	public void UpdateBattleStatus (string stateName, int stateCount)

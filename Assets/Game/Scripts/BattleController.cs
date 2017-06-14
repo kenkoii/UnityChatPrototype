@@ -88,10 +88,10 @@ public class BattleController : MonoBehaviour
 	public void Attack ()
 	{
 		
-		if (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
-			int damage = int.Parse (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
+		if (MyGlobalVariables.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
+			int damage = int.Parse (MyGlobalVariables.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
-			if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
+			if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
 				
 					enemyHP -= damage;
 
@@ -101,11 +101,12 @@ public class BattleController : MonoBehaviour
 			}
 		}
 		//reset effects done by skill
-		StatusManager.Instance.ResetPlayerStats();
+		MyGlobalVariables.Instance.ResetPlayerStats();
 	}
 
 	public void CheckBattleStatus ()
 	{
+		
 		StartCoroutine (CheckbattlestatusDelay (1));
 	}
 
@@ -153,10 +154,10 @@ public class BattleController : MonoBehaviour
 		this.playerHP = playerHP;
 		this.playerName = playerName;
 		this.playerGP = playerGP;
-		playerGPBar.maxValue = StatusManager.Instance.playerMaxGP;
+		playerGPBar.maxValue = MyGlobalVariables.Instance.playerMaxGP;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
-		playerMaxGP = StatusManager.Instance.playerMaxGP;
+		playerMaxGP = MyGlobalVariables.Instance.playerMaxGP;
 	}
 
 	public void InitialEnemyState (int enemyHP, string enemyName)
@@ -180,14 +181,12 @@ public class BattleController : MonoBehaviour
 	{
 		skill.Activate (this.gameObject);
 	}
-
-
-
+		
 	//test attack
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = StatusManager.Instance.playerDamage;
+		param [ParamNames.Damage.ToString ()] = MyGlobalVariables.Instance.playerDamage;
 		RPCWrapper.Instance.RPCWrapAttack (param);
 	}
 }

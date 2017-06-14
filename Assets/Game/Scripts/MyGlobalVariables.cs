@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* Manages the player and enemy status */
-public class StatusManager : SingletonMonoBehaviour<StatusManager>
+public class MyGlobalVariables : SingletonMonoBehaviour<MyGlobalVariables>
 {
 
 	public string playerName{ get; set; }
@@ -24,6 +24,7 @@ public class StatusManager : SingletonMonoBehaviour<StatusManager>
 
 	public int battleCount{ get; set; }
 
+	public int modePrototype { get; set;}
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
 
