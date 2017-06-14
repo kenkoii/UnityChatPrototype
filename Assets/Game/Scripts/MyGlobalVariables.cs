@@ -24,14 +24,24 @@ public class MyGlobalVariables : SingletonMonoBehaviour<MyGlobalVariables>
 
 	public int battleCount{ get; set; }
 
-	public int modePrototype { get; set;}
+	public int modePrototype { get; set; }
+
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
 	public Dictionary<string, System.Object> currentParameter{ get; set; }
 
+	public int hAnswer{ get; set; }
+
+	public int hTime{ get; set; }
+
+	public int vAnswer{ get; set; }
+
+	public int vTime{ get; set; }
 
 
-	public void ResetPlayerStats(){
+
+	public void ResetPlayerStats ()
+	{
 		playerDamage = 5;
 	}
 }

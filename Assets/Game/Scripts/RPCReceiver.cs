@@ -31,8 +31,16 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (MyGlobalVariables.Instance.modePrototype == 2) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
-					//error here
-					//MyGlobalVariables.Instance.currentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+
+					Debug.Log (MyGlobalVariables.Instance.attackerName);
+					Debug.Log ( MyGlobalVariables.Instance.attackerParam.Count);
+
+					MyGlobalVariables.Instance.currentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+
+					if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
+						battleController.SetAttackMode2 ();
+					} 
+
 				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
 					//skill here
 				}
@@ -67,32 +75,15 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 			
-			int hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-			int hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-			int vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-			int vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+			MyGlobalVariables.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+			MyGlobalVariables.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+			MyGlobalVariables.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+			MyGlobalVariables.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
 
-			if (MyGlobalVariables.Instance.currentParameter != null) {
-				if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
+
+			if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
 				
 			
-					if (MyGlobalVariables.Instance.modePrototype == 2) {
-						if (hAnswer > vAnswer) {
-							battleController.SetAttack (0);
-						} else if (hAnswer < vAnswer) {
-							battleController.SetAttack (1);
-						} else {
-							if (hTime > vTime) {
-								battleController.SetAttack (0);
-							} else if (hTime < vTime) {
-								battleController.SetAttack (1);
-							} else {
-								battleController.SetAttack (2);
-							}
-						}
-					}
-			
-				}
 			} else {
 				if (battleCount > 1) {
 					PhaseManager.Instance.StartPhase2 ();
