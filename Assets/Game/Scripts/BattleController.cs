@@ -74,7 +74,13 @@ public class BattleController : MonoBehaviour
 
 		playerGPBar.value = playerGP;
 
+		if (playerHP < 0) {
+			playerHP = 0;
+		}
 
+		if (enemyHP < 0) {
+			enemyHP = 0;
+		}
 	}
 		
 
@@ -85,18 +91,12 @@ public class BattleController : MonoBehaviour
 			int damage = int.Parse (StatusManager.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
 
 			if (StatusManager.Instance.attackerName.Equals (StatusManager.Instance.playerName)) {
-				if (enemyHP > 0) {
+				
 					enemyHP -= damage;
-				} else {
-					enemyHP = 0;
-				}
 
 			} else {
-				if (playerHP > 0) {
 					playerHP -= damage;
-				} else {
-					playerHP = 0;
-				}
+
 			}
 		}
 		//reset effects done by skill
@@ -105,7 +105,7 @@ public class BattleController : MonoBehaviour
 
 	public void CheckBattleStatus ()
 	{
-		StartCoroutine (CheckbattlestatusDelay (5));
+		StartCoroutine (CheckbattlestatusDelay (1));
 	}
 
 	/// <summary>
