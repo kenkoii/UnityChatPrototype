@@ -31,6 +31,13 @@ public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 
 	}
 
+	//for mode 2
+	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
+	{
+		FirebaseDatabaseFacade.Instance.AnswerPhase (receiveTime, receiveAnswer);
+
+	}
+
 
 
 	/// <summary>

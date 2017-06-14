@@ -29,18 +29,29 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		MyGlobalVariables.Instance.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
-			if (newParam.Key == ParamNames.Damage.ToString ()) {
-				battleController.SetAttack ();
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount > 1) {
-					battleController.CheckBattleStatus ();
+			if (MyGlobalVariables.Instance.modePrototype == 2) {
+				if (newParam.Key == ParamNames.Damage.ToString ()) {
+					//error here
+					//MyGlobalVariables.Instance.currentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
+					//skill here
+				}
+
+			} else {
+
+				if (newParam.Key == ParamNames.Damage.ToString ()) {
+					battleController.SetAttack ();
+					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount > 1) {
+						battleController.CheckBattleStatus ();
+					}
+				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
+					if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
+						//skill here
+					} 
 				}
 			}
 
-			else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-				if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
-					//skill here
-				} 
-			}
+
 				
 		}
 			
@@ -51,11 +62,44 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
+
+
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
-			if (battleCount > 1) {
-				PhaseManager.Instance.StartPhase2 ();
+			
+			int hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+			int hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+			int vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+			int vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+
+			if (MyGlobalVariables.Instance.currentParameter != null) {
+				if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
+				
+			
+					if (MyGlobalVariables.Instance.modePrototype == 2) {
+						if (hAnswer > vAnswer) {
+							battleController.SetAttack (0);
+						} else if (hAnswer < vAnswer) {
+							battleController.SetAttack (1);
+						} else {
+							if (hTime > vTime) {
+								battleController.SetAttack (0);
+							} else if (hTime < vTime) {
+								battleController.SetAttack (1);
+							} else {
+								battleController.SetAttack (2);
+							}
+						}
+					}
+			
+				}
+			} else {
+				if (battleCount > 1) {
+					PhaseManager.Instance.StartPhase2 ();
+				}
 			}
+
+
 			break;
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {

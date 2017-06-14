@@ -19,7 +19,7 @@ public class OrderIcon : MonoBehaviour, IQuestion {
 	private static List<string> questionsDone = new List<string>();
 	private List<string> choices = new List<string> ();
 
-	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;

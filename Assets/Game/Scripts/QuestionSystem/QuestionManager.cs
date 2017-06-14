@@ -35,8 +35,9 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 		}
 	}
 
-	public void SetQuestionEntry(int questionType, int questionTime, Action<int> onResult){
+	public void SetQuestionEntry(int questionType, int questionTime, Action<int, int> onResult){
 		questionTypeModals[questionType].SetActive (true);
+
 		QuestionController qc = new QuestionController ();
 		switch (questionType) {
 		case 0:
@@ -61,6 +62,7 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 		}
 	}
 	public void DebugOnClick(){
+		/*
 		int time;
 		Int32.TryParse (GameObject.Find ("Inputu").GetComponent<InputField> ().text, out time);
 		if (time > 0) {
@@ -86,7 +88,7 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 			GameObject.Find ("Indicator"+2).GetComponent<Image>().color = Color.white;
 			GameObject.Find ("Indicator"+3).GetComponent<Image>().color = Color.white;
 
-		}
+		}*/
 	}
 
 }

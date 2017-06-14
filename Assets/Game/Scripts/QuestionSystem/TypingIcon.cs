@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class TypingIcon : MonoBehaviour, IQuestion{
 	private static int round = 1;
-	private Action<int> onResult;
+	private Action<int,int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
 	private static string questionAnswer;
 	private string questionString;
@@ -25,7 +25,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	private static List<GameObject> inputlist = new List<GameObject>();
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
-	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		round = 1;
 		currentround = 1;
 		correctAnswers = 0;
@@ -87,10 +87,10 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 		}
 		ShuffleAlgo ();
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
-		hintMode ();
+		HintMode ();
 
 	}
-	public void hintMode(){
+	public void HintMode(){
 		outputlist [0].transform.GetChild(0).GetComponent<Text>().text = ""+questionAnswer [0].ToString().ToUpper();
 
 	}

@@ -26,5 +26,10 @@ public static class MyConst
 	public  const string BATTLE_STATUS_STATE = "State";
 	public  const string BATTLE_STATUS_COUNT = "Count";
 
+	public const string BATTLE_STATUS_HANSWER = "HAnswer";
+	public const string BATTLE_STATUS_HTIME = "HTime";
+	public const string BATTLE_STATUS_VANSWER= "VAnswer";
+	public const string BATTLE_STATUS_VTIME = "VTime";
+
 }
 

@@ -9,12 +9,12 @@ using System.IO;
 
 public class SelectLetterIcon : MonoBehaviour, IQuestion {
 	public string questionString; 
-	private Action<int> onResult;
+	private Action<int,int> onResult;
 	private string questionData = "";
 	private string answerData = "";
 	public string questionAnswer; 
 	private static int answerindex = 1;
-	//private int selectionlistcount = 13;
+	//private int selectionlistcount = 13;ß∫
 	private GameObject[] answerlist = new GameObject[13];
 	private GameObject[] selectionlist = new GameObject[13];
 	public static List<Question> questionlist;
@@ -36,7 +36,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 		set{ questionsDone = value;
 		}
 	}
-	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		round = 1;
 		answerindex = 1;
 		SelectLetterEvent sle = new SelectLetterEvent ();

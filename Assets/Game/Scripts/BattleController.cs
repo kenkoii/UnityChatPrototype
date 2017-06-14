@@ -42,7 +42,7 @@ public class BattleController : MonoBehaviour
 	public void StartPreTimer ()
 	{
 		StartCoroutine (StartPreparationDelay (prepareTime));
-		cachedBattleResult = battleResultText.GetComponent<Text>();
+		cachedBattleResult = battleResultText.GetComponent<Text> ();
 	}
 
 	IEnumerator StartPreparationDelay (int timer)
@@ -83,7 +83,7 @@ public class BattleController : MonoBehaviour
 			enemyHP = 0;
 		}
 	}
-		
+
 
 	public void Attack ()
 	{
@@ -93,21 +93,23 @@ public class BattleController : MonoBehaviour
 
 			if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
 				
-					enemyHP -= damage;
+				enemyHP -= damage;
 
 			} else {
-					playerHP -= damage;
+				playerHP -= damage;
 
 			}
 		}
 		//reset effects done by skill
-		MyGlobalVariables.Instance.ResetPlayerStats();
+		MyGlobalVariables.Instance.ResetPlayerStats ();
 	}
+
 
 	public void CheckBattleStatus ()
 	{
 		
 		StartCoroutine (CheckbattlestatusDelay (1));
+	
 	}
 
 	/// <summary>
@@ -140,11 +142,13 @@ public class BattleController : MonoBehaviour
 
 	}
 
-	public void ReturnToLobby(){
+	public void ReturnToLobby ()
+	{
 		SceneManager.LoadScene ("scene1");
 	}
 
-	public void SetPlayerGP(int playerGP){
+	public void SetPlayerGP (int playerGP)
+	{
 		Debug.Log ("GP EARNED" + playerGP);
 		this.playerGP += playerGP;
 	}
@@ -175,6 +179,79 @@ public class BattleController : MonoBehaviour
 	public void SetAttack ()
 	{
 		Attack ();
+	}
+
+	public void SetAttack (int attackOrder)
+	{
+		StartCoroutine (AttackMode2 (attackOrder));
+
+	}
+
+	IEnumerator AttackMode2 (int attackOrder)
+	{
+
+//		string username = (string)MyGlobalVariables.Instance.currentParameter ["username"];
+//		Dictionary<string, System.Object> param = (string)MyGlobalVariables.Instance.currentParameter ["param"];
+
+		string[] username = null;
+		Dictionary<string, System.Object>[] param = null;
+		int counter = 0;
+	
+
+		foreach (KeyValuePair<string, System.Object> newParam in MyGlobalVariables.Instance.currentParameter) {
+			username [counter] = newParam.Key.ToString ();
+			param [counter] = (Dictionary<string, System.Object>)newParam.Value;
+			counter++;
+		}
+
+
+		switch (attackOrder) {
+		case 0:
+			AttackMode2Attack (username [0], param [0]);
+			CheckBattleStatus ();
+			yield return new WaitForSeconds (0.5f);
+			AttackMode2Attack (username [1], param [1]);
+			CheckBattleStatus ();
+			break;
+		case 1:
+			AttackMode2Attack (username [1], param [1]);
+			CheckBattleStatus ();
+			yield return new WaitForSeconds (0.5f);
+			AttackMode2Attack (username [0], param [0]);
+			CheckBattleStatus ();
+			break;
+		case 2:
+			AttackMode2Attack (username [0], param [0]);
+			AttackMode2Attack (username [1], param [1]);
+			CheckBattleStatus ();
+			break;
+		}
+
+
+		MyGlobalVariables.Instance.currentParameter.Clear ();
+		//reset effects done by skill
+		MyGlobalVariables.Instance.ResetPlayerStats ();
+
+
+	
+	}
+
+	private void AttackMode2Attack (string attackerName, Dictionary<string, System.Object> attackerParam)
+	{
+	
+		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
+			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
+		
+			if (attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
+		
+				enemyHP -= damage;
+		
+			} else {
+				playerHP -= damage;
+		
+			}
+		}
+
 	}
 
 	public void SetSkill (ISkill skill)

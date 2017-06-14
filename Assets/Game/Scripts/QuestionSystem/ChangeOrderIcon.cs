@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	private static int round = 1;
-	private Action<int> onResult;
+	private Action<int,int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
 	private static string questionAnswer;
 	private string questionString;
@@ -25,7 +25,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	private static List<GameObject> inputlist = new List<GameObject>();
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
-	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		correctAnswers = 0;
 		round = 1;
 		currentround = 1;
