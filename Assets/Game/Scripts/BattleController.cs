@@ -181,9 +181,27 @@ public class BattleController : MonoBehaviour
 		Attack ();
 	}
 
-	public void SetAttack (int attackOrder)
+	public void SetAttackMode2 ()
 	{
-		StartCoroutine (AttackMode2 (attackOrder));
+		int attackOrder = 0;
+		if (MyGlobalVariables.Instance.modePrototype == 2) {
+			if (MyGlobalVariables.Instance.hAnswer > MyGlobalVariables.Instance.vAnswer) {
+				attackOrder = 0;
+			} else if (MyGlobalVariables.Instance.hAnswer < MyGlobalVariables.Instance.vAnswer) {
+				attackOrder = 1;
+			} else {
+				if (MyGlobalVariables.Instance.hTime > MyGlobalVariables.Instance.vTime) {
+					attackOrder = 0;
+				} else if (MyGlobalVariables.Instance.hTime < MyGlobalVariables.Instance.vTime) {
+					attackOrder = 1;
+				} else {
+					attackOrder = 2;
+				}
+			}
+			StartCoroutine (AttackMode2 (attackOrder));
+		}
+
+	
 
 	}
 
