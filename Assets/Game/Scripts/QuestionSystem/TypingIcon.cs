@@ -87,10 +87,13 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 		}
 		ShuffleAlgo ();
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
-
+		hintMode ();
 
 	}
+	public void hintMode(){
+		outputlist [0].transform.GetChild(0).GetComponent<Text>().text = ""+questionAnswer [0].ToString().ToUpper();
 
+	}
 	public void InputOnClick(){
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
@@ -132,9 +135,12 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	}
 	public void OutputOnClick(){
 		string answerclicked = "";
-		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
+		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "" ||
+			EventSystem.current.currentSelectedGameObject == outputlist[0]
+		) {
 			
 		} else {
+			
 			EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
 	}
@@ -169,10 +175,10 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 
 			questionData = splitter [0];
 			answerData = splitter [1];
-			if ((i % 2)==0) {
+			//if ((i % 2)==0) {
 				questionlist.Add (new Question (questionData, answerData, 0));
 
-			}
+			//}
 
 			i+=1;
 		}
