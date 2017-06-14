@@ -16,11 +16,12 @@ public class Phase2Controller : MonoBehaviour
 	private bool stoptimer = false;
 	private int timeLeft;
 	private BattleController battleController;
-
+	public Button attackButton;
 
 
 	public void OnEnable ()
 	{
+		
 		battleController = FindObjectOfType<BattleController> ();
 
 		if (skill1GPCost > battleController.playerGP) {
@@ -41,6 +42,10 @@ public class Phase2Controller : MonoBehaviour
 			skillButton3.interactable = true;
 		}
 
+		if (MyGlobalVariables.Instance.modePrototype == 2) {
+			attackButton.gameObject.SetActive (true);
+		}
+
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (true);
 		}
@@ -52,10 +57,20 @@ public class Phase2Controller : MonoBehaviour
 
 	
 	}
-
+		
 	void OnDisable ()
 	{
+		if (MyGlobalVariables.Instance.modePrototype == 2) {
+			attackButton.gameObject.SetActive (false);
+		}
 		CancelInvoke ("StartTimer");
+	}
+
+	private void AttackButton(){
+		ButtonEnable (false);
+		GameTimer.Instance.ToggleTimer (false);
+		FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+		stoptimer = false;
 	}
 
 	private void ButtonEnable (bool buttonEnable)

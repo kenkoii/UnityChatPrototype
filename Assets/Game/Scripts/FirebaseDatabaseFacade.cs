@@ -353,6 +353,22 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		reference.UpdateChildrenAsync (childUpdates);
 	}
 
+	//for mode 2
+	public void UpdateAnswerBattleStatus (string stateName, int stateCount, int hTime, int hAnswer, int vTime, int vAnswer)
+	{
+		battleStatusKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Push ().Key;
+		Dictionary<string, System.Object> entryValues = new Dictionary<string, System.Object> ();
+		entryValues.Add (MyConst.BATTLE_STATUS_STATE, stateName);
+		entryValues.Add (MyConst.BATTLE_STATUS_COUNT, "" + stateCount);
+		entryValues.Add (MyConst.BATTLE_STATUS_HTIME, "" + hTime);
+		entryValues.Add (MyConst.BATTLE_STATUS_HANSWER, "" + hAnswer);
+		entryValues.Add (MyConst.BATTLE_STATUS_VTIME, "" + vTime);
+		entryValues.Add (MyConst.BATTLE_STATUS_VANSWER, "" + vAnswer);
+		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_BATTLE_STATUS + "/" + battleStatusKey + "/"] = entryValues;
+		reference.UpdateChildrenAsync (childUpdates);
+	}
+
 	/// <summary>
 	/// listens when there is activity inside the RPC table in the same room
 	/// </summary>
@@ -402,7 +418,11 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 			//get the battlekey, create if host
 			if (mutableData.Value == null) {
-				UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+				if (MyGlobalVariables.Instance.modePrototype == 2) {
+					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+				} else {
+					UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+				}
 			} else {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
 
@@ -441,8 +461,44 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 					} 
 				} 
+					
+				mutableData.Value = battleStatus;
+				return TransactionResult.Success (mutableData);
+			});
 
 
+		});
+	}
+
+	//for mode 2
+	public void AnswerPhase (int receiveTime, int receiveAnswer)
+	{
+		GetLatestKey (1, delegate(string resultString) {
+
+			Debug.Log (resultString);
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+
+				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER)) {
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
+
+					if (isHost) {
+						battleStatus [MyConst.BATTLE_STATUS_HANSWER] = receiveAnswer.ToString ();
+						battleStatus [MyConst.BATTLE_STATUS_HTIME] = receiveTime.ToString ();
+					} else {
+						battleStatus [MyConst.BATTLE_STATUS_VANSWER] = receiveAnswer.ToString ();
+						battleStatus [MyConst.BATTLE_STATUS_VTIME] = receiveTime.ToString ();
+					}
+
+					if (battleCount == 2) {
+						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+					} 
+				} 
 
 				mutableData.Value = battleStatus;
 				return TransactionResult.Success (mutableData);
@@ -587,7 +643,12 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
 						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+
+						if (MyGlobalVariables.Instance.modePrototype == 2) {
+							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+						}
 					} 
 					mutableData.Value = battleStatus;
 					return TransactionResult.Success (mutableData);

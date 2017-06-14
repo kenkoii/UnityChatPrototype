@@ -27,6 +27,8 @@ public class MyGlobalVariables : SingletonMonoBehaviour<MyGlobalVariables>
 	public int modePrototype { get; set;}
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
+	public Dictionary<string, System.Object> currentParameter{ get; set; }
+
 
 
 	public void ResetPlayerStats(){

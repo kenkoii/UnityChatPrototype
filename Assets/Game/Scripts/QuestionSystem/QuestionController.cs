@@ -21,14 +21,14 @@ public class QuestionController : MonoBehaviour
 	private int totalGP;
 	private static string questionType = "";
 	private static int questionsTime;
-	public static Action<int> onResult;
+	public static Action<int,int> onResult;
 	// Use this for initialization
 	public bool onFinishQuestion {
 		get;
 		set;
 	}
 
-	public Action<int> OnResult {
+	public Action<int,int> OnResult {
 		get { 
 			return onResult;
 		}
@@ -63,7 +63,7 @@ public class QuestionController : MonoBehaviour
 		InvokeRepeating ("StartTimer", 0, 1);
 	}
 
-	public void SetQuestion (IQuestion questiontype, int qTime, Action<int> Result)
+	public void SetQuestion (IQuestion questiontype, int qTime, Action<int, int> Result)
 	{
 		GameObject entity = selectLetterIcon;
 		string entityChosen = questiontype.GetType ().ToString ();
@@ -122,7 +122,7 @@ public class QuestionController : MonoBehaviour
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("output" + i));
 		}
-		onResult.Invoke (correctAnswers);
+		onResult.Invoke (correctAnswers,timeLeft);
 		correctAnswers = 0;
 
 	}
