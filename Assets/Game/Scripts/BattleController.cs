@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /* Controls the battle */
 public class BattleController : MonoBehaviour
@@ -29,8 +30,8 @@ public class BattleController : MonoBehaviour
 	public Text enemyNameText;
 	public Text enemyHPText;
 
-	public Text battleResultText;
-
+	public GameObject battleResultText;
+	private Text cachedBattleResult;
 
 	private int attackCounter = 0;
 
@@ -41,7 +42,7 @@ public class BattleController : MonoBehaviour
 	public void StartPreTimer ()
 	{
 		StartCoroutine (StartPreparationDelay (prepareTime));
-		
+		cachedBattleResult = battleResultText.GetComponent<Text>();
 	}
 
 	IEnumerator StartPreparationDelay (int timer)
@@ -115,17 +116,19 @@ public class BattleController : MonoBehaviour
 	/// <param name="timer">Timer.</param>
 	IEnumerator CheckbattlestatusDelay (int timer)
 	{
+		
 		yield return new WaitForSeconds (timer);
 		if (enemyHP <= 0 || playerHP <= 0) {
 			if (enemyHP > 0 && playerHP <= 0) {
-				battleResultText.text = "LOSE";
+				cachedBattleResult.text = "LOSE";
 			} else if (playerHP > 0 && enemyHP <= 0) {
-				battleResultText.text = "WIN";
+				cachedBattleResult.text = "WIN";
 			} else {
-				battleResultText.text = "DRAW";
+				cachedBattleResult.text = "DRAW";
 			}
 
-			battleResultText.enabled = true;
+			battleResultText.SetActive (true);
+
 
 		} else {
 			if (FirebaseDatabaseFacade.Instance.isHost) {
@@ -134,6 +137,10 @@ public class BattleController : MonoBehaviour
 			PhaseManager.Instance.StartPhase1 ();
 		}
 
+	}
+
+	public void ReturnToLobby(){
+		SceneManager.LoadScene ("scene1");
 	}
 
 	public void SetPlayerGP(int playerGP){
