@@ -28,6 +28,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	public void Activate(GameObject entity,float timeduration,Action<int> Result){
 		round = 1;
 		currentround = 1;
+		correctAnswers = 0;
 		answerindex = 1;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();

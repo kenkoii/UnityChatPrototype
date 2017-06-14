@@ -8,6 +8,8 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 {
 
 	BattleController battleController;
+	int battleCount;
+	string battleState;
 
 	void Start ()
 	{
@@ -29,6 +31,9 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
 				battleController.SetAttack ();
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount > 1) {
+					battleController.CheckBattleStatus ();
+				}
 			}
 
 			else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
@@ -43,8 +48,8 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
-		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
+		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
+		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
@@ -60,7 +65,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			break;
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-				battleController.CheckBattleStatus ();
+
 			}
 		
 			break;

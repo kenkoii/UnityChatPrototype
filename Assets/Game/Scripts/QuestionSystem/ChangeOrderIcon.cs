@@ -26,6 +26,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
 	public void Activate(GameObject entity,float timeduration,Action<int> Result){
+		correctAnswers = 0;
 		round = 1;
 		currentround = 1;
 		answerindex = 1;

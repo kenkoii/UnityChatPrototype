@@ -16,7 +16,7 @@ public class Phase3Controller : MonoBehaviour
 		Debug.Log ("phase3 started");
 		battleController = FindObjectOfType<BattleController> ();
 		stoptimer = true;
-		timeLeft = 10;
+		timeLeft = 5;
 		InvokeRepeating ("StartTimer", 0, 1);
 
 		for (int i = 0; i < battleUI.Length; i++) {
