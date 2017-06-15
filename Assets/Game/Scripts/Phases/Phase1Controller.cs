@@ -14,7 +14,6 @@ public class Phase1Controller : MonoBehaviour
 	BattleController battleController;
 	private bool stoptimer = false;
 	private int timeLeft;
-	private int timeCount = 20;
 
 	public void OnEnable ()
 	{
@@ -47,12 +46,16 @@ public class Phase1Controller : MonoBehaviour
 		hasAnswered = true;
 		questionSelect.SetActive (false);
 		//call question callback here
-		QuestionManager.Instance.SetQuestionEntry (questionNumber, timeCount, delegate(int gp, int qtimeLeft) {
-			if (MyGlobalVariables.Instance.modePrototype == 2) {
+		QuestionManager.Instance.SetQuestionEntry (questionNumber, MyGlobalVariables.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 				RPCWrapper.Instance.RPCWrapAnswer (qtimeLeft, gp);
 			} else {
 				RPCWrapper.Instance.RPCWrapAnswer ();
 			}
+
+			//for mode 4
+			MyGlobalVariables.Instance.gpEarned = gp;
+
 			battleController.SetPlayerGP (gp);
 			HideUI ();
 		});
@@ -70,12 +73,16 @@ public class Phase1Controller : MonoBehaviour
 				return;
 			} 
 				
-			QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), timeCount, delegate(int gp, int qtimeLeft) {
-				if (MyGlobalVariables.Instance.modePrototype == 2) {
+			QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  MyGlobalVariables.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+				if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 					RPCWrapper.Instance.RPCWrapAnswer (qtimeLeft, gp);
 				} else {
 					RPCWrapper.Instance.RPCWrapAnswer ();
 				}
+
+				//for mode 4
+				MyGlobalVariables.Instance.gpEarned = gp;
+
 				battleController.SetPlayerGP (gp);
 				HideUI ();
 			});

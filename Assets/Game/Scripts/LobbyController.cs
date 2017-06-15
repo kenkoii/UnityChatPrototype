@@ -11,27 +11,20 @@ public class LobbyController : MonoBehaviour
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public GameObject prototypeModes;
-	public InputField userName;
 	BattleController battleController;
 
-	void Start(){
+	void Start ()
+	{
 		battleController = FindObjectOfType<BattleController> ();
 	}
 
 	public void SearchRoom ()
 	{
-		MyGlobalVariables.Instance.playerName = userName.text;
-		MyGlobalVariables.Instance.playerLife = 45;
-		MyGlobalVariables.Instance.playerGP = 0;
-		MyGlobalVariables.Instance.playerMaxGP = 9;
-		MyGlobalVariables.Instance.playerDamage = 5;
-
-
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
 			if (result) {
-					GoToGameRoom ();	
+				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
 			}
@@ -41,21 +34,13 @@ public class LobbyController : MonoBehaviour
 
 
 	}
-	public void modeOnChange(){
-		MyGlobalVariables.Instance.modePrototype = 1;
-		switch (prototypeModes.GetComponent<Dropdown> ().value) {
-		case 0:
-			Debug.Log ("Mode 1 Chosen");
-			MyGlobalVariables.Instance.modePrototype = 1;
-			break;
-		case 1:
-			Debug.Log ("Mode 2 Chosen");
-			MyGlobalVariables.Instance.modePrototype = 2;
-			break;
 
-		}
-		Debug.Log (MyGlobalVariables.Instance.modePrototype);
+	public void ModeOnChange ()
+	{
+		MyGlobalVariables.Instance.modePrototype = (ModeEnum)prototypeModes.GetComponent<Dropdown> ().value;
+		GameController.Instance.UpdateGame ();
 	}
+
 	public void CancelRoomSearch ()
 	{
 		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();
@@ -64,10 +49,10 @@ public class LobbyController : MonoBehaviour
 
 	private void GoToGameRoom ()
 	{
-			lobbyRoom.SetActive (false);
-			gameRoomUI.SetActive (true);
-			gameRoomAssets.SetActive (true);
-			battleController.StartPreTimer ();
-			EffectManager.Instance.StopLoadingScreen();
+		lobbyRoom.SetActive (false);
+		gameRoomUI.SetActive (true);
+		gameRoomAssets.SetActive (true);
+		battleController.StartPreTimer ();
+		EffectManager.Instance.StopLoadingScreen ();
 	}
 }

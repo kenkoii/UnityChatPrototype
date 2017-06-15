@@ -13,7 +13,6 @@ public class Phase3Controller : MonoBehaviour
 	void OnEnable ()
 	{
 		GameTimer.Instance.ToggleTimer (false);
-		Debug.Log ("phase3 started");
 		battleController = FindObjectOfType<BattleController> ();
 		stoptimer = true;
 		timeLeft = 10;
@@ -23,7 +22,6 @@ public class Phase3Controller : MonoBehaviour
 			battleUI [i].SetActive (false);
 		}
 		battleController.SendAttackToDatabase ();
-		Debug.Log ("phase3 started...");
 	}
 
 
