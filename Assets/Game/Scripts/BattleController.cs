@@ -132,10 +132,13 @@ public class BattleController : MonoBehaviour
 
 			battleResultText.SetActive (true);
 
-
 		} else {
 			if (FirebaseDatabaseFacade.Instance.isHost) {
-				FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+				if (MyGlobalVariables.Instance.modePrototype == 2) {
+					FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+				} else {
+					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+				}
 			}
 			PhaseManager.Instance.StartPhase1 ();
 		}
@@ -181,77 +184,106 @@ public class BattleController : MonoBehaviour
 		Attack ();
 	}
 
-	public void SetAttackMode2 ()
+	public void SetAttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
 	{
 		int attackOrder = 0;
-		if (MyGlobalVariables.Instance.modePrototype == 2) {
-			if (MyGlobalVariables.Instance.hAnswer > MyGlobalVariables.Instance.vAnswer) {
+
+		if (MyGlobalVariables.Instance.hAnswer > MyGlobalVariables.Instance.vAnswer) {
+			attackOrder = 0;
+		} else if (MyGlobalVariables.Instance.hAnswer < MyGlobalVariables.Instance.vAnswer) {
+			attackOrder = 1;
+		} else {
+			if (MyGlobalVariables.Instance.hTime > MyGlobalVariables.Instance.vTime) {
 				attackOrder = 0;
-			} else if (MyGlobalVariables.Instance.hAnswer < MyGlobalVariables.Instance.vAnswer) {
+			} else if (MyGlobalVariables.Instance.hTime < MyGlobalVariables.Instance.vTime) {
 				attackOrder = 1;
 			} else {
-				if (MyGlobalVariables.Instance.hTime > MyGlobalVariables.Instance.vTime) {
-					attackOrder = 0;
-				} else if (MyGlobalVariables.Instance.hTime < MyGlobalVariables.Instance.vTime) {
-					attackOrder = 1;
-				} else {
-					attackOrder = 2;
-				}
+				attackOrder = 2;
 			}
-			StartCoroutine (AttackMode2 (attackOrder));
 		}
+		StartCoroutine (AttackMode2 (attackOrder, currentParam));
+
 
 	
 
 	}
 
-	IEnumerator AttackMode2 (int attackOrder)
+	IEnumerator AttackMode2 (int attackOrder, Dictionary<string, Dictionary<string, object>> currentParam)
 	{
 
-//		string username = (string)MyGlobalVariables.Instance.currentParameter ["username"];
-//		Dictionary<string, System.Object> param = (string)MyGlobalVariables.Instance.currentParameter ["param"];
 
-		string[] username = null;
-		Dictionary<string, System.Object>[] param = null;
-		int counter = 0;
+		List<string> username = new List<string> ();
+		List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
+
 	
 
-		foreach (KeyValuePair<string, System.Object> newParam in MyGlobalVariables.Instance.currentParameter) {
-			username [counter] = newParam.Key.ToString ();
-			param [counter] = (Dictionary<string, System.Object>)newParam.Value;
-			counter++;
+		foreach (KeyValuePair<string, Dictionary<string, System.Object>> newParam in currentParam) {
+			username.Add(newParam.Key.ToString ());
+			param.Add (newParam.Value);
 		}
 
 
 		switch (attackOrder) {
 		case 0:
 			AttackMode2Attack (username [0], param [0]);
-			CheckBattleStatus ();
-			yield return new WaitForSeconds (0.5f);
+			CheckMode2BattleStatus (false);
+			yield return new WaitForSeconds (1);
 			AttackMode2Attack (username [1], param [1]);
-			CheckBattleStatus ();
+			CheckMode2BattleStatus (true);
 			break;
 		case 1:
 			AttackMode2Attack (username [1], param [1]);
-			CheckBattleStatus ();
-			yield return new WaitForSeconds (0.5f);
+			CheckMode2BattleStatus (false);
+			yield return new WaitForSeconds (1);
 			AttackMode2Attack (username [0], param [0]);
-			CheckBattleStatus ();
+			CheckMode2BattleStatus (true);
 			break;
 		case 2:
 			AttackMode2Attack (username [0], param [0]);
 			AttackMode2Attack (username [1], param [1]);
-			CheckBattleStatus ();
+			CheckMode2BattleStatus (true);
 			break;
 		}
-
-
-		MyGlobalVariables.Instance.currentParameter.Clear ();
+			
 		//reset effects done by skill
 		MyGlobalVariables.Instance.ResetPlayerStats ();
 
 
 	
+	}
+
+	public void CheckMode2BattleStatus (bool secondCheck)
+	{
+		
+		StartCoroutine (CheckMode2BattleDelay(secondCheck));
+	}
+
+	IEnumerator CheckMode2BattleDelay(bool secondCheck){
+		if (enemyHP <= 0 || playerHP <= 0) {
+			if (enemyHP > 0 && playerHP <= 0) {
+				cachedBattleResult.text = "LOSE";
+			} else if (playerHP > 0 && enemyHP <= 0) {
+				cachedBattleResult.text = "WIN";
+			} else {
+				cachedBattleResult.text = "DRAW";
+			}
+
+			battleResultText.SetActive (true);
+			StopAllCoroutines ();
+
+		} else {
+			if (secondCheck) {
+				if (FirebaseDatabaseFacade.Instance.isHost) {
+					if (MyGlobalVariables.Instance.modePrototype == 2) {
+						FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+					} else {
+						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+					}
+				}
+				yield return new WaitForSeconds (1);
+				PhaseManager.Instance.StartPhase1 ();
+			}
+		}
 	}
 
 	private void AttackMode2Attack (string attackerName, Dictionary<string, System.Object> attackerParam)

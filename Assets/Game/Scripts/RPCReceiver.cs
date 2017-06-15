@@ -6,7 +6,7 @@ using UnityEngine;
 /* Handles receiving of RPC status */
 public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 {
-
+	Dictionary<string, Dictionary<string, object>> thisCurrentParameter = new Dictionary<string, Dictionary<string, object>> ();
 	BattleController battleController;
 	int battleCount;
 	string battleState;
@@ -32,13 +32,15 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 			if (MyGlobalVariables.Instance.modePrototype == 2) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
 
-					Debug.Log (MyGlobalVariables.Instance.attackerName);
-					Debug.Log ( MyGlobalVariables.Instance.attackerParam.Count);
 
-					MyGlobalVariables.Instance.currentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
 
-					if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
-						battleController.SetAttackMode2 ();
+					thisCurrentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+
+
+					if (thisCurrentParameter.Count == 2) {
+						battleController.SetAttackMode2 (thisCurrentParameter);
+						thisCurrentParameter.Clear ();
+
 					} 
 
 				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
@@ -74,20 +76,16 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
-			
-			MyGlobalVariables.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-			MyGlobalVariables.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-			MyGlobalVariables.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-			MyGlobalVariables.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
 
-
-			if (MyGlobalVariables.Instance.currentParameter.Count == 2) {
-				
-			
-			} else {
-				if (battleCount > 1) {
-					PhaseManager.Instance.StartPhase2 ();
-				}
+			if (MyGlobalVariables.Instance.modePrototype == 2) {
+				MyGlobalVariables.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+				MyGlobalVariables.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+				MyGlobalVariables.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+				MyGlobalVariables.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+			}
+			 
+			if (battleCount > 1) {
+				PhaseManager.Instance.StartPhase2 ();
 			}
 
 

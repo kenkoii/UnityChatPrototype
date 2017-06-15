@@ -43,6 +43,7 @@ public class Phase2Controller : MonoBehaviour
 		}
 
 		if (MyGlobalVariables.Instance.modePrototype == 2) {
+			attackButton.interactable = true;
 			attackButton.gameObject.SetActive (true);
 		}
 
@@ -66,10 +67,10 @@ public class Phase2Controller : MonoBehaviour
 		CancelInvoke ("StartTimer");
 	}
 
-	private void AttackButton(){
+	public void AttackButton(){
 		ButtonEnable (false);
 		GameTimer.Instance.ToggleTimer (false);
-		FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+		RPCWrapper.Instance.RPCWrapSkill ();
 		stoptimer = false;
 	}
 
@@ -78,6 +79,7 @@ public class Phase2Controller : MonoBehaviour
 		skillButton1.interactable = buttonEnable;
 		skillButton2.interactable = buttonEnable;
 		skillButton3.interactable = buttonEnable;
+		attackButton.interactable = buttonEnable;
 	}
 
 	public void SelectSkill1 ()
@@ -110,7 +112,7 @@ public class Phase2Controller : MonoBehaviour
 			ButtonEnable (false);
 			GameTimer.Instance.ToggleTimer (false);
 				
-			FirebaseDatabaseFacade.Instance.CheckSkillPhase ();
+			RPCWrapper.Instance.RPCWrapSkill ();
 			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 

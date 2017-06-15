@@ -483,7 +483,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER)) {
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 
@@ -540,7 +540,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void SkillPhase (string name, string param)
+	public void SkillPhase ()
 	{
 		GetLatestKey (2, delegate(string resultString) {
 
@@ -552,16 +552,14 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 			
 
-//				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL)) {
-//
-//					SetParam (name, param);
-//					battleCount++;
-//					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-//
-//					if (battleCount == 2) {
-//						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-//					} 
-//				} 
+				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
+					battleCount++;
+					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
+
+					if (battleCount == 2) {
+						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+					} 
+				} 
 
 				mutableData.Value = battleStatus;
 				return TransactionResult.Success (mutableData);
@@ -613,7 +611,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)) {
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)  && battleCount < 2) {
 					SetParam (name, param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
