@@ -26,17 +26,7 @@ public class LobbyController : MonoBehaviour
 		MyGlobalVariables.Instance.playerMaxGP = 9;
 		MyGlobalVariables.Instance.playerDamage = 5;
 
-		switch (prototypeModes.GetComponent<Dropdown> ().value) {
-		case 0:
-			Debug.Log ("Mode 1 Chosen");
-			MyGlobalVariables.Instance.modePrototype = 1;
-			break;
-		case 1:
-			Debug.Log ("Mode 2 Chosen");
-			MyGlobalVariables.Instance.modePrototype = 2;
-			break;
 
-		}
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
@@ -51,7 +41,21 @@ public class LobbyController : MonoBehaviour
 
 
 	}
+	public void modeOnChange(){
+		MyGlobalVariables.Instance.modePrototype = 1;
+		switch (prototypeModes.GetComponent<Dropdown> ().value) {
+		case 0:
+			Debug.Log ("Mode 1 Chosen");
+			MyGlobalVariables.Instance.modePrototype = 1;
+			break;
+		case 1:
+			Debug.Log ("Mode 2 Chosen");
+			MyGlobalVariables.Instance.modePrototype = 2;
+			break;
 
+		}
+		Debug.Log (MyGlobalVariables.Instance.modePrototype);
+	}
 	public void CancelRoomSearch ()
 	{
 		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();

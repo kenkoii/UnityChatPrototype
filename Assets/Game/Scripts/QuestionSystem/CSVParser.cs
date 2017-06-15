@@ -17,9 +17,9 @@ public class CSVParser {
 
 		csvFile = Resources.Load (resource) as TextAsset;
 		List<string> questions = new List<string> ();
-		switch(resource){
+		switch (resource) {
 		case "wingquestion":
-			
+
 			string[] records = csvFile.text.Split (lineSeperater);
 			foreach (string record in records) {
 
@@ -89,40 +89,35 @@ public class CSVParser {
 			}
 			break;
 
-		case "ordersample":
-			string[] recordorder = csvFile.text.Split (lineSeperater);
-			foreach (string record in recordorder) {
+		case "wordchoice":
+			string[] wordChoiceRecord = csvFile.text.Split (lineSeperater);
+			foreach (string record in wordChoiceRecord) {
+				string[] fields = record.Split (fieldSeperator);
 				index += 1;
-
 				if (index > 1) {
-					string[] fieldorder = record.Split (fieldSeperator);
-					foreach (string field in fieldorder) {
-						fieldindexer +=1;
-						switch(fieldindexer){
+					foreach (string field in fields) {
+						fieldindexer += 1;
+						switch (fieldindexer) {
 						case 1:
 							questionData = field;
 							break;
-						default:
-
-							if (fieldindexer > 4) {
-								answerData = answerData + "," + field;
-								questions.Add (questionData + "]" + answerData);
-								fieldindexer = 0;
-								answerData = "";
-								questionData = "";
-							} else {
-								
-								answerData = fieldindexer == 2 ? field : answerData + "," + field;
-							}
+						case 2:
+							answerData = field;
+							break;
+						case 3:
+							answerData = answerData + "]" + field;
+							break;
+						case 4:
+							answerData = answerData + "]" + field;
+							questions.Add (questionData + "]" + answerData);
+							questionData = "";
+							fieldindexer = 0;
 							break;
 						}
-							
 					}
-				
 				}
 
 			}
-
 			break;
 		}
 		return questions;

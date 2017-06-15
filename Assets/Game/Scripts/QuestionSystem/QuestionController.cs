@@ -11,6 +11,7 @@ public class QuestionController : MonoBehaviour
 	private GameObject selectLetterIcon;
 	private GameObject typingIcon;
 	private GameObject changeOrderIcon;
+	private GameObject wordChoiceIcon;
 	public static int getround;
 	private static int correctAnswers;
 	private static bool stoptimer = false;
@@ -80,6 +81,10 @@ public class QuestionController : MonoBehaviour
 		case "ChangeOrderIcon":
 			entity = changeOrderIcon;
 			modalName = "ChangeOrderModal";
+			break;
+		case "WordChoiceIcon":
+			entity = wordChoiceIcon;
+			modalName = "WordChoiceIcon";
 			break;
 		}
 		for (int i = 0; i < 12; i++) {

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 {
 	private static int questiontype = 0;
-	public GameObject[] questionTypeModals = new GameObject[4];
+	public GameObject[] questionTypeModals = new GameObject[5];
 
 	private int numberofQuestionTypes = 2;
 	private List<string> questionTypeName = new List<string>();
@@ -18,6 +18,7 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 		questionTypeName.Add ("SelectLetterIconModal");
 		questionTypeName.Add ("TypingModal");
 		questionTypeName.Add ("ChangeOrderModal");
+		questionTypeName.Add ("WordChoiceModal");
 		numberofQuestionTypes = questionTypeName.Count;
 		// 0 = SelectLetter
 		// 1 = Order
@@ -57,6 +58,12 @@ public class QuestionManager : SingletonMonoBehaviour<QuestionManager>
 			//questionTypeModals[2].SetActive (true);
 			ChangeOrderIcon changeOrderIcon = new ChangeOrderIcon ();
 			qc.SetQuestion (changeOrderIcon, questionTime, onResult);
+			qc.TimeLeft = questionTime;
+			break;
+		case 3:
+			//questionTypeModals[2].SetActive (true);
+			WordChoiceIcon wordchoiceIcon = new WordChoiceIcon ();
+			qc.SetQuestion (wordchoiceIcon, questionTime, onResult);
 			qc.TimeLeft = questionTime;
 			break;
 		}
