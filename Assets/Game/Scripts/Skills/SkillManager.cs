@@ -17,7 +17,12 @@ public class SkillManager : SingletonMonoBehaviour<SkillManager>
 		battleController = FindObjectOfType<BattleController> ();
 
 		//test set skill
-		SetSkill1(new Skill1());
+		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode4) {
+			SetSkill1 (new Skill2 ());
+		} else {
+			SetSkill1 (new Skill1 ());
+		}
+
 	}
 
 	/// <summary>
@@ -30,15 +35,18 @@ public class SkillManager : SingletonMonoBehaviour<SkillManager>
 
 
 	//to easily set skill in future
-	public void SetSkill1(ISkill skill1){
+	public void SetSkill1 (ISkill skill1)
+	{
 		this.skill1 = skill1;
 	}
 
-	public void SetSkill2(ISkill skill2){
+	public void SetSkill2 (ISkill skill2)
+	{
 		this.skill2 = skill2;
 	}
 
-	public void SetSkill3(ISkill skill3){
+	public void SetSkill3 (ISkill skill3)
+	{
 		this.skill3 = skill3;
 	}
 }

@@ -83,7 +83,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	void InitializeFirebase ()
 	{
 
-
 		#if UNITY_EDITOR
 		// Set this before calling into the realtime database.
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl (MyConst.URL_FIREBASE_DATABASE);
@@ -108,6 +107,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		connectionReference = FirebaseDatabase.DefaultInstance.GetReferenceFromUrl (MyConst.URL_FIREBASE_DATABASE_CONNECTION);
 		connectionReference.ValueChanged += HandleDatabaseConnection;
 	}
+		
 
 	/// <summary>
 	/// Handles the database connection.
@@ -306,6 +306,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	{
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
 		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
+		MyGlobalVariables.Instance.playerName = "Player 1";
 	}
 
 	/// <summary>
@@ -314,6 +315,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	private void JoinRoom ()
 	{
 		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL);
+		MyGlobalVariables.Instance.playerName = "Player 2";
 	}
 
 	/// <summary>
@@ -418,7 +420,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 			//get the battlekey, create if host
 			if (mutableData.Value == null) {
-				if (MyGlobalVariables.Instance.modePrototype == 2) {
+				if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				} else {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
@@ -509,33 +511,6 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	}
 
 	/// <summary>
-	/// Checks the answer phase. If still no count, then proceed to next phase
-	/// </summary>
-	public void CheckAnswerPhase ()
-	{
-		if (isHost) {
-			GetLatestKey (1, delegate(string resultString) {
-				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
-					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-					if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER) && battleCount < 2) {
-						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-					} 
-					mutableData.Value = battleStatus;
-					return TransactionResult.Success (mutableData);
-				});
-			});
-		}
-
-	}
-
-
-
-	/// <summary>
 	/// Skills Phase. Increment skill count in battle status table
 	/// </summary>
 	/// <param name="name">Name.</param>
@@ -568,32 +543,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 
 	}
-
-	/// <summary>
-	/// Checks the skill phase. If still no count, then proceed to next phase
-	/// </summary>
-	public void CheckSkillPhase ()
-	{
-		if (isHost) {
-			GetLatestKey (2, delegate(string resultString) {
-				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
-					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-
-					mutableData.Value = battleStatus;
-
-					return TransactionResult.Success (mutableData);
-				});
-			});
-		}
-
-	}
-
+		
 	/// <summary>
 	/// Skills Phase. Increment attack count in battle status table
 	/// </summary>
@@ -642,7 +592,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
 						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
 
-						if (MyGlobalVariables.Instance.modePrototype == 2) {
+						if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);

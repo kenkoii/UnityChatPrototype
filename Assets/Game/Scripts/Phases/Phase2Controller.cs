@@ -42,7 +42,7 @@ public class Phase2Controller : MonoBehaviour
 			skillButton3.interactable = true;
 		}
 
-		if (MyGlobalVariables.Instance.modePrototype == 2) {
+		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2 || MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode3) {
 			attackButton.interactable = true;
 			attackButton.gameObject.SetActive (true);
 		}
@@ -61,7 +61,7 @@ public class Phase2Controller : MonoBehaviour
 		
 	void OnDisable ()
 	{
-		if (MyGlobalVariables.Instance.modePrototype == 2) {
+		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2 || MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode3) {
 			attackButton.gameObject.SetActive (false);
 		}
 		CancelInvoke ("StartTimer");

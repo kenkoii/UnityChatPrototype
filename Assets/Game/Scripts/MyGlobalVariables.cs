@@ -24,7 +24,7 @@ public class MyGlobalVariables : SingletonMonoBehaviour<MyGlobalVariables>
 
 	public int battleCount{ get; set; }
 
-	public int modePrototype { get; set; }
+	public ModeEnum modePrototype { get; set; }
 
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
@@ -37,6 +37,9 @@ public class MyGlobalVariables : SingletonMonoBehaviour<MyGlobalVariables>
 
 	public int vTime{ get; set; }
 
+	public int answerQuestionTime{ get; set; }
+
+	public int gpEarned{ get; set; }
 
 
 	public void ResetPlayerStats ()

@@ -83,27 +83,7 @@ public class BattleController : MonoBehaviour
 			enemyHP = 0;
 		}
 	}
-
-
-	public void Attack ()
-	{
 		
-		if (MyGlobalVariables.Instance.attackerParam [ParamNames.Damage.ToString ()] != null) {
-			int damage = int.Parse (MyGlobalVariables.Instance.attackerParam [ParamNames.Damage.ToString ()].ToString ());
-
-			if (MyGlobalVariables.Instance.attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
-				
-				enemyHP -= damage;
-
-			} else {
-				playerHP -= damage;
-
-			}
-		}
-		//reset effects done by skill
-		MyGlobalVariables.Instance.ResetPlayerStats ();
-	}
-
 
 	public void CheckBattleStatus ()
 	{
@@ -134,7 +114,7 @@ public class BattleController : MonoBehaviour
 
 		} else {
 			if (FirebaseDatabaseFacade.Instance.isHost) {
-				if (MyGlobalVariables.Instance.modePrototype == 2) {
+				if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 					FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				} else {
 					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
@@ -202,20 +182,12 @@ public class BattleController : MonoBehaviour
 			}
 		}
 		StartCoroutine (AttackMode2 (attackOrder, currentParam));
-
-
-	
-
 	}
 
 	IEnumerator AttackMode2 (int attackOrder, Dictionary<string, Dictionary<string, object>> currentParam)
 	{
-
-
 		List<string> username = new List<string> ();
 		List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
-
-	
 
 		foreach (KeyValuePair<string, Dictionary<string, System.Object>> newParam in currentParam) {
 			username.Add (newParam.Key.ToString ());
@@ -250,30 +222,28 @@ public class BattleController : MonoBehaviour
 
 		switch (attackOrder) {
 		case 0:
-			AttackMode2Attack (username [0], param [0]);
+			AttackParameter (username [0], param [0]);
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (1);
-			AttackMode2Attack (username [1], param [1]);
+			AttackParameter (username [1], param [1]);
 			CheckMode2BattleStatus (true);
 			break;
 		case 1:
-			AttackMode2Attack (username [1], param [1]);
+			AttackParameter (username [1], param [1]);
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (1);
-			AttackMode2Attack (username [0], param [0]);
+			AttackParameter (username [0], param [0]);
 			CheckMode2BattleStatus (true);
 			break;
 		case 2:
-			AttackMode2Attack (username [0], param [0]);
-			AttackMode2Attack (username [1], param [1]);
+			AttackParameter (username [0], param [0]);
+			AttackParameter (username [1], param [1]);
 			CheckMode2BattleStatus (true);
 			break;
 		}
 			
 		//reset effects done by skill
 		MyGlobalVariables.Instance.ResetPlayerStats ();
-
-
 	
 	}
 
@@ -300,7 +270,7 @@ public class BattleController : MonoBehaviour
 		} else {
 			if (secondCheck) {
 				if (FirebaseDatabaseFacade.Instance.isHost) {
-					if (MyGlobalVariables.Instance.modePrototype == 2) {
+					if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 						FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 					} else {
 						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
@@ -312,7 +282,7 @@ public class BattleController : MonoBehaviour
 		}
 	}
 
-	private void AttackMode2Attack (string attackerName, Dictionary<string, System.Object> attackerParam)
+	private void AttackParameter (string attackerName, Dictionary<string, System.Object> attackerParam)
 	{
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
@@ -329,12 +299,20 @@ public class BattleController : MonoBehaviour
 
 	}
 
+	private void Attack ()
+	{
+		AttackParameter (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+		//reset effects done by skill
+		MyGlobalVariables.Instance.ResetPlayerStats ();
+	}
+		
+
 	public void SetSkill (ISkill skill)
 	{
 		skill.Activate (this.gameObject);
 	}
 		
-	//test attack
+	//send attack to firebase
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();

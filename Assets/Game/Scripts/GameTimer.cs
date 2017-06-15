@@ -18,8 +18,6 @@ public class GameTimer : SingletonMonoBehaviour<GameTimer> {
 		gameTimerText.enabled = toggleFlag;
 		gameTimerImage.enabled = toggleFlag;
 	}
-
-
-
+		
 
 }

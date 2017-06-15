@@ -29,7 +29,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		MyGlobalVariables.Instance.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
-			if (MyGlobalVariables.Instance.modePrototype == 2) {
+			if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
 					thisCurrentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
 
@@ -74,7 +74,7 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
-			if (MyGlobalVariables.Instance.modePrototype == 2) {
+			if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
 				MyGlobalVariables.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
 				MyGlobalVariables.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
 				MyGlobalVariables.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
