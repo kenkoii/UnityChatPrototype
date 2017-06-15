@@ -218,8 +218,33 @@ public class BattleController : MonoBehaviour
 	
 
 		foreach (KeyValuePair<string, Dictionary<string, System.Object>> newParam in currentParam) {
-			username.Add(newParam.Key.ToString ());
+			username.Add (newParam.Key.ToString ());
 			param.Add (newParam.Value);
+		}
+
+
+		//change order of list if host or visitor
+		if (FirebaseDatabaseFacade.Instance.isHost) {
+			if (username [0] != MyGlobalVariables.Instance.playerName) {
+				string tempName = username [1];
+				Dictionary<string, System.Object> tempParam = param [1];
+
+				username.Insert (1, username [0]);
+				username.Insert (0, tempName);
+				param.Insert (1, param [0]);
+				param.Insert (0, tempParam);
+			}
+		} else {
+			if (username [1] != MyGlobalVariables.Instance.playerName) {
+				string tempName = username [0];
+				Dictionary<string, System.Object> tempParam = param [0];
+
+				username.Insert (0, username [1]);
+				username.Insert (1, tempName);
+				param.Insert (0, param [1]);
+				param.Insert (1, tempParam);
+			}
+
 		}
 
 
@@ -255,10 +280,11 @@ public class BattleController : MonoBehaviour
 	public void CheckMode2BattleStatus (bool secondCheck)
 	{
 		
-		StartCoroutine (CheckMode2BattleDelay(secondCheck));
+		StartCoroutine (CheckMode2BattleDelay (secondCheck));
 	}
 
-	IEnumerator CheckMode2BattleDelay(bool secondCheck){
+	IEnumerator CheckMode2BattleDelay (bool secondCheck)
+	{
 		if (enemyHP <= 0 || playerHP <= 0) {
 			if (enemyHP > 0 && playerHP <= 0) {
 				cachedBattleResult.text = "LOSE";
@@ -288,7 +314,6 @@ public class BattleController : MonoBehaviour
 
 	private void AttackMode2Attack (string attackerName, Dictionary<string, System.Object> attackerParam)
 	{
-	
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
 		

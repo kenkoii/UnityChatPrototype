@@ -86,18 +86,24 @@ public class Phase2Controller : MonoBehaviour
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
+		GameTimer.Instance.ToggleTimer (false);
+		stoptimer = false;
 	}
 
 	public void SelectSkill2 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
+		GameTimer.Instance.ToggleTimer (false);
+		stoptimer = false;
 	}
 
 	public void SelectSkill3 ()
 	{
 		SkillManager.Instance.ActivateSkill1 ();
 		ButtonEnable (false);
+		GameTimer.Instance.ToggleTimer (false);
+		stoptimer = false;
 	}
 
 	private void StartTimer ()
