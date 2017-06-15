@@ -16,7 +16,7 @@ public class Skill1 : ISkill
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.SkillDamage.ToString ()] = 10;
 
-		RPCWrapper.Instance.RPCWrapSkill (param);
+		RPCWrapper.Instance.RPCWrapSkill ();
 	}
 
 

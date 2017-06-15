@@ -19,9 +19,9 @@ public class RPCWrapper: SingletonMonoBehaviour<RPCWrapper>
 
 	}
 
-	public void RPCWrapSkill (Dictionary<string, System.Object> param)
+	public void RPCWrapSkill ()
 	{
-		FirebaseDatabaseFacade.Instance.SkillPhase (MyGlobalVariables.Instance.playerName,DicToJsonStr (param));
+		FirebaseDatabaseFacade.Instance.SkillPhase ();
 
 	}
 
