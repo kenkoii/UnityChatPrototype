@@ -10,7 +10,6 @@ public class Skill1 : ISkill
 	{
 
 		MyGlobalVariables.Instance.playerDamage += 10;
-		PlayerAnimationController.Instance.Skill1Animate ();
 		entity.GetComponent<BattleController> ().playerGP -= skillCost;
 
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
