@@ -21,7 +21,7 @@ public class LobbyController : MonoBehaviour
 	public void SearchRoom ()
 	{
 		MyGlobalVariables.Instance.playerName = userName.text;
-		MyGlobalVariables.Instance.playerLife = 30;
+		MyGlobalVariables.Instance.playerLife = 45;
 		MyGlobalVariables.Instance.playerGP = 0;
 		MyGlobalVariables.Instance.playerMaxGP = 9;
 		MyGlobalVariables.Instance.playerDamage = 5;

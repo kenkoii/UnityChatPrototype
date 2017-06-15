@@ -31,9 +31,6 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (MyGlobalVariables.Instance.modePrototype == 2) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
-
-
-
 					thisCurrentParameter.Add (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
 
 
