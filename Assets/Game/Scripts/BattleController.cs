@@ -224,12 +224,14 @@ public class BattleController : MonoBehaviour
 		case 0:
 			AttackParameter (username [0], param [0]);
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			yield return new WaitForSeconds (0.5f);
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [1], param [1]);
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			yield return new WaitForSeconds (0.5f);
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
 			CheckMode2BattleStatus (true);
@@ -237,12 +239,14 @@ public class BattleController : MonoBehaviour
 		case 1:
 			AttackParameter (username [1], param [1]);
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			yield return new WaitForSeconds (0.5f);
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [0], param [0]);
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			yield return new WaitForSeconds (0.5f);
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
 			CheckMode2BattleStatus (true);
@@ -251,7 +255,9 @@ public class BattleController : MonoBehaviour
 			AttackParameter (username [0], param [0]);
 			AttackParameter (username [1], param [1]);
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			AudioController.Instance.PlaySFX ("UnityAttack");
 			yield return new WaitForSeconds (0.5f);
 			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
 			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
@@ -277,15 +283,18 @@ public class BattleController : MonoBehaviour
 				cachedBattleResult.text = "LOSE";
 				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
 				CharacterAnimationController.Instance.SetTriggerAnim (false, "win");
+				AudioController.Instance.PlaySFX ("UnityLose");
 			} else if (playerHP > 0 && enemyHP <= 0) {
 				cachedBattleResult.text = "WIN";
 				CharacterAnimationController.Instance.SetTriggerAnim (true, "win");
 				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
+				AudioController.Instance.PlaySFX ("UnityWin");
 
 			} else {
 				cachedBattleResult.text = "DRAW";
 				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
 				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
+				AudioController.Instance.PlaySFX ("UnityLose");
 			}
 
 			battleResultText.SetActive (true);

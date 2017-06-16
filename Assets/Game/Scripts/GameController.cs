@@ -5,7 +5,6 @@ public class GameController : SingletonMonoBehaviour<GameController>
 	void Start ()
 	{
 		MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode1;
-		Debug.Log (MyGlobalVariables.Instance.modePrototype);
 	}
 
 	public void UpdateGame ()

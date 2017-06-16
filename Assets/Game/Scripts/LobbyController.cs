@@ -22,6 +22,7 @@ public class LobbyController : MonoBehaviour
 
 	public void SearchRoom ()
 	{
+		AudioController.Instance.PlaySFX ("ClickButton");
 		EffectManager.Instance.StartMatchingScreen ();
 		FirebaseDatabaseFacade.Instance.SearchRoom (delegate(bool result) {
 
@@ -59,11 +60,13 @@ public class LobbyController : MonoBehaviour
 	public void CancelRoomSearch ()
 	{
 		FirebaseDatabaseFacade.Instance.CancelRoomSearch ();
+		AudioController.Instance.PlaySFX ("ClickButton");
 	}
 
 
 	private void GoToGameRoom ()
 	{
+		AudioController.Instance.PlayBGM ("BGM");
 		lobbyRoom.SetActive (false);
 		gameRoomUI.SetActive (true);
 		gameRoomAssets.SetActive (true);
