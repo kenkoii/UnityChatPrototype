@@ -107,7 +107,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 		connectionReference = FirebaseDatabase.DefaultInstance.GetReferenceFromUrl (MyConst.URL_FIREBASE_DATABASE_CONNECTION);
 		connectionReference.ValueChanged += HandleDatabaseConnection;
 	}
-		
+
 
 	/// <summary>
 	/// Handles the database connection.
@@ -304,9 +304,10 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	private void CreateRoom ()
 	{
+		MyGlobalVariables.Instance.playerName = "Player 1";
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
 		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
-		MyGlobalVariables.Instance.playerName = "Player 1";
+
 	}
 
 	/// <summary>
@@ -314,8 +315,9 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	private void JoinRoom ()
 	{
-		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL);
 		MyGlobalVariables.Instance.playerName = "Player 2";
+		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL);
+
 	}
 
 	/// <summary>
@@ -543,7 +545,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 
 	}
-		
+
 	/// <summary>
 	/// Skills Phase. Increment attack count in battle status table
 	/// </summary>
@@ -561,7 +563,7 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK)  && battleCount < 2) {
+				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
 					SetParam (name, param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();

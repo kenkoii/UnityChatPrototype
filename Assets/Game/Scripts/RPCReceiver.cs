@@ -134,8 +134,6 @@ public class RPCReceiver: SingletonMonoBehaviour<RPCReceiver>
 	/// <param name="isHome">If set to <c>true</c> is home.</param>
 	private void ReceivInitialState (Dictionary<string, System.Object> ititialState, bool isHome)
 	{
-		
-
 		string username = (string)ititialState ["username"];
 		int life = int.Parse (ititialState ["life"].ToString ());
 		int gp = int.Parse (ititialState ["gp"].ToString ());
