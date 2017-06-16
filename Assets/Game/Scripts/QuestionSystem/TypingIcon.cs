@@ -94,6 +94,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 
 	}
 	public void InputOnClick(){
+		AudioController.Instance.PlaySFX ("ClickButton");
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
 		else {
@@ -133,6 +134,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 		}
 	}
 	public void OutputOnClick(){
+		AudioController.Instance.PlaySFX ("ClickButton");
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "" ||
 			EventSystem.current.currentSelectedGameObject == outputlist[0]
