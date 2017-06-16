@@ -88,6 +88,7 @@ public class Phase2Controller : MonoBehaviour
 		ButtonEnable (false);
 		GameTimer.Instance.ToggleTimer (false);
 		stoptimer = false;
+
 	}
 
 	public void SelectSkill2 ()

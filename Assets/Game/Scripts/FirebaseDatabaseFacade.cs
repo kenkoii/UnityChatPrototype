@@ -240,6 +240,11 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 
 				Debug.Log ("has game rooms");
 				foreach (DataSnapshot dataSnapshot in gameRoomList) {
+					//get prototype mode type from host
+					MyGlobalVariables.Instance.modePrototype =  (ModeEnum) int.Parse(dataSnapshot.Child(MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
+
+					GameController.Instance.UpdateGame ();
+
 					if (dataSnapshot.Child (MyConst.GAMEROOM_STATUS).Value.ToString ().Equals (MyConst.GAMEROOM_OPEN)) {
 
 						gameRoomKey = dataSnapshot.Key.ToString ();
@@ -248,6 +253,8 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 						return;
 
 					}
+
+			
 				}
 
 				CreateRoom ();
@@ -304,9 +311,13 @@ public class FirebaseDatabaseFacade : SingletonMonoBehaviour<FirebaseDatabaseFac
 	/// </summary>
 	private void CreateRoom ()
 	{
+		GameController.Instance.UpdateGame ();
 		MyGlobalVariables.Instance.playerName = "Player 1";
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
 		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
+
+		//set prototype mode type
+		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE).SetValueAsync ("" + (int)MyGlobalVariables.Instance.modePrototype);
 
 	}
 
