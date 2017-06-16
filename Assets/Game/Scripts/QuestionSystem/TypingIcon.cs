@@ -85,7 +85,6 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 
 			output.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
-		ShuffleAlgo ();
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
 		HintMode ();
 
@@ -182,37 +181,6 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 
 			i+=1;
 		}
-	}
-
-	public void ShuffleAlgo ()
-	{
-		/*
-		List<int> RandomExist = new List<int>();
-		string temp = questionAnswer;
-
-		letterno = 0;
-		int randomnum = 0;      
-		for (int z = 0; z < temp.Length; z++) {
-			randomnum = UnityEngine.Random.Range (0, inputlist.Count);        
-			int whileindex = 0;
-			while (true) {
-				if (whileindex > 100) {
-					break;
-				}
-				bool index = RandomExist.Contains(randomnum);
-				if (index) {
-					randomnum = UnityEngine.Random.Range (0, inputlist.Count);
-				} else {
-					break;
-				}
-				whileindex++;
-			}
-
-			inputlist[letterno].transform.GetChild(0).GetComponent<Text>().text = 
-				temp[randomnum].ToString().ToUpper();
-			RandomExist.Add (randomnum);
-			letterno = letterno + 1;
-		}*/
 	}
 	public void Clear(){
 		answerindex = 1;
