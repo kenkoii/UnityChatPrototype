@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /* UI For searching matches */
 public class LobbyController : MonoBehaviour
@@ -11,6 +12,7 @@ public class LobbyController : MonoBehaviour
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public GameObject prototypeModes;
+	public GameObject toggleGroup;
 	BattleController battleController;
 
 	void Start ()
@@ -37,8 +39,21 @@ public class LobbyController : MonoBehaviour
 
 	public void ModeOnChange ()
 	{
-		MyGlobalVariables.Instance.modePrototype = (ModeEnum)prototypeModes.GetComponent<Dropdown> ().value;
-		GameController.Instance.UpdateGame ();
+		switch(EventSystem.current.currentSelectedGameObject.GetComponent<Toggle> ().name){
+		case "Mode1":
+			MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode1;
+			break;
+		case "Mode2":
+			MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode2;
+			break;
+		case "Mode3":
+			MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode3;
+			break;
+		case "Mode4":
+			MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode4;
+			break;
+		}
+
 	}
 
 	public void CancelRoomSearch ()
