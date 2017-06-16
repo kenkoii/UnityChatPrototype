@@ -223,21 +223,38 @@ public class BattleController : MonoBehaviour
 		switch (attackOrder) {
 		case 0:
 			AttackParameter (username [0], param [0]);
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			yield return new WaitForSeconds (0.5f);
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
 			CheckMode2BattleStatus (false);
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (2);
 			AttackParameter (username [1], param [1]);
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			yield return new WaitForSeconds (0.5f);
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
 			CheckMode2BattleStatus (true);
 			break;
 		case 1:
 			AttackParameter (username [1], param [1]);
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			yield return new WaitForSeconds (0.5f);
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
 			CheckMode2BattleStatus (false);
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (2);
 			AttackParameter (username [0], param [0]);
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			yield return new WaitForSeconds (0.5f);
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
 			CheckMode2BattleStatus (true);
 			break;
 		case 2:
 			AttackParameter (username [0], param [0]);
 			AttackParameter (username [1], param [1]);
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
+			yield return new WaitForSeconds (0.5f);
+			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
+			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
 			CheckMode2BattleStatus (true);
 			break;
 		}
@@ -258,10 +275,17 @@ public class BattleController : MonoBehaviour
 		if (enemyHP <= 0 || playerHP <= 0) {
 			if (enemyHP > 0 && playerHP <= 0) {
 				cachedBattleResult.text = "LOSE";
+				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
+				CharacterAnimationController.Instance.SetTriggerAnim (false, "win");
 			} else if (playerHP > 0 && enemyHP <= 0) {
 				cachedBattleResult.text = "WIN";
+				CharacterAnimationController.Instance.SetTriggerAnim (true, "win");
+				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
+
 			} else {
 				cachedBattleResult.text = "DRAW";
+				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
+				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
 			}
 
 			battleResultText.SetActive (true);
