@@ -4,7 +4,6 @@ using UnityEngine;
 public class ScreenController : EnglishRoyaleElement{
 
 	public void StartLoadingScreen(Action action){
-		Debug.Log ("hello");
 		app.view.screenView.loadingScreen.SetActive (true);
 		action ();
 	
@@ -22,8 +21,7 @@ public class ScreenController : EnglishRoyaleElement{
 	}
 
 	public void StopMatchingScreen(){
-		app.view.screenView.matchingScreen.SetActive (true);
-
+		app.view.screenView.matchingScreen.SetActive (false);
 	}
 
 

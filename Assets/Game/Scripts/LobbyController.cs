@@ -5,14 +5,14 @@ using UnityEngine.EventSystems;
 /* UI For searching matches */
 public class LobbyController : EnglishRoyaleElement
 {
-	public void SearchRoom (GameObject lobbyRoom, GameObject gameRoomUI, GameObject gameRoomAssets)
+	public void SearchRoom ()
 	{
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		app.controller.screenController.StartMatchingScreen ();
 		app.component.firebaseDatabaseComponent.SearchRoom (delegate(bool result) {
 
 			if (result) {
-				GoToGameRoom (lobbyRoom, gameRoomUI, gameRoomAssets);	
+				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
 			}
@@ -49,13 +49,15 @@ public class LobbyController : EnglishRoyaleElement
 	}
 
 
-	private void GoToGameRoom (GameObject lobbyRoom, GameObject gameRoomUI, GameObject gameRoomAssets)
+	private void GoToGameRoom ()
 	{
 		app.controller.audioController.PlayAudio (AudioEnum.Bgm);
-		lobbyRoom.SetActive (false);
-		gameRoomUI.SetActive (true);
-		gameRoomAssets.SetActive (true);
+		app.view.lobbyView.lobbyRoom.SetActive (false);
+		app.view.lobbyView.gameRoomUI.SetActive (true);
+		app.view.lobbyView.gameRoomAssets.SetActive (true);
 		app.controller.battleController.StartPreTimer ();
 		app.controller.screenController.StopLoadingScreen ();
 	}
+
+
 }

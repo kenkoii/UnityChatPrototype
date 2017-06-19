@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterAnimationView : EnglishRoyaleElement {
+public class CharacterAnimationModel : EnglishRoyaleElement {
 	public Animator playerAnim;
 	public Animator enemyAnim;
 
