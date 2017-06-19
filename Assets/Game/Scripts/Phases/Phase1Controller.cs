@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class Phase1Controller : MonoBehaviour
+public class Phase1Controller : EnglishRoyaleElement
 {
 
 	public GameObject questionSelect;
@@ -46,15 +44,15 @@ public class Phase1Controller : MonoBehaviour
 		hasAnswered = true;
 		questionSelect.SetActive (false);
 		//call question callback here
-		QuestionManager.Instance.SetQuestionEntry (questionNumber, MyGlobalVariables.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
-			if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
-				RPCWrapper.Instance.RPCWrapAnswer (qtimeLeft, gp);
+		app.component.questionManagerComponent.SetQuestionEntry (questionNumber, app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+				app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 			} else {
-				RPCWrapper.Instance.RPCWrapAnswer ();
+				app.component.rpcWrapperComponent.RPCWrapAnswer ();
 			}
 
 			//for mode 4
-			MyGlobalVariables.Instance.gpEarned = gp;
+			app.model.battleModel.gpEarned = gp;
 
 			battleController.SetPlayerGP (gp);
 			HideUI ();
@@ -66,22 +64,22 @@ public class Phase1Controller : MonoBehaviour
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			GameTimer.Instance.ToggleTimer (true);
+			app.view.gameTimerView.ToggleTimer (true);
 			if (timeLeft > 0 && hasAnswered == false) {
-				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 				
-			QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  MyGlobalVariables.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
-				if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
-					RPCWrapper.Instance.RPCWrapAnswer (qtimeLeft, gp);
+			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+					app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 				} else {
-					RPCWrapper.Instance.RPCWrapAnswer ();
+					app.component.rpcWrapperComponent.RPCWrapAnswer ();
 				}
 
 				//for mode 4
-				MyGlobalVariables.Instance.gpEarned = gp;
+				app.model.battleModel.gpEarned = gp;
 
 				battleController.SetPlayerGP (gp);
 				HideUI ();
@@ -89,7 +87,7 @@ public class Phase1Controller : MonoBehaviour
 
 
 
-			GameTimer.Instance.ToggleTimer (false);
+			app.view.gameTimerView.ToggleTimer (false);
 			stoptimer = false;
 		
 		}
@@ -103,7 +101,7 @@ public class Phase1Controller : MonoBehaviour
 			battleUI [i].SetActive (true);
 		}
 		questionSelect.SetActive (false);
-		GameTimer.Instance.ToggleTimer (false);
+		app.view.gameTimerView.ToggleTimer (false);
 
 	}
 

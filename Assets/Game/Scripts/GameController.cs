@@ -1,33 +1,33 @@
 ﻿using UnityEngine;
 
-public class GameController : SingletonMonoBehaviour<GameController>
+public class GameController : EnglishRoyaleElement
 {
 	void Start ()
 	{
-		MyGlobalVariables.Instance.modePrototype = ModeEnum.Mode1;
+		app.model.battleModel.modePrototype = ModeEnum.Mode1;
 	}
 
 	public void UpdateGame ()
 	{
-		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode1) {
-			MyGlobalVariables.Instance.playerLife = 30;
-			MyGlobalVariables.Instance.answerQuestionTime = 20;
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
+			app.model.battleModel.playerLife = 30;
+			app.model.battleModel.answerQuestionTime = 20;
 		}
-		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
-			MyGlobalVariables.Instance.playerLife = 45;
-			MyGlobalVariables.Instance.answerQuestionTime = 20;
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+			app.model.battleModel.playerLife = 45;
+			app.model.battleModel.answerQuestionTime = 20;
 
-		} else if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode3) {
-			MyGlobalVariables.Instance.playerLife = 30;
-			MyGlobalVariables.Instance.answerQuestionTime = 15;
-		} else if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode4) {
-			MyGlobalVariables.Instance.playerLife = 30;
-			MyGlobalVariables.Instance.answerQuestionTime = 15;
+		} else if (app.model.battleModel.modePrototype == ModeEnum.Mode3) {
+			app.model.battleModel.playerLife = 30;
+			app.model.battleModel.answerQuestionTime = 15;
+		} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			app.model.battleModel.playerLife = 30;
+			app.model.battleModel.answerQuestionTime = 15;
 		} 
 
-		MyGlobalVariables.Instance.playerGP = 0;
-		MyGlobalVariables.Instance.playerMaxGP = 9;
-		MyGlobalVariables.Instance.playerDamage = 5;
+		app.model.battleModel.playerGP = 0;
+		app.model.battleModel.playerMaxGP = 9;
+		app.model.battleModel.playerDamage = 5;
 	}
 
 

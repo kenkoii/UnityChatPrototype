@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /* Controls the battle */
-public class BattleController : MonoBehaviour
+public class BattleController : EnglishRoyaleElement
 {
 	public int playerHP = 10;
 	public int enemyHP = 10;
@@ -29,6 +29,8 @@ public class BattleController : MonoBehaviour
 	public Text playerGPText;
 	public Text enemyNameText;
 	public Text enemyHPText;
+	private bool stoptimer = false;
+	private int timeLeft;
 
 	public GameObject battleResultText;
 	private Text cachedBattleResult;
@@ -41,24 +43,26 @@ public class BattleController : MonoBehaviour
 	/// </summary>
 	public void StartPreTimer ()
 	{
-		StartCoroutine (StartPreparationDelay (prepareTime));
 		cachedBattleResult = battleResultText.GetComponent<Text> ();
+		timeLeft = 3;
+		stoptimer = true;
+		InvokeRepeating ("StartTimer", 0, 1);
 	}
 
-	IEnumerator StartPreparationDelay (int timer)
+	private void StartTimer ()
 	{
-		
-		GameTimer.Instance.ToggleTimer (true);
-		while (timer > 0) {
-			GameTimer.Instance.gameTimerText.text = "" + timer;
-			timer--;
-			yield return new WaitForSeconds (1);
+		if (stoptimer) {
+			app.view.gameTimerView.ToggleTimer (true);
+			if (timeLeft > 0) {
+				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
+				return;
+			} 
+			app.component.phaseManagerComponent.StartPhase1 ();
+			app.view.gameTimerView.ToggleTimer (false);
+			stoptimer = false;
+			CancelInvoke ("StartTimer");
 		}
-
-		//start first phase
-		PhaseManager.Instance.StartPhase1 ();
-		GameTimer.Instance.ToggleTimer (false);
-
 	}
 
 	void Update ()
@@ -83,7 +87,7 @@ public class BattleController : MonoBehaviour
 			enemyHP = 0;
 		}
 	}
-		
+
 
 	public void CheckBattleStatus ()
 	{
@@ -113,14 +117,14 @@ public class BattleController : MonoBehaviour
 			battleResultText.SetActive (true);
 
 		} else {
-			if (FirebaseDatabaseFacade.Instance.isHost) {
-				if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
-					FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+			if (app.component.firebaseDatabaseComponent.isHost) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+					app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				} else {
-					FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				}
 			}
-			PhaseManager.Instance.StartPhase1 ();
+			app.component.phaseManagerComponent.StartPhase1 ();
 		}
 
 	}
@@ -141,10 +145,10 @@ public class BattleController : MonoBehaviour
 		this.playerHP = playerHP;
 		this.playerName = playerName;
 		this.playerGP = playerGP;
-		playerGPBar.maxValue = MyGlobalVariables.Instance.playerMaxGP;
+		playerGPBar.maxValue = app.model.battleModel.playerMaxGP;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
-		playerMaxGP = MyGlobalVariables.Instance.playerMaxGP;
+		playerMaxGP = app.model.battleModel.playerMaxGP;
 	}
 
 	public void InitialEnemyState (int enemyHP, string enemyName)
@@ -168,14 +172,14 @@ public class BattleController : MonoBehaviour
 	{
 		int attackOrder = 0;
 
-		if (MyGlobalVariables.Instance.hAnswer > MyGlobalVariables.Instance.vAnswer) {
+		if (app.model.battleModel.hAnswer > app.model.battleModel.vAnswer) {
 			attackOrder = 0;
-		} else if (MyGlobalVariables.Instance.hAnswer < MyGlobalVariables.Instance.vAnswer) {
+		} else if (app.model.battleModel.hAnswer < app.model.battleModel.vAnswer) {
 			attackOrder = 1;
 		} else {
-			if (MyGlobalVariables.Instance.hTime > MyGlobalVariables.Instance.vTime) {
+			if (app.model.battleModel.vTime > app.model.battleModel.vTime) {
 				attackOrder = 0;
-			} else if (MyGlobalVariables.Instance.hTime < MyGlobalVariables.Instance.vTime) {
+			} else if (app.model.battleModel.hTime < app.model.battleModel.vTime) {
 				attackOrder = 1;
 			} else {
 				attackOrder = 2;
@@ -196,8 +200,8 @@ public class BattleController : MonoBehaviour
 
 
 		//change order of list if host or visitor
-		if (FirebaseDatabaseFacade.Instance.isHost) {
-			if (username [0] != MyGlobalVariables.Instance.playerName) {
+		if (app.component.firebaseDatabaseComponent.isHost) {
+			if (username [0] != app.model.battleModel.playerName) {
 				string tempName = username [1];
 				Dictionary<string, System.Object> tempParam = param [1];
 
@@ -207,7 +211,7 @@ public class BattleController : MonoBehaviour
 				param.Insert (0, tempParam);
 			}
 		} else {
-			if (username [1] != MyGlobalVariables.Instance.playerName) {
+			if (username [1] != app.model.battleModel.playerName) {
 				string tempName = username [0];
 				Dictionary<string, System.Object> tempParam = param [0];
 
@@ -219,56 +223,66 @@ public class BattleController : MonoBehaviour
 
 		}
 
+		Debug.Log ("HOST IS" +username[0]);
 
+		//fix this soon very redundant!!!!!!!!!!!!!!!!
 		switch (attackOrder) {
 		case 0:
 			AttackParameter (username [0], param [0]);
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
+			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
 			yield return new WaitForSeconds (0.5f);
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
+			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [1], param [1]);
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
+			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
 			yield return new WaitForSeconds (0.5f);
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
+			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			CheckMode2BattleStatus (true);
 			break;
 		case 1:
 			AttackParameter (username [1], param [1]);
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
+			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
 			yield return new WaitForSeconds (0.5f);
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
+			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [0], param [0]);
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
+			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
 			yield return new WaitForSeconds (0.5f);
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
+			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			CheckMode2BattleStatus (true);
 			break;
 		case 2:
 			AttackParameter (username [0], param [0]);
 			AttackParameter (username [1], param [1]);
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "attack");
-			AudioController.Instance.PlaySFX ("UnityAttack");
+			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
 			yield return new WaitForSeconds (0.5f);
-			CharacterAnimationController.Instance.SetTriggerAnim (false, "hit");
-			CharacterAnimationController.Instance.SetTriggerAnim (true, "hit");
+			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			CheckMode2BattleStatus (true);
 			break;
 		}
 			
 		//reset effects done by skill
-		MyGlobalVariables.Instance.ResetPlayerStats ();
+		app.model.battleModel.ResetPlayerStats();
 	
 	}
+
+
 
 	public void CheckMode2BattleStatus (bool secondCheck)
 	{
@@ -276,25 +290,27 @@ public class BattleController : MonoBehaviour
 		StartCoroutine (CheckMode2BattleDelay (secondCheck));
 	}
 
+	private void AnimationWinLose (string param1, string param2, string param3, AudioEnum param4)
+	{
+		
+		app.controller.characterAnimationController.SetTriggerAnim (true, param1);
+		app.controller.characterAnimationController.SetTriggerAnim (false, param2);
+		cachedBattleResult.text = param3;
+		app.controller.audioController.PlayAudio (param4);
+	}
+
 	IEnumerator CheckMode2BattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
 			if (enemyHP > 0 && playerHP <= 0) {
-				cachedBattleResult.text = "LOSE";
-				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
-				CharacterAnimationController.Instance.SetTriggerAnim (false, "win");
-				AudioController.Instance.PlaySFX ("UnityLose");
+				AnimationWinLose ("lose", "win", "LOSE", AudioEnum.Lose);
+
 			} else if (playerHP > 0 && enemyHP <= 0) {
-				cachedBattleResult.text = "WIN";
-				CharacterAnimationController.Instance.SetTriggerAnim (true, "win");
-				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
-				AudioController.Instance.PlaySFX ("UnityWin");
+				AnimationWinLose ("win", "lose", "WIN", AudioEnum.Win);
 
 			} else {
-				cachedBattleResult.text = "DRAW";
-				CharacterAnimationController.Instance.SetTriggerAnim (true, "lose");
-				CharacterAnimationController.Instance.SetTriggerAnim (false, "lose");
-				AudioController.Instance.PlaySFX ("UnityLose");
+				AnimationWinLose ("lose", "lose", "DRAW", AudioEnum.Lose);
+			
 			}
 
 			battleResultText.SetActive (true);
@@ -302,15 +318,15 @@ public class BattleController : MonoBehaviour
 
 		} else {
 			if (secondCheck) {
-				if (FirebaseDatabaseFacade.Instance.isHost) {
-					if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2) {
-						FirebaseDatabaseFacade.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+				if (app.component.firebaseDatabaseComponent.isHost) {
+					if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+						app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 					} else {
-						FirebaseDatabaseFacade.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
+						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 					}
 				}
 				yield return new WaitForSeconds (1);
-				PhaseManager.Instance.StartPhase1 ();
+				app.component.phaseManagerComponent.StartPhase1 ();
 			}
 		}
 	}
@@ -320,7 +336,7 @@ public class BattleController : MonoBehaviour
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
 		
-			if (attackerName.Equals (MyGlobalVariables.Instance.playerName)) {
+			if (attackerName.Equals (app.model.battleModel.playerName)) {
 		
 				enemyHP -= damage;
 		
@@ -334,11 +350,11 @@ public class BattleController : MonoBehaviour
 
 	private void Attack ()
 	{
-		AttackParameter (MyGlobalVariables.Instance.attackerName, MyGlobalVariables.Instance.attackerParam);
+		AttackParameter (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
 		//reset effects done by skill
-		MyGlobalVariables.Instance.ResetPlayerStats ();
+		app.model.battleModel.ResetPlayerStats ();
 	}
-		
+
 
 	public void SetSkill (ISkill skill)
 	{
@@ -349,7 +365,7 @@ public class BattleController : MonoBehaviour
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = MyGlobalVariables.Instance.playerDamage;
-		RPCWrapper.Instance.RPCWrapAttack (param);
+		param [ParamNames.Damage.ToString ()] = app.model.battleModel.playerDamage;
+		app.component.rpcWrapperComponent.RPCWrapAttack (param);
 	}
 }

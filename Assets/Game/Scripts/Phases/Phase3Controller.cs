@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase3Controller : MonoBehaviour
+public class Phase3Controller : EnglishRoyaleElement
 {
 	private BattleController battleController;
 	public GameObject[] battleUI;
@@ -12,7 +10,7 @@ public class Phase3Controller : MonoBehaviour
 
 	void OnEnable ()
 	{
-		GameTimer.Instance.ToggleTimer (false);
+		app.view.gameTimerView.ToggleTimer (false);
 		battleController = FindObjectOfType<BattleController> ();
 		stoptimer = true;
 		timeLeft = 10;
@@ -39,7 +37,7 @@ public class Phase3Controller : MonoBehaviour
 				return;
 			} 
 
-			FirebaseDatabaseFacade.Instance.CheckAttackPhase();
+			app.component.firebaseDatabaseComponent.CheckAttackPhase();
 
 			stoptimer = false;
 
