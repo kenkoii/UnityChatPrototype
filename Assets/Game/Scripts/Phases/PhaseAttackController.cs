@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase3Controller : EnglishRoyaleElement
+public class PhaseAttackController : EnglishRoyaleElement
 {
 	private BattleController battleController;
 	public GameObject[] battleUI;

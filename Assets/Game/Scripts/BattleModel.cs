@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 
 public class BattleModel : EnglishRoyaleElement
 {
@@ -25,6 +26,8 @@ public class BattleModel : EnglishRoyaleElement
 
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
+	public Action playerSkillChosen{ get; set; }
+	public int skillChosenCost{ get; set; }
 
 	public int hAnswer{ get; set; }
 
@@ -37,6 +40,10 @@ public class BattleModel : EnglishRoyaleElement
 	public int answerQuestionTime{ get; set; }
 
 	public int gpEarned{ get; set; }
+
+	public int skill1GPCost = 3;
+	public int skill2GPCost = 3;
+	public int skill3GPCost = 3;
 
 
 	public void ResetPlayerStats ()

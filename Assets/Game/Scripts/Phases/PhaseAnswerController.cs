@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class Phase1Controller : EnglishRoyaleElement
+public class PhaseAnswerController : EnglishRoyaleElement
 {
 
 	public GameObject questionSelect;
@@ -55,6 +55,11 @@ public class Phase1Controller : EnglishRoyaleElement
 			app.model.battleModel.gpEarned = gp;
 
 			battleController.SetPlayerGP (gp);
+			if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+				if (app.model.battleModel.skillChosenCost >= app.controller.battleController.playerGP) {
+					app.model.battleModel.playerSkillChosen ();
+				}
+			}
 			HideUI ();
 		});
 
@@ -71,7 +76,7 @@ public class Phase1Controller : EnglishRoyaleElement
 				return;
 			} 
 				
-			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2), app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 					app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 				} else {
@@ -82,6 +87,11 @@ public class Phase1Controller : EnglishRoyaleElement
 				app.model.battleModel.gpEarned = gp;
 
 				battleController.SetPlayerGP (gp);
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					if (app.model.battleModel.skillChosenCost >= app.controller.battleController.playerGP) {
+						app.model.battleModel.playerSkillChosen ();
+					}
+				}
 				HideUI ();
 			});
 

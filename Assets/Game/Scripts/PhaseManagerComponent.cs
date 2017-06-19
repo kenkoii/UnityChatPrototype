@@ -3,34 +3,61 @@
 public class PhaseManagerComponent : EnglishRoyaleElement
 {
 
-	public void StartPhase1(){
+	void Start ()
+	{
+		StopAll ();
+	}
+
+	public void StartPhase1 ()
+	{
 		Debug.Log ("Starting phase 1");
-		app.controller.phase1Controller.gameObject.SetActive (true);
-		app.controller.phase2Controller.gameObject.SetActive (false);
-		app.controller.phase3Controller.gameObject.SetActive (false);
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			app.controller.phaseSkillController.gameObject.SetActive (true);
+			app.controller.phaseAnswerController.gameObject.SetActive (false);
+			app.controller.phaseAttackController.gameObject.SetActive (false);
+		} else {
+
+			app.controller.phaseAnswerController.gameObject.SetActive (true);
+			app.controller.phaseSkillController.gameObject.SetActive (false);
+			app.controller.phaseAttackController.gameObject.SetActive (false);
+		}
 	}
 
-	public void StartPhase2(){
+	public void StartPhase2 ()
+	{
 		Debug.Log ("Starting phase 2");
-		app.controller.phase1Controller.gameObject.SetActive(false);
-		app.controller.phase2Controller.gameObject.SetActive(true);
-		app.controller.phase3Controller.gameObject.SetActive(false);
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			app.controller.phaseSkillController.gameObject.SetActive (false);
+			app.controller.phaseAnswerController.gameObject.SetActive (true);
+			app.controller.phaseAttackController.gameObject.SetActive (false);
+		} else {
+			app.controller.phaseAnswerController.gameObject.SetActive (false);
+			app.controller.phaseSkillController.gameObject.SetActive (true);
+			app.controller.phaseAttackController.gameObject.SetActive (false);
+		}
 	}
 
-	public void StartPhase3(){
+	public void StartPhase3 ()
+	{
 		Debug.Log ("Starting phase 3");
-		app.controller.phase1Controller.gameObject.SetActive (false);
-		app.controller.phase2Controller.gameObject.SetActive (false);
-		app.controller.phase3Controller.gameObject.SetActive (true);
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			app.controller.phaseSkillController.gameObject.SetActive (false);
+			app.controller.phaseAnswerController.gameObject.SetActive (false);
+			app.controller.phaseAttackController.gameObject.SetActive (true);
+		} else {
+			app.controller.phaseAnswerController.gameObject.SetActive (false);
+			app.controller.phaseSkillController.gameObject.SetActive (false);
+			app.controller.phaseAttackController.gameObject.SetActive (true);
+		}
 
 	}
 
-	public void StopAll(){
+	public void StopAll ()
+	{
 		Debug.Log ("Stopped phases");
-
-		app.controller.phase1Controller.gameObject.SetActive (false);
-		app.controller.phase2Controller.gameObject.SetActive (false);
-		app.controller.phase3Controller.gameObject.SetActive (false);
+		app.controller.phaseAnswerController.gameObject.SetActive (false);
+		app.controller.phaseSkillController.gameObject.SetActive (false);
+		app.controller.phaseAttackController.gameObject.SetActive (false);
 	}
 
 
