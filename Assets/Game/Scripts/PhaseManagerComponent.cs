@@ -2,12 +2,6 @@
 
 public class PhaseManagerComponent : EnglishRoyaleElement
 {
-
-	void Start ()
-	{
-		StopAll ();
-	}
-
 	public void StartPhase1 ()
 	{
 		Debug.Log ("Starting phase 1");

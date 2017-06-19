@@ -18,9 +18,9 @@ public class SkillManagerComponent : EnglishRoyaleElement
 
 		//test set skill
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			SetSkill1 (new Skill2Controller ());
+			SetSkill1 (app.controller.skill2Controller);
 		} else {
-			SetSkill1 (new Skill1Controller ());
+			SetSkill1 (app.controller.skill1Controller);
 		}
 
 	}
