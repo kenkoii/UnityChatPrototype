@@ -12,7 +12,7 @@ public class LobbyView : EnglishRoyaleElement
 	public void SearchRoom ()
 	{
 		
-		app.controller.lobbyController.SearchRoom (lobbyRoom, gameRoomUI, gameRoomAssets);
+		app.controller.lobbyController.SearchRoom ();
 	}
 
 	public void ModeOnChange ()

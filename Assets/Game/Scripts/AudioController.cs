@@ -14,25 +14,25 @@ public class AudioController : EnglishRoyaleElement
 
 		switch (audioName) {
 		case AudioEnum.Bgm:
-			app.view.audioView.bgm.Play ();
+			app.model.audioModel.bgm.Play ();
 			break;
 		case AudioEnum.ClickButton:
-			app.view.audioView.clickButton.Play ();
+			app.model.audioModel.clickButton.Play ();
 			break;
 		case AudioEnum.Attack:
-			app.view.audioView.attack.Play ();
+			app.model.audioModel.attack.Play ();
 			break;
 		case AudioEnum.Lose:
-			app.view.audioView.lose.Play ();
+			app.model.audioModel.lose.Play ();
 			break;
 		case AudioEnum.Skill:
-			app.view.audioView.skill.Play ();
+			app.model.audioModel.skill.Play ();
 			break;
 		case AudioEnum.Win:
-			app.view.audioView.win.Play ();
+			app.model.audioModel.win.Play ();
 			break;
 		case AudioEnum.Hit:
-			app.view.audioView.hit.Play ();
+			app.model.audioModel.hit.Play ();
 			break;
 
 		}
