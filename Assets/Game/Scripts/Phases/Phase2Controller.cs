@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class Phase2Controller : MonoBehaviour
+public class Phase2Controller : EnglishRoyaleElement
 {
 	public GameObject[] battleUI;
 	public Text skillTimerText;
@@ -42,7 +40,7 @@ public class Phase2Controller : MonoBehaviour
 			skillButton3.interactable = true;
 		}
 
-		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2 || MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode3) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 			attackButton.interactable = true;
 			attackButton.gameObject.SetActive (true);
 		}
@@ -61,7 +59,7 @@ public class Phase2Controller : MonoBehaviour
 		
 	void OnDisable ()
 	{
-		if (MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode2 || MyGlobalVariables.Instance.modePrototype == ModeEnum.Mode3) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 			attackButton.gameObject.SetActive (false);
 		}
 		CancelInvoke ("StartTimer");
@@ -69,8 +67,8 @@ public class Phase2Controller : MonoBehaviour
 
 	public void AttackButton(){
 		ButtonEnable (false);
-		GameTimer.Instance.ToggleTimer (false);
-		RPCWrapper.Instance.RPCWrapSkill ();
+		app.view.gameTimerView.ToggleTimer (false);
+		app.component.rpcWrapperComponent.RPCWrapSkill ();
 		stoptimer = false;
 	}
 
@@ -84,42 +82,42 @@ public class Phase2Controller : MonoBehaviour
 
 	public void SelectSkill1 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+		app.component.skillManagerComponent.ActivateSkill1 ();
 		ButtonEnable (false);
-		GameTimer.Instance.ToggleTimer (false);
+		app.view.gameTimerView.ToggleTimer (false);
 		stoptimer = false;
 
 	}
 
 	public void SelectSkill2 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+		app.component.skillManagerComponent.ActivateSkill1 ();
 		ButtonEnable (false);
-		GameTimer.Instance.ToggleTimer (false);
+		app.view.gameTimerView.ToggleTimer (false);
 		stoptimer = false;
 	}
 
 	public void SelectSkill3 ()
 	{
-		SkillManager.Instance.ActivateSkill1 ();
+		app.component.skillManagerComponent.ActivateSkill1 ();
 		ButtonEnable (false);
-		GameTimer.Instance.ToggleTimer (false);
+		app.view.gameTimerView.ToggleTimer (false);
 		stoptimer = false;
 	}
 
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			GameTimer.Instance.ToggleTimer (true);
+			app.view.gameTimerView.ToggleTimer (true);
 			if (timeLeft > 0) {
-				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 			ButtonEnable (false);
-			GameTimer.Instance.ToggleTimer (false);
+			app.view.gameTimerView.ToggleTimer (false);
 				
-			RPCWrapper.Instance.RPCWrapSkill ();
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
 			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 

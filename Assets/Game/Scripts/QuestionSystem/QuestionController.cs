@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class QuestionController : MonoBehaviour
+public class QuestionController : EnglishRoyaleElement
 {
 	private GameObject selectLetterIcon;
 	private GameObject typingIcon;
@@ -104,14 +104,14 @@ public class QuestionController : MonoBehaviour
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			GameTimer.Instance.ToggleTimer (true);
+			app.view.gameTimerView.ToggleTimer (true);
 			if (timeLeft > 0) {
-				GameTimer.Instance.gameTimerText.text = "" + timeLeft;
+				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 				
-			GameTimer.Instance.ToggleTimer (false);
+			app.view.gameTimerView.ToggleTimer (false);
 			stoptimer = false;
 			ComputeScore ();
 				  
@@ -120,7 +120,7 @@ public class QuestionController : MonoBehaviour
 
 	public void ComputeScore ()
 	{
-		QuestionManager.Instance.QuestionHide ();
+		app.component.questionManagerComponent.QuestionHide ();
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}

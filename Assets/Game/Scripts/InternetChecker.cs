@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class InternetChecker : SingletonMonoBehaviour<InternetChecker> {
+public class InternetChecker : MonoBehaviour {
 
 	IEnumerator CheckInternetConnection(Action<bool> action, string url){
 		WWW www = new WWW(url);

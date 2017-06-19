@@ -73,7 +73,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void InputOnClick(){
-		AudioController.Instance.PlaySFX ("ClickButton");
+
 		GameObject answerclick = EventSystem.current.currentSelectedGameObject;
 
 		if (answerclick.GetComponent<Image> ().color == Color.gray) {

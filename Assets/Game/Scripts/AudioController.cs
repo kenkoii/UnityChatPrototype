@@ -3,38 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class AudioController : SingletonMonoBehaviour<AudioController> {
+public class AudioController : EnglishRoyaleElement
+{
 
-	private AudioSource bgm;
-
-	void Start(){
-		bgm = GetComponent<AudioSource>();
-	}
-
-
-	public void PlayBGM(string bgmName){
-		
-		bgm.clip = Resources.Load ("Audio/" + bgmName) as AudioClip;
-		bgm.Play ();
-		
-	}
 
 	//create and destroy sfx after play to avoid conflict
-	public void PlaySFX(string sfxName){
+	public void PlayAudio (AudioEnum audioName)
+	{
+		AudioSource selectedAudio = null;
 
-		AudioSource newAudio = gameObject.AddComponent<AudioSource> ();
-		newAudio.clip = Resources.Load ("Audio/" + sfxName) as AudioClip;
-		newAudio.Play ();
+		switch (audioName) {
+		case AudioEnum.Bgm:
+			app.view.audioView.bgm.Play ();
+			break;
+		case AudioEnum.ClickButton:
+			app.view.audioView.clickButton.Play ();
+			break;
+		case AudioEnum.Attack:
+			app.view.audioView.attack.Play ();
+			break;
+		case AudioEnum.Lose:
+			app.view.audioView.lose.Play ();
+			break;
+		case AudioEnum.Skill:
+			app.view.audioView.skill.Play ();
+			break;
+		case AudioEnum.Win:
+			app.view.audioView.win.Play ();
+			break;
+		case AudioEnum.Hit:
+			app.view.audioView.hit.Play ();
+			break;
 
-		float audioLength = newAudio.clip.length;
-		StartCoroutine (DestroyBGM(audioLength, delegate() {
-			Destroy(newAudio);
-		}));
+		}
+
 	}
-
-	IEnumerator DestroyBGM(float time,Action action){
-		yield return new WaitForSeconds (time);
-		action();
-	}
+		
 
 }

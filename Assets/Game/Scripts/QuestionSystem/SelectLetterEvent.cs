@@ -76,7 +76,7 @@ public class SelectLetterEvent : MonoBehaviour {
 
 	public void AnswerOnClick ()
 	{
-		AudioController.Instance.PlaySFX ("ClickButton");
+		
 		string answerclicked = "";
 		answerindex = 1;
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
@@ -105,7 +105,7 @@ public class SelectLetterEvent : MonoBehaviour {
 
 	public void LetterOnClick ()
 	{
-		AudioController.Instance.PlaySFX ("ClickButton");
+
 		Debug.Log (currentround);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
