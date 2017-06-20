@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 public class QuestionController : EnglishRoyaleElement
 {
-	private GameObject selectLetterIcon;
-	private GameObject typingIcon;
-	private GameObject changeOrderIcon;
-	private GameObject wordChoiceIcon;
 	public static int getround;
 	private static int correctAnswers;
 	private static bool stoptimer = false;
@@ -20,7 +16,6 @@ public class QuestionController : EnglishRoyaleElement
 	private static GameObject[] inputButton;
 	private float roundlimit = 3;
 	private int totalGP;
-	private static string questionType = "";
 	private static int questionsTime;
 	public static Action<int,int> onResult;
 	// Use this for initialization
@@ -66,24 +61,20 @@ public class QuestionController : EnglishRoyaleElement
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int, int> Result)
 	{
-		GameObject entity = selectLetterIcon;
+		
 		string entityChosen = questiontype.GetType ().ToString ();
 		string modalName = "";
 		switch (entityChosen) {
 		case "TypingIcon":
-			entity = typingIcon;
 			modalName = "TypingModal";
 			break;
 		case "SelectLetterIcon":
-			entity = selectLetterIcon;
 			modalName = "SelectLetterIconModal";
 			break;
 		case "ChangeOrderIcon":
-			entity = changeOrderIcon;
 			modalName = "ChangeOrderModal";
 			break;
 		case "WordChoiceIcon":
-			entity = wordChoiceIcon;
 			modalName = "WordChoiceIcon";
 			break;
 		}
@@ -95,8 +86,7 @@ public class QuestionController : EnglishRoyaleElement
 			}
 		}
 		timeLeft = qTime;
-		questionType = modalName;
-		questiontype.Activate (entity, qTime, Result);
+		questiontype.Activate (this.gameObject, qTime, Result);
 		stoptimer = true;
 	}
 

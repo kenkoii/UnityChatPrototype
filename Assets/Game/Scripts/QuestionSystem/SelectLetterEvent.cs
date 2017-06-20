@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class SelectLetterEvent : MonoBehaviour {
+public class SelectLetterEvent : EnglishRoyaleElement {
 	
 	public static int lettercount = 12;
 	private GameObject[] selectionButtons = new GameObject[13];
@@ -19,9 +19,7 @@ public class SelectLetterEvent : MonoBehaviour {
 	public static string questionString;
 	public static float timeLeft;
 	public static int correctAnswers;
-	private Boolean modalRaise = false;
-	private static Boolean modalHide = false;
-	private GameObject questionModal;
+
 	private int roundsLimit = 3;
 	private GameObject[] indicators = new GameObject[3];
 	public int CorrectAnswers{
@@ -60,8 +58,7 @@ public class SelectLetterEvent : MonoBehaviour {
 		}
 	}
 	void Start () {
-		modalRaise = true;
-		questionModal = GameObject.Find ("SelectLetterIconModal");
+
 		for (int i = 0; i < indicators.Length; i++) {
 			indicators [i] = GameObject.Find ("Indicator" + (i + 1));
 		}
@@ -105,8 +102,6 @@ public class SelectLetterEvent : MonoBehaviour {
 
 	public void LetterOnClick ()
 	{
-
-		Debug.Log (currentround);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 		} 
 		else {
@@ -151,7 +146,7 @@ public class SelectLetterEvent : MonoBehaviour {
 		}
 	}
 	public void QuestionDoneCallback(bool result){
-			QuestionController qc = new QuestionController ();
+		QuestionController qc = app.controller.questionController;
 			qc.Returner (
 				delegate {
 				qc.onFinishQuestion =true;

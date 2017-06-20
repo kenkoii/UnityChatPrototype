@@ -29,7 +29,9 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		app.model.battleModel.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
-			if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
+				app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
+				app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
 					thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
 
@@ -69,7 +71,7 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-
+		Debug.Log ("receive battle status:" +battleState+ "battle count:" + battleCount);
 
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
@@ -82,15 +84,22 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 			}
 			 
 			if (battleCount > 1) {
-				app.component.phaseManagerComponent.StartPhase2 ();
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					app.component.phaseManagerComponent.StartPhase3 ();
+				} else {
+					app.component.phaseManagerComponent.StartPhase2 ();
+				}
 			}
 
 
 			break;
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
-				
-				app.component.phaseManagerComponent.StartPhase3 ();
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					app.component.phaseManagerComponent.StartPhase2 ();
+				} else {
+					app.component.phaseManagerComponent.StartPhase3 ();
+				}
 			}
 			break;
 		case MyConst.BATTLE_STATUS_ATTACK:

@@ -34,15 +34,9 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 	public void StartPhase3 ()
 	{
 		Debug.Log ("Starting phase 3");
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 			app.controller.phaseSkillController.gameObject.SetActive (false);
 			app.controller.phaseAnswerController.gameObject.SetActive (false);
 			app.controller.phaseAttackController.gameObject.SetActive (true);
-		} else {
-			app.controller.phaseAnswerController.gameObject.SetActive (false);
-			app.controller.phaseSkillController.gameObject.SetActive (false);
-			app.controller.phaseAttackController.gameObject.SetActive (true);
-		}
 
 	}
 

@@ -5,7 +5,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class TypingIcon : MonoBehaviour, IQuestion{
+public class TypingIcon: EnglishRoyaleElement, IQuestion{
 	private static int round = 1;
 	private Action<int,int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
@@ -31,8 +31,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 		correctAnswers = 0;
 		answerindex = 1;
 		NextRound (round);
-		QuestionController qc = new QuestionController ();
-		qc.OnResult = Result;
+		app.controller.questionController.OnResult = Result;
 	}
 
 	public void NextRound(int round){
@@ -147,7 +146,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void QuestionDoneCallback(bool result){
-		QuestionController qc = new QuestionController ();
+		QuestionController qc = app.controller.questionController;
 		qc.Returner (
 			delegate {
 				qc.onFinishQuestion =true;

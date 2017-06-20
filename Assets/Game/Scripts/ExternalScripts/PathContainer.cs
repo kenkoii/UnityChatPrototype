@@ -44,7 +44,7 @@ public float moveDelay;
 
 	}
 	#endif
-	void Start(){
+	void OnEnable(){
 		moveObject.transform.position = waypoints [0].transform.position;
 		StartCoroutine (StartDelay());
 	}

@@ -11,5 +11,6 @@
 	public AudioController audioController;
 	public CharacterAnimationController characterAnimationController;
 	public ScreenController screenController;
+	public CameraWorksController cameraWorksController;
 
 }
