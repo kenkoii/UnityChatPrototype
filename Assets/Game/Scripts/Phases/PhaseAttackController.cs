@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class PhaseAttackController : EnglishRoyaleElement
 {
-	private BattleController battleController;
 	public GameObject[] battleUI;
 	private bool stoptimer = false;
 	private int timeLeft;
@@ -11,15 +10,14 @@ public class PhaseAttackController : EnglishRoyaleElement
 	void OnEnable ()
 	{
 		app.view.gameTimerView.ToggleTimer (false);
-		battleController = FindObjectOfType<BattleController> ();
 		stoptimer = true;
-		timeLeft = 10;
+		timeLeft = 20;
 		InvokeRepeating ("StartTimer", 0, 1);
 
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (false);
 		}
-		battleController.SendAttackToDatabase ();
+		app.controller.battleController.SendAttackToDatabase ();
 	}
 
 
@@ -37,7 +35,7 @@ public class PhaseAttackController : EnglishRoyaleElement
 				return;
 			} 
 
-			app.component.firebaseDatabaseComponent.CheckAttackPhase();
+//			app.component.firebaseDatabaseComponent.CheckAttackPhase();
 
 			stoptimer = false;
 

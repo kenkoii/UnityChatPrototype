@@ -31,7 +31,7 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 
 	}
 
-	//for mode 2
+	//for mode 2 3 4
 	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
 	{
 		app.component.firebaseDatabaseComponent.AnswerPhase (receiveTime, receiveAnswer);

@@ -59,6 +59,7 @@ public class BattleController : EnglishRoyaleElement
 				timeLeft--;
 				return;
 			} 
+			Debug.Log ("hello");
 			app.component.phaseManagerComponent.StartPhase1 ();
 			app.view.gameTimerView.ToggleTimer (false);
 			stoptimer = false;
@@ -122,12 +123,14 @@ public class BattleController : EnglishRoyaleElement
 				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 					app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				}  else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					
 					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 
 				}else {
 					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				}
 			}
+			Debug.Log ("hello");
 			app.component.phaseManagerComponent.StartPhase1 ();
 		}
 
@@ -174,25 +177,11 @@ public class BattleController : EnglishRoyaleElement
 
 	public void SetAttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
 	{
-		int attackOrder = 0;
 
-		if (app.model.battleModel.hAnswer > app.model.battleModel.vAnswer) {
-			attackOrder = 0;
-		} else if (app.model.battleModel.hAnswer < app.model.battleModel.vAnswer) {
-			attackOrder = 1;
-		} else {
-			if (app.model.battleModel.vTime > app.model.battleModel.vTime) {
-				attackOrder = 0;
-			} else if (app.model.battleModel.hTime < app.model.battleModel.vTime) {
-				attackOrder = 1;
-			} else {
-				attackOrder = 2;
-			}
-		}
-		StartCoroutine (AttackMode2 (attackOrder, currentParam));
+		StartCoroutine (AttackMode2 (currentParam));
 	}
 
-	IEnumerator AttackMode2 (int attackOrder, Dictionary<string, Dictionary<string, object>> currentParam)
+	IEnumerator AttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
 	{
 		List<string> username = new List<string> ();
 		List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
@@ -229,60 +218,50 @@ public class BattleController : EnglishRoyaleElement
 
 		Debug.Log ("HOST IS" +username[0]);
 
+		int attackOrder = 0;
+
+		if (app.model.battleModel.hAnswer > app.model.battleModel.vAnswer) {
+			attackOrder = 0;
+		} else if (app.model.battleModel.hAnswer < app.model.battleModel.vAnswer) {
+			attackOrder = 1;
+		} else {
+			if (app.model.battleModel.hTime > app.model.battleModel.vTime) {
+				attackOrder = 0;
+			} else if (app.model.battleModel.hTime < app.model.battleModel.vTime) {
+				attackOrder = 1;
+			} else {
+				attackOrder = 2;
+			}
+		}
+
 		//fix this soon very redundant!!!!!!!!!!!!!!!!
 		switch (attackOrder) {
 		case 0:
+			Debug.Log ("player1 first attack");
+
 			AttackParameter (username [0], param [0]);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [1], param [1]);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (true);
+
 			break;
 		case 1:
+			Debug.Log ("player2 first attack");
+
 			AttackParameter (username [1], param [1]);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (false);
 			yield return new WaitForSeconds (2);
 			AttackParameter (username [0], param [0]);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (true);
+
 			break;
 		case 2:
-			AttackParameter (username [0], param [0]);
-			AttackParameter (username [1], param [1]);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (true);
+			Debug.Log ("same attack");
+
+			AttackParameter (username [0], param [0], true);
+			AttackParameter (username [1], param [1], true);
+			StartCoroutine( StartAttackSequence (3));
 			break;
 		}
 			
-		//reset effects done by skill
-		app.model.battleModel.ResetPlayerStats();
+
 	
 	}
 
@@ -332,13 +311,15 @@ public class BattleController : EnglishRoyaleElement
 						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 					}
 				}
-				yield return new WaitForSeconds (1);
+				yield return new WaitForSeconds (3);
+				Debug.Log ("hello");
 				app.component.phaseManagerComponent.StartPhase1 ();
+
 			}
 		}
 	}
 
-	private void AttackParameter (string attackerName, Dictionary<string, System.Object> attackerParam)
+	private void AttackParameter (string attackerName, Dictionary<string, System.Object> attackerParam, bool sameAttack = false)
 	{
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
@@ -346,14 +327,61 @@ public class BattleController : EnglishRoyaleElement
 			if (attackerName.Equals (app.model.battleModel.playerName)) {
 		
 				enemyHP -= damage;
+				if (sameAttack == false) {
+					StartCoroutine (StartAttackSequence (1));
+				}
 		
 			} else {
 				playerHP -= damage;
-		
+				if (sameAttack == false) {
+					StartCoroutine (StartAttackSequence (2));
+				}
 			}
 		}
 
 	}
+
+	IEnumerator StartAttackSequence(int sequenceType){
+
+		switch (sequenceType) {
+		case 1:
+			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			yield return new WaitForSeconds (0.5f);
+			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			CheckMode2BattleStatus (false);
+			break;
+		case 2:
+			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			yield return new WaitForSeconds (0.5f);
+			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			CheckMode2BattleStatus (true);
+			break;
+		case 3:
+			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
+			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			yield return new WaitForSeconds (0.5f);
+			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
+			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			CheckMode2BattleStatus (true);
+			break;
+		
+		}
+
+		//reset effects done by skill
+		app.model.battleModel.ResetPlayerStats();
+		Debug.Log ("player damage reset! now damage is: " + app.model.battleModel.playerDamage);
+		
+	}
+
+
 
 	private void Attack ()
 	{

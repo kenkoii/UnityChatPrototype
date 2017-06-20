@@ -532,7 +532,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					}
 
 					if (battleCount == 2) {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						}
 					} 
 				} 
 

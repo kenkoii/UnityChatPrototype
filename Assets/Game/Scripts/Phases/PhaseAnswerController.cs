@@ -9,13 +9,11 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	public GameObject questionSelect;
 	public GameObject[] battleUI;
 	private bool hasAnswered = false;
-	BattleController battleController;
 	private bool stoptimer = false;
 	private int timeLeft;
 
 	public void OnEnable ()
 	{
-		battleController = FindObjectOfType<BattleController> ();
 		hasAnswered = false;
 		timeLeft = 5;
 		stoptimer = true;
@@ -45,7 +43,9 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		questionSelect.SetActive (false);
 		//call question callback here
 		app.component.questionManagerComponent.SetQuestionEntry (questionNumber, app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
-			if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
+				app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
+				app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 				app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 			} else {
 				app.component.rpcWrapperComponent.RPCWrapAnswer ();
@@ -54,9 +54,9 @@ public class PhaseAnswerController : EnglishRoyaleElement
 			//for mode 4
 			app.model.battleModel.gpEarned = gp;
 
-			battleController.SetPlayerGP (gp);
+			app.controller.battleController.SetPlayerGP (gp);
 			if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-				if (app.model.battleModel.skillChosenCost < app.controller.battleController.playerGP) {
+				if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 					Debug.Log("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
 					app.model.battleModel.playerSkillChosen ();
 				}else{
@@ -80,7 +80,9 @@ public class PhaseAnswerController : EnglishRoyaleElement
 			} 
 				
 			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2), app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
+					app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
+					app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 					app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 				} else {
 					app.component.rpcWrapperComponent.RPCWrapAnswer ();
@@ -89,9 +91,9 @@ public class PhaseAnswerController : EnglishRoyaleElement
 				//for mode 4
 				app.model.battleModel.gpEarned = gp;
 
-				battleController.SetPlayerGP (gp);
+				app.controller.battleController.SetPlayerGP (gp);
 				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-					if (app.model.battleModel.skillChosenCost < app.controller.battleController.playerGP) {
+					if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 						Debug.Log("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
 						app.model.battleModel.playerSkillChosen ();
 					}else{
