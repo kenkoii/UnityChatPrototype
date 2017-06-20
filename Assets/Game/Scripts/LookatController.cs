@@ -5,8 +5,14 @@ using UnityEngine;
 public class LookatController : MonoBehaviour {
 
 	public Transform lookObj;
+	private float speed = 20;
 
-	void Update(){
-		this.transform.LookAt (lookObj);
+	void FixedUpdate(){
+		
+
+//		Vector3 dir = lookObj.position - transform.position;
+//		Quaternion rot = Quaternion.LookRotation(dir);
+//		// slerp to the desired rotation over time
+//		transform.rotation = Quaternion.Slerp(transform.rotation, rot, speed * Time.deltaTime);
 	}
 }
