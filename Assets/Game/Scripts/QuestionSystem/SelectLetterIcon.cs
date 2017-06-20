@@ -8,20 +8,20 @@ using System.Net;
 using System.IO;
 
 public class SelectLetterIcon : EnglishRoyaleElement, IQuestion {
-	public string questionString; 
+	private string questionString; 
 	private Action<int,int> onResult;
 	private string questionData = "";
 	private string answerData = "";
-	public string questionAnswer; 
+	private string questionAnswer; 
 	private static int answerindex = 1;
 	//private int selectionlistcount = 13;ß∫
 	private GameObject[] answerlist = new GameObject[13];
 	private GameObject[] selectionlist = new GameObject[13];
-	public static List<Question> questionlist;
-	public List<string> answerIdentifier;
+	private static List<Question> questionlist;
+	private List<string> answerIdentifier;
 	private static List<string> questionsDone = new List<string>();
-	public string answerwrote;
-	public float timeDuration;
+	private string answerwrote;
+	private float timeDuration;
 	private static int round = 1;
 	private int letterno;
 	//Properties
@@ -77,7 +77,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion {
 				transform.GetChild (0).GetChild (0).transform, false);
 			input.name = "input" + (i + 1);
 			input.GetComponent<Button>().onClick.AddListener (() => {
-				GameObject.Find("SelectLetterIcon").GetComponent<SelectLetterEvent>().AnswerOnClick();
+				GameObject.Find("SelectLetterIconModal").GetComponent<SelectLetterEvent>().AnswerOnClick();
 			});
 			answerlist [i] = input;
 			input.transform.GetChild (0).GetComponent<Text> ().text = "";

@@ -14,7 +14,7 @@ public class SelectLetterEvent : EnglishRoyaleElement {
 	private static int currentround = 1;
 	public static int answerindex = 1;
 	public List<string> answerIdentifier;
-	public string answerwrote;
+	private static string answerwrote;
 	public static string questionAnswer;
 	public static string questionString;
 	public static float timeLeft;
