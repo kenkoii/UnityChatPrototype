@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SelectLetterIcon : MonoBehaviour, IQuestion {
+public class SelectLetterIcon : EnglishRoyaleElement, IQuestion {
 	public string questionString; 
 	private Action<int,int> onResult;
 	private string questionData = "";
@@ -43,8 +43,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion {
 		sle.Currentround = 1;
 		sle.CorrectAnswers = 0;
 		NextRound (round);
-		QuestionController qc = new QuestionController ();
-		qc.OnResult = Result;
+		app.controller.questionController.OnResult = Result;
 	}
 	/// <summary>
 	/// 

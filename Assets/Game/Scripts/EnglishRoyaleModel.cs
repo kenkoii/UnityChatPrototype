@@ -2,4 +2,5 @@
 	public BattleModel battleModel;
 	public AudioModel audioModel;
 	public CharacterAnimationModel characterAnimationModel;
+	public CameraWorksModel cameraWorksModel;
 }

@@ -7,7 +7,7 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 
 	public void Activate (GameObject entity)
 	{
-
+		Debug.Log("activate skill");
 		if (app.model.battleModel.gpEarned != 0) {
 			app.model.battleModel.playerDamage += 2 * app.model.battleModel.gpEarned;
 		}
@@ -17,7 +17,9 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.SkillDamage.ToString ()] = 10;
 
-		app.component.rpcWrapperComponent.RPCWrapSkill ();
+		if (app.model.battleModel.modePrototype != ModeEnum.Mode4) {
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
+		} 
 	}
 
 

@@ -94,6 +94,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 				app.component.skillManagerComponent.ActivateSkill1 ();
 			};
 			app.model.battleModel.skillChosenCost = app.model.battleModel.skill1GPCost;
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
+		
 		} else {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}
@@ -110,6 +112,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 				app.component.skillManagerComponent.ActivateSkill1 ();
 			};
 			app.model.battleModel.skillChosenCost = app.model.battleModel.skill2GPCost;
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
+			Debug.Log ("skilled!");
 		} else {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}
@@ -125,6 +129,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 				app.component.skillManagerComponent.ActivateSkill1 ();
 			};
 			app.model.battleModel.skillChosenCost = app.model.battleModel.skill3GPCost;
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
+			Debug.Log ("skilled!");
 		} else {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}

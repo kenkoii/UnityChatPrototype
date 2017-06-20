@@ -176,6 +176,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	
 		receiveBattleStatus = (Dictionary<string, System.Object>)args.Snapshot.Child (receiveBattleKey).Value;
 		if (receiveBattleStatus != null) {
+			
 			sendBattleStatus.Invoke (receiveBattleStatus);
 		}
 
@@ -241,7 +242,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 				Debug.Log ("has game rooms");
 				foreach (DataSnapshot dataSnapshot in gameRoomList) {
 					//get prototype mode type from host
-					app.model.battleModel.modePrototype =  (ModeEnum) int.Parse(dataSnapshot.Child(MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
+					app.model.battleModel.modePrototype = (ModeEnum)int.Parse (dataSnapshot.Child (MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
 
 					app.controller.gameController.UpdateGame ();
 
@@ -433,8 +434,10 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 			//get the battlekey, create if host
 			if (mutableData.Value == null) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+				} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 				} else {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				}
@@ -459,7 +462,13 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	public void AnswerPhase ()
 	{
-		GetLatestKey (1, delegate(string resultString) {
+		int modulusNum = 1;
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			modulusNum = 2;
+		} else {
+			modulusNum = 1;
+		}
+		GetLatestKey (modulusNum, delegate(string resultString) {
 
 			Debug.Log (resultString);
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
@@ -473,7 +482,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 					if (battleCount == 2) {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						}
 					} 
 				} 
 					
@@ -488,7 +501,15 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	//for mode 2
 	public void AnswerPhase (int receiveTime, int receiveAnswer)
 	{
-		GetLatestKey (1, delegate(string resultString) {
+		int modulusNum = 1;
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			modulusNum = 2;
+		} else {
+			modulusNum = 1;
+		}
+
+
+		GetLatestKey (modulusNum, delegate(string resultString) {
 
 			Debug.Log (resultString);
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
@@ -530,7 +551,14 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// <param name="param">Parameter.</param>
 	public void SkillPhase ()
 	{
-		GetLatestKey (2, delegate(string resultString) {
+		int modulusNum = 2;
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			modulusNum = 1;
+		} else {
+			modulusNum = 2;
+		}
+
+		GetLatestKey (modulusNum, delegate(string resultString) {
 
 			Debug.Log (resultString);
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
@@ -538,14 +566,18 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
 				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-			
+
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_SKILL) && battleCount < 2) {
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-
+				
 					if (battleCount == 2) {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						}
 					} 
 				} 
 
@@ -605,8 +637,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
 						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
 
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 						}

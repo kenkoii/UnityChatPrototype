@@ -7,14 +7,16 @@ public class Skill1Controller : EnglishRoyaleElement, ISkill
 
 	public void Activate (GameObject entity)
 	{
-
+		Debug.Log("activate skill");
 		app.model.battleModel.playerDamage += 10;
 		entity.GetComponent<BattleController> ().playerGP -= skillCost;
 
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.SkillDamage.ToString ()] = 10;
 
-		app.component.rpcWrapperComponent.RPCWrapSkill ();
+		if (app.model.battleModel.modePrototype != ModeEnum.Mode4) {
+			app.component.rpcWrapperComponent.RPCWrapSkill ();
+		}
 	}
 
 

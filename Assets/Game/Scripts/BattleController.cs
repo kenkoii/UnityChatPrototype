@@ -43,6 +43,7 @@ public class BattleController : EnglishRoyaleElement
 	/// </summary>
 	public void StartPreTimer ()
 	{
+		app.controller.cameraWorksController.StartIntroCamera ();
 		cachedBattleResult = battleResultText.GetComponent<Text> ();
 		timeLeft = 3;
 		stoptimer = true;
@@ -118,9 +119,12 @@ public class BattleController : EnglishRoyaleElement
 
 		} else {
 			if (app.component.firebaseDatabaseComponent.isHost) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 					app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-				} else {
+				}  else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+
+				}else {
 					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				}
 			}
@@ -319,9 +323,12 @@ public class BattleController : EnglishRoyaleElement
 		} else {
 			if (secondCheck) {
 				if (app.component.firebaseDatabaseComponent.isHost) {
-					if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+					if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
 						app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-					} else {
+					} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+
+					}else {
 						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 					}
 				}

@@ -2,5 +2,6 @@
 	public LobbyView lobbyView;
 	public GameTimerView gameTimerView;
 	public ScreenView screenView;
+	public QuestionSystemView questionSystemView;
 
 }

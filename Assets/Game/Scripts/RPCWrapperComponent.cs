@@ -22,7 +22,7 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 	public void RPCWrapSkill ()
 	{
 		app.component.firebaseDatabaseComponent.SkillPhase ();
-
+	
 	}
 
 	public void RPCWrapAnswer ()
