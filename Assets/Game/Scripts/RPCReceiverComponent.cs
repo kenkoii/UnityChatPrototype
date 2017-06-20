@@ -30,11 +30,11 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
-				app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
-				app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
+			    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
 					thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
-
+				
 
 					if (thisCurrentParameter.Count == 2) {
 						battleController.SetAttackMode2 (thisCurrentParameter);
@@ -71,12 +71,14 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-		Debug.Log ("receive battle status:" +battleState+ "battle count:" + battleCount);
+		Debug.Log ("receive battle status:" + battleState + "battle count:" + battleCount);
 
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
-			if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
+			    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
+			    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
 				app.model.battleModel.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
 				app.model.battleModel.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
 				app.model.battleModel.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());

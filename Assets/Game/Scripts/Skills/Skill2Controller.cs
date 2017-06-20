@@ -5,6 +5,7 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 {
 	private int skillCost = 3;
 
+
 	public void Activate (GameObject entity)
 	{
 		Debug.Log("activate skill");

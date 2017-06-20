@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public class SkillManagerComponent : EnglishRoyaleElement
@@ -9,35 +8,29 @@ public class SkillManagerComponent : EnglishRoyaleElement
 	private ISkill skill2;
 	private ISkill skill3;
 
-	BattleController battleController;
-	// Use this for initialization
-
-	void Start ()
-	{
-		battleController = FindObjectOfType<BattleController> ();
-
-		//test set skill
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			SetSkill1 (app.controller.skill2Controller);
-		} else {
-			SetSkill1 (app.controller.skill1Controller);
-		}
-
-	}
-
 	/// <summary>
 	/// Activates the skill1.
 	/// </summary>
 	public void ActivateSkill1 ()
 	{
-		battleController.SetSkill (skill1);
+		//test skill only remove action later
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+			SetSkill1 (app.controller.skill2Controller, delegate() {
+				app.controller.battleController.SetSkill (skill1);
+			});
+		} else {
+			SetSkill1 (app.controller.skill1Controller, delegate() {
+				app.controller.battleController.SetSkill (skill1);
+			});
+		}
 	}
 
 
-	//to easily set skill in future
-	public void SetSkill1 (ISkill skill1)
+	//test only remove action later
+	public void SetSkill1 (ISkill skill1, Action action)
 	{
 		this.skill1 = skill1;
+		action ();
 	}
 
 	public void SetSkill2 (ISkill skill2)
