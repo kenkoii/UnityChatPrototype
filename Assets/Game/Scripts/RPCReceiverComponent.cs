@@ -7,14 +7,9 @@ using UnityEngine;
 public class RPCReceiverComponent: EnglishRoyaleElement
 {
 	Dictionary<string, Dictionary<string, object>> thisCurrentParameter = new Dictionary<string, Dictionary<string, object>> ();
-	BattleController battleController;
 	int battleCount;
 	string battleState;
 
-	void Start ()
-	{
-		battleController = FindObjectOfType<BattleController> ();
-	}
 
 	/// <summary>
 	/// Receives the RPC status.
@@ -37,7 +32,7 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				
 
 					if (thisCurrentParameter.Count == 2) {
-						battleController.SetAttackMode2 (thisCurrentParameter);
+						app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
 						thisCurrentParameter.Clear ();
 
 					} 
@@ -49,9 +44,9 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 			} else {
 
 				if (newParam.Key == ParamNames.Damage.ToString ()) {
-					battleController.SetAttack ();
+					app.controller.battleController.SetAttack ();
 					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount > 1) {
-						battleController.CheckBattleStatus ();
+						app.controller.battleController.CheckBattleStatus ();
 					}
 				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
 					if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
@@ -152,15 +147,15 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 
 		if (isHome) {
 			if (app.model.battleModel.isPlayerVisitor) {
-				battleController.InitialEnemyState (life, username);
+				app.controller.battleController.InitialEnemyState (life, username);
 			} else {
-				battleController.InitialPlayerState (life, username, gp);
+				app.controller.battleController.InitialPlayerState (life, username, gp);
 			}
 		} else {
 			if (app.model.battleModel.isPlayerVisitor) {
-				battleController.InitialPlayerState (life, username, gp);
+				app.controller.battleController.InitialPlayerState (life, username, gp);
 			} else {
-				battleController.InitialEnemyState (life, username);
+				app.controller.battleController.InitialEnemyState (life, username);
 			}
 		}
 
