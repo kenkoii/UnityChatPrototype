@@ -145,6 +145,28 @@ public class SelectLetterEvent : EnglishRoyaleElement {
 			}
 		}
 	}
+
+	public void OnSkipClick(){
+		for (int i = 0; i < selectionButtons.Length - 1; i++) {
+			selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
+			if (i <= inputButtons.Length) {
+				inputButtons [i] = GameObject.Find ("input" + (i + 1));
+			}
+		}
+		for(int j=1;j<=questionAnswer.Length+1;j++){
+			GameObject findEmpty = inputButtons [j-1].transform.GetChild (0).gameObject;
+			if (findEmpty.GetComponent<Text> ().text == "") {
+				answerindex = j;
+				break;
+			} 
+		}
+		indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+		Clear ();
+		answerindex = 1;
+		currentround = currentround + 1;
+		QuestionDoneCallback (true);
+	}
+
 	public void QuestionDoneCallback(bool result){
 		QuestionController qc = app.controller.questionController;
 			qc.Returner (

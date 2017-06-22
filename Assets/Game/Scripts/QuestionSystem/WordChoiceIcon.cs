@@ -40,6 +40,9 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion{
 	}
 
 	public void NextRound(int round){
+		for(int i =1;i<5;i++){
+			inputlist.Add(GameObject.Find("Word"+i));
+		}
 		PopulateQuestionList ();
 
 		int randomize;
@@ -58,9 +61,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion{
 
 		Debug.Log (isSynonym);
 
-		for(int i =1;i<5;i++){
-			inputlist.Add(GameObject.Find("Word"+i));
-		}
+
 		questionsDone.Add (questionString);
 		questionModal = GameObject.Find("WordChoiceModal");
 		ShuffleAlgo ();
@@ -69,6 +70,13 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion{
 		} else {
 			questionModal.transform.GetChild (0).GetComponent<Text> ().text = "Antonym: "+questionString.ToUpper();
 		}
+	}
+	public void OnSkipClick(){
+		indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+		Clear ();
+		answerindex = 1;
+		currentround = currentround + 1;
+		QuestionDoneCallback (true);
 	}
 
 	public void InputOnClick(){
