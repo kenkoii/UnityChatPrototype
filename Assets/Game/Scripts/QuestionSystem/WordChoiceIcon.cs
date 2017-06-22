@@ -40,6 +40,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion{
 	}
 
 	public void NextRound(int round){
+		inputlist.Clear ();
 		for(int i =1;i<5;i++){
 			inputlist.Add(GameObject.Find("Word"+i));
 		}

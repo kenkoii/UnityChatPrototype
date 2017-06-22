@@ -19,7 +19,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 	{
 		
 
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
 			if (app.model.battleModel.skill1GPCost > app.controller.battleController.playerGP) {
@@ -41,13 +41,11 @@ public class PhaseSkillController : EnglishRoyaleElement
 			}
 		}
 
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
-		    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
-		    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+	
 
-			attackButton.interactable = true;
-			attackButton.gameObject.SetActive (true);
-		}
+		attackButton.interactable = true;
+		attackButton.gameObject.SetActive (true);
+
 
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (true);
@@ -63,11 +61,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	void OnDisable ()
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
-		    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
-		    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			attackButton.gameObject.SetActive (false);
-		}
+		attackButton.gameObject.SetActive (false);
+
 		CancelInvoke ("StartTimer");
 	}
 
@@ -89,50 +84,43 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	public void SelectSkill1 ()
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			app.model.battleModel.playerSkillChosen = delegate() {
-				app.component.skillManagerComponent.ActivateSkill1 ();
-			};
-			app.model.battleModel.skillChosenCost = app.model.battleModel.skill1GPCost;
-			app.component.rpcWrapperComponent.RPCWrapSkill ();
-		
-		} else {
+		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
-		}
-		ButtonEnable (false);
-		app.view.gameTimerView.ToggleTimer (false);
-		stoptimer = false;
+		}, delegate() {
+			app.model.battleModel.skillChosenCost = app.model.battleModel.skill1GPCost;
+		});
 
 	}
 
 	public void SelectSkill2 ()
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			app.model.battleModel.playerSkillChosen = delegate() {
-				app.component.skillManagerComponent.ActivateSkill1 ();
-			};
-			app.model.battleModel.skillChosenCost = app.model.battleModel.skill2GPCost;
-			app.component.rpcWrapperComponent.RPCWrapSkill ();
-			Debug.Log ("skilled!");
-		} else {
+		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
-		}
-		ButtonEnable (false);
-		app.view.gameTimerView.ToggleTimer (false);
-		stoptimer = false;
+		}, delegate() {
+			app.model.battleModel.skillChosenCost = app.model.battleModel.skill2GPCost;
+		});
 	}
 
 	public void SelectSkill3 ()
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			app.model.battleModel.playerSkillChosen = delegate() {
-				app.component.skillManagerComponent.ActivateSkill1 ();
-			};
+		SelectSkill (delegate() {
+			app.component.skillManagerComponent.ActivateSkill1 ();
+		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.skill3GPCost;
+		});
+	}
+
+	private void SelectSkill (Action activateSkill, Action skillCost)
+	{
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+			app.model.battleModel.playerSkillChosen = delegate() {
+				activateSkill ();
+			};
+			skillCost ();
 			app.component.rpcWrapperComponent.RPCWrapSkill ();
 			Debug.Log ("skilled!");
 		} else {
-			app.component.skillManagerComponent.ActivateSkill1 ();
+			activateSkill ();
 		}
 		ButtonEnable (false);
 		app.view.gameTimerView.ToggleTimer (false);

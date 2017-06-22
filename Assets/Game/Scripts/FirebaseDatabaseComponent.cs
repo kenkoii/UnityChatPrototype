@@ -23,7 +23,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	string gameRoomKey = null;
 	string	battleStatusKey = null;
 	string receiveBattleKey = null;
-	string receivePreviousKey = null;
 	Dictionary<string, System.Object> receiveMessage;
 	Dictionary<string, System.Object> receiveBattleStatus = null;
 	private bool isHasGameRooms = false;
@@ -151,7 +150,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 	}
 
-
 	/// <summary>
 	/// Handles the battle status added.
 	/// </summary>
@@ -166,7 +164,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 		receiveBattleKey = args.Snapshot.Key;
 	}
 
-
+	/// <summary>
+	/// Handles the battle status value changed.
+	/// </summary>
+	/// <param name="sender">Sender.</param>
+	/// <param name="args">Arguments.</param>
 	void HandleBattleStatusValueChanged (object sender, ValueChangedEventArgs args)
 	{
 		if (args.DatabaseError != null) {
@@ -176,7 +178,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	
 		receiveBattleStatus = (Dictionary<string, System.Object>)args.Snapshot.Child (receiveBattleKey).Value;
 		if (receiveBattleStatus != null) {
-			
 			sendBattleStatus.Invoke (receiveBattleStatus);
 		}
 
@@ -215,13 +216,13 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 			sendInitialVisitorState.Invoke (receiveMessage);
 			isMatchMakeSuccess = true;
 			onSuccessMatchMake (true);
-			Debug.Log (isMatchMakeSuccess);
+			Debug.Log ("matching success: " +isMatchMakeSuccess);
 		});
 	
 	}
 
 	/// <summary>
-	/// Handles the game room value changed.
+	/// Handles the game room value changed. Also handles matchmaking
 	/// </summary>
 	/// <param name="sender">Sender.</param>
 	/// <param name="args">Arguments.</param>
@@ -255,7 +256,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 					}
 
-			
 				}
 
 				CreateRoom ();
@@ -434,12 +434,10 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 			//get the battlekey, create if host
 			if (mutableData.Value == null) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-				} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+				} else if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-				} else {
-					UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 				}
 			} else {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
@@ -456,53 +454,16 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 			return TransactionResult.Success (mutableData);
 		});
 	}
-
+		
 	/// <summary>
-	/// Answer Phase Increment answer count  in battle status table
+	/// Answer Phase
 	/// </summary>
-	public void AnswerPhase ()
-	{
-		int modulusNum = 1;
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-			modulusNum = 2;
-		} else {
-			modulusNum = 1;
-		}
-		GetLatestKey (modulusNum, delegate(string resultString) {
-
-			Debug.Log (resultString);
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
-				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-				string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-				int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-
-				if (battleState.Equals (MyConst.BATTLE_STATUS_ANSWER)) {
-					battleCount++;
-					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
-					if (battleCount == 2) {
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-						} else {
-							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-						}
-					} 
-				} 
-					
-				mutableData.Value = battleStatus;
-				return TransactionResult.Success (mutableData);
-			});
-
-
-		});
-	}
-
-	//for mode 2
+	/// <param name="receiveTime">Receive time.</param>
+	/// <param name="receiveAnswer">Receive answer.</param>
 	public void AnswerPhase (int receiveTime, int receiveAnswer)
 	{
 		int modulusNum = 1;
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 2;
 		} else {
 			modulusNum = 1;
@@ -532,7 +493,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					}
 
 					if (battleCount == 2) {
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
@@ -556,7 +517,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	public void SkillPhase ()
 	{
 		int modulusNum = 2;
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 1;
 		} else {
 			modulusNum = 2;
@@ -577,7 +538,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				
 					if (battleCount == 2) {
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+						if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
@@ -594,7 +555,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	}
 
 	/// <summary>
-	/// Skills Phase. Increment attack count in battle status table
+	/// Skill Phase. Increment attack count in battle status table
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
@@ -627,37 +588,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	}
 
 
-	public void CheckAttackPhase ()
-	{
-		
-		if (isHost) {
-			GetLatestKey (3, delegate(string resultString) {
-				reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString).RunTransaction (mutableData => {
-					Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
-
-					string battleState = battleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-					int battleCount = int.Parse (battleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
-						battleStatus [MyConst.BATTLE_STATUS_COUNT] = 2;
-
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
-							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-						} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-
-						} else {
-							UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
-						}
-					} 
-					mutableData.Value = battleStatus;
-					return TransactionResult.Success (mutableData);
-				});
-			});
-		}
-
-	}
-
+	/// <summary>
+	/// Gets the latest key in battle status.
+	/// </summary>
+	/// <param name="numberMod">Number mod.</param>
+	/// <param name="action">Action.</param>
 	private void GetLatestKey (int numberMod, Action<string> action)
 	{
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).GetValueAsync ().ContinueWith (task => {

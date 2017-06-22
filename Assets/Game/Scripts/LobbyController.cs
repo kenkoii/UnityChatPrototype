@@ -26,17 +26,12 @@ public class LobbyController : EnglishRoyaleElement
 	public void ModeOnChange (string modeName)
 	{
 		switch(modeName){
-		case "Mode1":
+
+		case "Mode2":
 			app.model.battleModel.modePrototype = ModeEnum.Mode1;
 			break;
-		case "Mode2":
-			app.model.battleModel.modePrototype = ModeEnum.Mode2;
-			break;
-		case "Mode3":
-			app.model.battleModel.modePrototype = ModeEnum.Mode3;
-			break;
 		case "Mode4":
-			app.model.battleModel.modePrototype = ModeEnum.Mode4;
+			app.model.battleModel.modePrototype = ModeEnum.Mode2;
 			break;
 		}
 
