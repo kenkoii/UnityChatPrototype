@@ -4,7 +4,7 @@ public class GameController : EnglishRoyaleElement
 {
 	void Start ()
 	{
-		app.model.battleModel.modePrototype = ModeEnum.Mode1;
+		app.model.battleModel.modePrototype = ModeEnum.Mode2;
 	}
 
 	public void UpdateGame ()

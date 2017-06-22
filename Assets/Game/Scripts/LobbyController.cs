@@ -25,7 +25,7 @@ public class LobbyController : EnglishRoyaleElement
 
 	public void ModeOnChange (string modeName)
 	{
-		switch(EventSystem.current.currentSelectedGameObject.GetComponent<Toggle> ().name){
+		switch(modeName){
 		case "Mode1":
 			app.model.battleModel.modePrototype = ModeEnum.Mode1;
 			break;
