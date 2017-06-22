@@ -14,7 +14,7 @@ public class Skill1Controller : EnglishRoyaleElement, ISkill
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.SkillDamage.ToString ()] = 10;
 
-		if (app.model.battleModel.modePrototype != ModeEnum.Mode4) {
+		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();
 		}
 	}

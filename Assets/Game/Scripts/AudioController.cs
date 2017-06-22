@@ -1,17 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
-
-public class AudioController : EnglishRoyaleElement
+﻿public class AudioController : EnglishRoyaleElement
 {
-
-
 	//create and destroy sfx after play to avoid conflict
 	public void PlayAudio (AudioEnum audioName)
 	{
-		AudioSource selectedAudio = null;
-
 		switch (audioName) {
 		case AudioEnum.Bgm:
 			app.model.audioModel.bgm.Play ();

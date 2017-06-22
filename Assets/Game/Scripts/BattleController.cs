@@ -35,7 +35,6 @@ public class BattleController : EnglishRoyaleElement
 	public GameObject battleResultText;
 	private Text cachedBattleResult;
 
-	private int attackCounter = 0;
 
 
 	/// <summary>
@@ -90,52 +89,6 @@ public class BattleController : EnglishRoyaleElement
 		}
 	}
 
-
-	public void CheckBattleStatus ()
-	{
-		
-		StartCoroutine (CheckbattlestatusDelay (1));
-	
-	}
-
-	/// <summary>
-	/// Add timer for animation effects
-	/// </summary>
-	/// <returns>The delay.</returns>
-	/// <param name="timer">Timer.</param>
-	IEnumerator CheckbattlestatusDelay (int timer)
-	{
-		
-		yield return new WaitForSeconds (timer);
-		if (enemyHP <= 0 || playerHP <= 0) {
-			if (enemyHP > 0 && playerHP <= 0) {
-				cachedBattleResult.text = "LOSE";
-			} else if (playerHP > 0 && enemyHP <= 0) {
-				cachedBattleResult.text = "WIN";
-			} else {
-				cachedBattleResult.text = "DRAW";
-			}
-
-			battleResultText.SetActive (true);
-
-		} else {
-			if (app.component.firebaseDatabaseComponent.isHost) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
-					app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-				}  else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-					
-					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-
-				}else {
-					app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
-				}
-			}
-			Debug.Log ("hello");
-			app.component.phaseManagerComponent.StartPhase1 ();
-		}
-
-	}
-
 	public void ReturnToLobby ()
 	{
 		SceneManager.LoadScene ("scene1");
@@ -165,16 +118,7 @@ public class BattleController : EnglishRoyaleElement
 		enemyMaxHP = enemyHP;
 		enemyHPBar.maxValue = enemyMaxHP;
 	}
-
-	/// <summary>
-	/// Attack enemy. 
-	/// </summary>
-	/// <param name="playerAction">Player action.</param>
-	public void SetAttack ()
-	{
-		Attack ();
-	}
-
+		
 	public void SetAttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
 	{
 
@@ -260,17 +204,11 @@ public class BattleController : EnglishRoyaleElement
 			StartCoroutine( StartAttackSequence (3));
 			break;
 		}
-			
-
-	
 	}
-
-
-
-	public void CheckMode2BattleStatus (bool secondCheck)
+	public void CheckBattleStatus (bool secondCheck)
 	{
 		
-		StartCoroutine (CheckMode2BattleDelay (secondCheck));
+		StartCoroutine (CheckBattleDelay (secondCheck));
 	}
 
 	private void AnimationWinLose (string param1, string param2, string param3, AudioEnum param4)
@@ -282,7 +220,7 @@ public class BattleController : EnglishRoyaleElement
 		app.controller.audioController.PlayAudio (param4);
 	}
 
-	IEnumerator CheckMode2BattleDelay (bool secondCheck)
+	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
 			if (enemyHP > 0 && playerHP <= 0) {
@@ -302,17 +240,14 @@ public class BattleController : EnglishRoyaleElement
 		} else {
 			if (secondCheck) {
 				if (app.component.firebaseDatabaseComponent.isHost) {
-					if (app.model.battleModel.modePrototype == ModeEnum.Mode2 || app.model.battleModel.modePrototype == ModeEnum.Mode3) {
+					if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
 						app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-					} else if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+					} else if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 
-					}else {
-						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0);
 					}
 				}
 				yield return new WaitForSeconds (3);
-				Debug.Log ("hello");
 				app.component.phaseManagerComponent.StartPhase1 ();
 
 			}
@@ -350,7 +285,7 @@ public class BattleController : EnglishRoyaleElement
 			yield return new WaitForSeconds (0.5f);
 			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
 			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (false);
+			CheckBattleStatus (false);
 			break;
 		case 2:
 			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
@@ -358,7 +293,7 @@ public class BattleController : EnglishRoyaleElement
 			yield return new WaitForSeconds (0.5f);
 			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
 			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (true);
+			CheckBattleStatus (true);
 			break;
 		case 3:
 			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
@@ -370,7 +305,7 @@ public class BattleController : EnglishRoyaleElement
 			app.controller.audioController.PlayAudio (AudioEnum.Hit);
 			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
 			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			CheckMode2BattleStatus (true);
+			CheckBattleStatus (true);
 			break;
 		
 		}
@@ -380,16 +315,6 @@ public class BattleController : EnglishRoyaleElement
 		Debug.Log ("player damage reset! now damage is: " + app.model.battleModel.playerDamage);
 		
 	}
-
-
-
-	private void Attack ()
-	{
-		AttackParameter (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
-		//reset effects done by skill
-		app.model.battleModel.ResetPlayerStats ();
-	}
-
 
 	public void SetSkill (ISkill skill)
 	{

@@ -24,14 +24,7 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 		app.component.firebaseDatabaseComponent.SkillPhase ();
 	
 	}
-
-	public void RPCWrapAnswer ()
-	{
-		app.component.firebaseDatabaseComponent.AnswerPhase ();
-
-	}
-
-	//for mode 2 3 4
+		
 	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
 	{
 		app.component.firebaseDatabaseComponent.AnswerPhase (receiveTime, receiveAnswer);

@@ -24,39 +24,19 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		app.model.battleModel.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
-			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
-			    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
-			    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-				if (newParam.Key == ParamNames.Damage.ToString ()) {
-					thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
+			if (newParam.Key == ParamNames.Damage.ToString ()) {
+				thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
 				
 
-					if (thisCurrentParameter.Count == 2) {
-						app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
-						thisCurrentParameter.Clear ();
+				if (thisCurrentParameter.Count == 2) {
+					app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
+					thisCurrentParameter.Clear ();
 
-					} 
+				} 
 
-				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-					//skill here
-				}
-
-			} else {
-
-				if (newParam.Key == ParamNames.Damage.ToString ()) {
-					app.controller.battleController.SetAttack ();
-					if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount > 1) {
-						app.controller.battleController.CheckBattleStatus ();
-					}
-				} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-					if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
-						//skill here
-					} 
-				}
-			}
-
-
-				
+			} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
+				//skill here
+			}	
 		}
 			
 	}
@@ -71,43 +51,43 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
-			if (app.model.battleModel.modePrototype == ModeEnum.Mode2 ||
-			    app.model.battleModel.modePrototype == ModeEnum.Mode3 ||
-			    app.model.battleModel.modePrototype == ModeEnum.Mode4) {
-				app.model.battleModel.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-				app.model.battleModel.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-				app.model.battleModel.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-				app.model.battleModel.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
-			}
+		
+			app.model.battleModel.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+			app.model.battleModel.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+			app.model.battleModel.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+			app.model.battleModel.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+
 			 
 			if (battleCount > 1) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 					app.component.phaseManagerComponent.StartPhase3 ();
 				} else {
 					app.component.phaseManagerComponent.StartPhase2 ();
 				}
 			}
-
-
 			break;
+
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode4) {
+				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 					app.component.phaseManagerComponent.StartPhase2 ();
 				} else {
 					app.component.phaseManagerComponent.StartPhase3 ();
 				}
 			}
 			break;
+
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
 
 			}
 		
 			break;
+
 		case MyConst.BATTLE_STATUS_END:
 			app.component.phaseManagerComponent.StopAll ();
 			break;
+
 		}
 
 		app.model.battleModel.battleState = battleState;
