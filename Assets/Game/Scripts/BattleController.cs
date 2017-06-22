@@ -223,6 +223,8 @@ public class BattleController : EnglishRoyaleElement
 	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
+
+			app.controller.cameraWorksController.StartWinLoseCamera ();
 			if (enemyHP > 0 && playerHP <= 0) {
 				AnimationWinLose ("lose", "win", "LOSE", AudioEnum.Lose);
 

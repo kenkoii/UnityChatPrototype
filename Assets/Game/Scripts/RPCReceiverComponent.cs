@@ -51,7 +51,6 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
-		
 			app.model.battleModel.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
 			app.model.battleModel.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
 			app.model.battleModel.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());

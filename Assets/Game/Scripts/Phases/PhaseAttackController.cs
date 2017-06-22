@@ -20,8 +20,6 @@ public class PhaseAttackController : EnglishRoyaleElement
 		app.controller.battleController.SendAttackToDatabase ();
 	}
 
-
-
 	void OnDisable(){
 		CancelInvoke ("StartTimer");
 

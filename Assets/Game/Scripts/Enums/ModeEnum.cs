@@ -1,6 +1,4 @@
-﻿
-
-public enum ModeEnum {
+﻿public enum ModeEnum {
 	Mode1,
 	Mode2
 
