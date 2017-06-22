@@ -8,6 +8,7 @@ public class LobbyView : EnglishRoyaleElement
 	public GameObject gameRoomUI;
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
+	public ToggleGroup toggleGroup;
 
 	public void SearchRoom ()
 	{
@@ -17,8 +18,10 @@ public class LobbyView : EnglishRoyaleElement
 
 	public void ModeOnChange ()
 	{
-		app.controller.lobbyController.ModeOnChange(EventSystem.current.currentSelectedGameObject.GetComponent<Toggle> ().name);
-
+		foreach(Toggle tg in toggleGroup.ActiveToggles())
+		{
+			app.controller.lobbyController.ModeOnChange(tg.name);
+		}
 	}
 
 	public void CancelRoomSearch ()
