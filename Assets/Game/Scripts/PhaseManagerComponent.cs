@@ -42,11 +42,4 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 		app.controller.phaseAttackController.gameObject.SetActive (attack);
 	}
 
-
-
-
-
-
-		
-
 }

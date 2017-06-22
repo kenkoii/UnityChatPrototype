@@ -15,6 +15,11 @@ public float duration;
 public GameObject waypointPrefab;
 public Transform moveObject;
 public float moveDelay;
+public bool isLoop = false;
+	public bool isLookRotator = false;
+	public bool startCameraInWaypoint = false;
+public SmoothLookAt smoothCamera;
+public GameObject cameraRotator;
 
 	#if UNITY_EDITOR
 	void OnDrawGizmos(){
@@ -45,7 +50,12 @@ public float moveDelay;
 	}
 	#endif
 	void OnEnable(){
-		moveObject.transform.position = waypoints [0].transform.position;
+		if (isLookRotator) {
+			smoothCamera.target = cameraRotator.transform;
+		}
+		if (startCameraInWaypoint) {
+			moveObject.transform.position = waypoints [0].transform.position;
+		}
 		StartCoroutine (StartDelay());
 	}
 
@@ -53,6 +63,10 @@ public float moveDelay;
 		yield return new WaitForSeconds (moveDelay);
 		Sequence mySequence = DOTween.Sequence ();
 		mySequence.Append (moveObject.DOPath (waypointVector, duration, PathType.CatmullRom,PathMode.Full3D,10).SetEase(Ease.Linear).SetSpeedBased(true));
+		if (isLoop) {
+			mySequence.SetLoops (-1);
+		}
+	
 	}
 
 }

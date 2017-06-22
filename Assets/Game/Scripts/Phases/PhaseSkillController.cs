@@ -13,12 +13,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 	private int timeLeft;
 	public Button attackButton;
 
-
-
 	public void OnEnable ()
 	{
-		
-
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
