@@ -92,6 +92,15 @@ public class TypingIcon: EnglishRoyaleElement, IQuestion{
 		outputlist [0].transform.GetChild(0).GetComponent<Text>().text = ""+questionAnswer [0].ToString().ToUpper();
 
 	}
+
+	public void OnSkipClick(){
+		indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+		Clear ();
+		answerindex = 1;
+		currentround = currentround + 1;
+		QuestionDoneCallback (true);
+	}
+
 	public void InputOnClick(){
 		
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {

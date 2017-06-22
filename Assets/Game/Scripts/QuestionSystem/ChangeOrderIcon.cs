@@ -127,6 +127,15 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 			}
 		}
 	}
+
+	public void OnSkipClick(){
+		indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+		Clear ();
+		answerindex = 1;
+		currentround = currentround + 1;
+		QuestionDoneCallback (true);
+	}
+
 	public void OutputOnClick(){
 
 		string answerclicked = "";
