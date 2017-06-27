@@ -13,4 +13,5 @@
 	public CharacterAnimationController characterAnimationController;
 	public ScreenController screenController;
 	public CameraWorksController cameraWorksController;
+	public TweenController tweenController;
 }

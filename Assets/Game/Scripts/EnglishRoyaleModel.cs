@@ -3,4 +3,5 @@
 	public AudioModel audioModel;
 	public CharacterAnimationModel characterAnimationModel;
 	public CameraWorksModel cameraWorksModel;
+	public TweenModel tweenModel;
 }
