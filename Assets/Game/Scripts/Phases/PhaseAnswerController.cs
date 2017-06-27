@@ -73,8 +73,8 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
 		app.model.battleModel.gpEarned = gp;
-
 		app.controller.battleController.SetPlayerGP (gp);
+
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 				Debug.Log ("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
