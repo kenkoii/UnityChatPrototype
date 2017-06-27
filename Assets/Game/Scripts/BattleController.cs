@@ -327,7 +327,7 @@ public class BattleController : EnglishRoyaleElement
 
 	public void SetSkill (ISkill skill)
 	{
-		skill.Activate (this.gameObject);
+		skill.Activate ();
 	}
 		
 	//send attack to firebase

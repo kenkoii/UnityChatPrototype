@@ -13,16 +13,14 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// activate skill
 	/// </summary>
 	/// <param name="entity">Entity.</param>
-	public void Activate (GameObject entity)
+	public void Activate ()
 	{
 		Debug.Log ("activate skill");
 
 		app.model.battleModel.playerDamage += 15;
 		app.controller.battleController.playerHP += 10;
-
-//		Player + 3 HP for the next three turns. Enemy -5 HP for the next three turns.
 			
-		entity.GetComponent<BattleController> ().playerGP -= skillCost;
+		app.controller.battleController.playerGP -= skillCost;
 
 		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();

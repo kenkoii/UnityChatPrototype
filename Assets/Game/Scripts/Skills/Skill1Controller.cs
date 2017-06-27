@@ -12,7 +12,7 @@ public class Skill1Controller: EnglishRoyaleElement, ISkill
 	/// activate skill
 	/// </summary>
 	/// <param name="entity">Entity.</param>
-	public void Activate (GameObject entity)
+	public void Activate ()
 	{
 		
 		if (app.model.battleModel.gpEarned != 0) {
@@ -21,7 +21,7 @@ public class Skill1Controller: EnglishRoyaleElement, ISkill
 			app.model.battleModel.playerDamage += 2;
 		}
 
-		entity.GetComponent<BattleController> ().playerGP -= skillCost;
+		app.controller.battleController.playerGP -= skillCost;
 
 		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();

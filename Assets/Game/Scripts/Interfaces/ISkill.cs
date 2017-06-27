@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface ISkill {
 
-	void Activate (GameObject entity);
+	void Activate ();
 
 	void SetSkill(Action<string, int> skillParam);
 
