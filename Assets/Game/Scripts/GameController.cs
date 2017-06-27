@@ -9,23 +9,17 @@ public class GameController : EnglishRoyaleElement
 
 	public void UpdateGame ()
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
-			app.model.battleModel.playerLife = 45;
-			app.model.battleModel.answerQuestionTime = 20;
-
-		} else if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-			app.model.battleModel.playerLife = 30;
-			app.model.battleModel.answerQuestionTime = 15;
-		} 
-
+		app.model.battleModel.playerLife = 45;
+		app.model.battleModel.answerQuestionTime = 25;
 		app.model.battleModel.playerGP = 0;
 		app.model.battleModel.playerMaxGP = 9;
 		app.model.battleModel.playerDamage = 5;
 	}
 
-
-
-
+	public void ResetPlayerDamage ()
+	{
+		app.model.battleModel.playerDamage = 5;
+	}
 
 
 }

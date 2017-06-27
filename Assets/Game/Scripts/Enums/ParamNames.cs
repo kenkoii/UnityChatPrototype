@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum ParamNames {
-	Damage,
-	SkillDamage
+	Damage
+
 }

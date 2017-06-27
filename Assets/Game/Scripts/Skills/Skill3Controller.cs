@@ -2,11 +2,11 @@
 using System;
 using UnityEngine;
 
-public class Skill2Controller: EnglishRoyaleElement, ISkill
+public class Skill3Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 7;
-	private string skillName = "Sunder";
-	private string skillDescription = "Deals a considerable amount of damage while absorbing life points at the same time.";
+	private int skillCost = 4;
+	private string skillName = "Rejuvination";
+	private string skillDescription = "Regenerates HP which is highly affected by number of correct answers";
 
 
 	/// <summary>
@@ -15,13 +15,13 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate (GameObject entity)
 	{
-		Debug.Log ("activate skill");
+		
+		if (app.model.battleModel.gpEarned != 0) {
+			app.controller.battleController.playerHP += 2 * app.model.battleModel.gpEarned;
+		} else {
+			app.controller.battleController.playerHP += 2;
+		}
 
-		app.model.battleModel.playerDamage += 15;
-		app.controller.battleController.playerHP += 10;
-
-//		Player + 3 HP for the next three turns. Enemy -5 HP for the next three turns.
-			
 		entity.GetComponent<BattleController> ().playerGP -= skillCost;
 
 		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
@@ -33,8 +33,7 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// set the name and cost of skill in placeholder
 	/// </summary>
 	/// <param name="skillParam">Skill parameter.</param>
-	public void SetSkill (Action<string, int> skillParam)
-	{
+	public void SetSkill(Action<string, int> skillParam){
 		skillParam (skillName, skillCost);
 	}
 
