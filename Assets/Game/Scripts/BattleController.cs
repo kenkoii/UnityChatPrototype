@@ -82,11 +82,6 @@ public class BattleController : EnglishRoyaleElement
 
 		playerGPText.text = "" + playerGP + "/" + playerMaxGP;
 
-		playerHPBar.value = playerHP;
-		enemyHPBar.value = enemyHP;
-
-		playerGPBar.value = playerGP;
-
 		if (playerHP < 0) {
 			playerHP = 0;
 		}
@@ -103,8 +98,8 @@ public class BattleController : EnglishRoyaleElement
 
 	public void SetPlayerGP (int playerGP)
 	{
-		Debug.Log ("GP EARNED" + playerGP);
 		this.playerGP += playerGP;
+		app.controller.tweenController.TweenPlayerGPSlider (this.playerGP, 1, true);
 	}
 
 	public void InitialPlayerState (int playerHP, string playerName, int playerGP)
@@ -271,12 +266,14 @@ public class BattleController : EnglishRoyaleElement
 			if (attackerName.Equals (app.model.battleModel.playerName)) {
 		
 				enemyHP -= damage;
+				app.controller.tweenController.TweenEnemyHPSlider (enemyHP, 1, true);
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (1));
 				}
 		
 			} else {
 				playerHP -= damage;
+				app.controller.tweenController.TweenPlayerHPSlider (playerHP, 1, true);
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (2));
 				}

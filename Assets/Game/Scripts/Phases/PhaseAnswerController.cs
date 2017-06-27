@@ -72,6 +72,10 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
+		if (gp > 0) {
+			//do tweening here
+		}
+
 		app.model.battleModel.gpEarned = gp;
 		app.controller.battleController.SetPlayerGP (gp);
 
