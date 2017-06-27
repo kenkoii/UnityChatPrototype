@@ -6,102 +6,201 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Net;
 using System.IO;
+using DG.Tweening;
 
-public class SelectLetterIcon : EnglishRoyaleElement, IQuestion {
-	private string questionString; 
-	private Action<int,int> onResult;
+public class SelectLetterIcon : MonoBehaviour, IQuestion
+{
 	private string questionData = "";
 	private string answerData = "";
-	private string questionAnswer; 
-	private static int answerindex = 1;
-	//private int selectionlistcount = 13;ß∫
 	private GameObject[] answerlist = new GameObject[13];
 	private GameObject[] selectionlist = new GameObject[13];
-	private static List<Question> questionlist;
-	private List<string> answerIdentifier;
-	private static List<string> questionsDone = new List<string>();
-	private string answerwrote;
-	private float timeDuration;
+	public static List<Question> questionlist;
+	private static List<string> questionsDone = new List<string> ();
 	private static int round = 1;
 	private int letterno;
-	//Properties
-	public string QuestionAnswer{
-		get{ 
-			return questionAnswer;
-		}
-	}
-	public List<string> QuestionsDone{
-		get{ return questionsDone; 
-		}
-		set{ questionsDone = value;
-		}
-	}
-	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
+	private GameObject[] selectionButtons = new GameObject[13];
+	private GameObject[] inputButtons = new GameObject[13];
+	private static int currentround = 1;
+	public static int answerindex = 1;
+	public List<string> answerIdentifier;
+	public string answerwrote;
+	public static string questionAnswer;
+	public static string questionString;
+	public static int correctAnswers;
+	private static GameObject questionModal;
+	public GameObject[] indicators = new GameObject[3];
+	public void Activate (GameObject entity, float timeduration, Action<int,int> Result)
+	{
 		round = 1;
-		answerindex = 1;
-		SelectLetterEvent sle = new SelectLetterEvent ();
-		sle.Currentround = 1;
-		sle.CorrectAnswers = 0;
+		currentround = 1;
+		correctAnswers = 0;
 		NextRound (round);
-		app.controller.questionController.OnResult = Result;
+		QuestionController qc = new QuestionController ();
+		qc.OnResult = Result;
 	}
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="round">Round.</param>
-	public void NextRound(int round){
-		if (round == 1) {
-			answerindex = 1;
+
+	public void NextRound (int round)
+	{
+		foreach (Transform child in GameObject.Find("QuestionModalContent").transform) {
+			GameObject.Destroy(child.gameObject);
 		}
-	//		Debug.Log (GetCSV("https://docs.google.com/spreadsheets/d/19cKJ0YqMbNQWQmW_ZuEj4h9AHeyC_-H899MRE1F3rkw/edit#gid=0"));
 		questionlist = new List<Question> ();
 
 		PopulateQuestionList ();
 		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
-		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
+		questionAnswer = questionlist [randomize].answer.ToUpper ().ToString ();
 		questionString = questionlist [randomize].question;
 		while (questionsDone.Contains (questionString)) {
 			randomize = UnityEngine.Random.Range (0, questionlist.Count);
-			questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
+			questionAnswer = questionlist [randomize].answer.ToUpper ().ToString ();
 			questionString = questionlist [randomize].question;
 			if (!questionsDone.Contains (questionString)) {
 				break;
-				}
-			} 
+			}
+		} 
 		questionsDone.Add (questionString);
+
 		GameObject questionInput = Resources.Load ("Prefabs/inputContainer") as GameObject;
-		GameObject questionModal = GameObject.Find("SelectLetterIconModal");
+		questionModal = GameObject.Find ("SelectLetterIconModal");
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			GameObject input = Instantiate (questionInput) as GameObject; 
 			input.transform.SetParent (questionModal.transform.GetChild (1).
 				transform.GetChild (0).GetChild (0).transform, false);
 			input.name = "input" + (i + 1);
-			input.GetComponent<Button>().onClick.AddListener (() => {
-				GameObject.Find("SelectLetterIconModal").GetComponent<SelectLetterEvent>().AnswerOnClick();
+			input.GetComponent<Button> ().onClick.AddListener (() => {
+				questionModal.GetComponent<SelectLetterIcon> ().AnswerOnClick ();
 			});
 			answerlist [i] = input;
 			input.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
 		ShuffleAlgo ();
-		SelectLetterEvent sle = new SelectLetterEvent ();
-		sle.GetAnswer (questionlist[randomize].answer);
+		questionAnswer = questionlist [randomize].answer;
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
-	
 	}
+
+	public void AnswerOnClick ()
+	{
+		Debug.Log (EventSystem.current.currentSelectedGameObject);
+		string answerclicked = "";
+
+		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
+			//iTween.ShakePosition (EventSystem.current.currentSelectedGameObject, new Vector3 (10, 10, 10), 0.5f);
+			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
+		} else {
+			for (int i = 1; i < selectionButtons.Length + 1; i++) {
+				if (EventSystem.current.currentSelectedGameObject.name == ("input" + i)) {
+					answerclicked = inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
+					inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
+					GameObject.Find (answerIdentifier [i - 1]).transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
+				}
+			}
+			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
+				GameObject findEmpty = inputButtons [j].transform.GetChild (0).gameObject;
+				if (findEmpty.GetComponent<Text> ().text == "") {
+					answerindex = j;
+					break;
+				} 
+			}
+		}
+	}
+
+	public void LetterOnClick ()
+	{
+		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
+			//iTween.ShakePosition (EventSystem.current.currentSelectedGameObject, new Vector3 (10, 10, 10), 0.5f);
+			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
+		} else {
+			for (int i = 0; i < selectionButtons.Length - 1; i++) {
+				selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
+				if (i <= inputButtons.Length) {
+					inputButtons [i] = GameObject.Find ("input" + (i + 1));
+				}
+			}
+			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
+				GameObject findEmpty = inputButtons [j - 1].transform.GetChild (0).gameObject;
+
+				if (findEmpty.GetComponent<Text> ().text == "") {
+					answerindex = j;
+					break;
+				} 
+			}
+
+			answerIdentifier [(answerindex - 1)] = EventSystem.current.currentSelectedGameObject.name;
+			answerwrote = "";
+			inputButtons [(answerindex - 1)].transform.GetChild (0).
+			GetComponent<Text> ().text 
+			= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
+			EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
+			for (int j = 0; j < questionAnswer.Length; j++) {
+				answerwrote = answerwrote + (GameObject.Find ("input" + (j + 1)).transform.GetChild (0).GetComponent<Text> ().text);
+			}
+			if (answerwrote.Length == questionAnswer.Length) {
+	
+				if (answerwrote.ToUpper () == questionAnswer.ToUpper ()) {
+					QuestionDoneCallback (true);
+				} else {
+					QuestionDoneCallback (false);
+				}
+			}
+		}
+	}
+
+	public void QuestionDoneCallback (bool result)
+	{
+		if (result) {
+			correctAnswers = correctAnswers + 1;
+			indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
+			for (int i = 0; i < questionAnswer.Length; i++) {
+				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
+				Instantiate (ballInstantiated, 
+					inputButtons [i].transform.position, 
+					Quaternion.identity);
+			}
+			indicators[currentround-1].transform.GetChild (0).GetComponent<Text> ().text = "1 GP";
+			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
+			Invoke("TweenCallBack", 1f);
+
+		} else {
+			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+			for (int i = 0; i < questionAnswer.Length; i++) {
+				inputButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
+				inputButtons [i].GetComponent<Image> ().color = Color.green;
+			}
+		}
+		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
+		Invoke("OnEnd", 1f);
+	}
+	public void TweenCallBack(){
+		indicators[currentround-1].
+		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
+		indicators[currentround-1].
+		transform.GetChild (0).GetComponent<Text> ().text = " ";
+	}
+	public void OnEnd(){
+		QuestionController qc = new QuestionController ();
+		Clear ();
+		answerindex = 1;
+		currentround = currentround + 1;
+		NextRound (currentround);
+		qc.Returner (delegate {
+			qc.onFinishQuestion = true;
+		}, currentround, correctAnswers);
+		if (currentround == 4) {
+			Clear ();
+		}
+	}
+
 	public void PopulateQuestionList(){
 
 		CSVParser cs = new CSVParser ();
 		List<string> databundle = cs.GetQuestions ("wingquestion");
 		int i = 0;
 		foreach(string questions in databundle ){
-		string[] splitter = databundle[i].Split (']');	
+			string[] splitter = databundle[i].Split (']');	
 
 			questionData = splitter [0];
 			answerData = splitter [1];
-			//if ((i % 2)==0) {
-				questionlist.Add (new Question (questionData, answerData, 0));
-
-			//}
+			questionlist.Add (new Question (questionData, answerData, 0));
 
 			i+=1;
 		}
@@ -146,7 +245,23 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion {
 			if (index > -1) {
 
 			} else {
-				GameObject.Find ("Letter" + f).GetComponent<Image> ().transform.GetChild (0).GetComponent<Text> ().text = alphabet [randomnum2].ToString ().ToUpper ();
+				GameObject.Find ("Letter" + f).GetComponent<Image> ().transform.GetChild (0).GetComponent<Text> ().text = 
+					alphabet [randomnum2].ToString ().ToUpper ();
+			}
+		}
+
+	}
+	public void OnSkipClick(){
+		QuestionDoneCallback (false);
+	}
+	public void Clear ()
+	{
+
+		answerindex = 1;
+		for (int i = 0; i < selectionButtons.Length - 1; i++) {
+			selectionButtons [i].transform.GetChild (0).GetComponent<Text> ().text = "";
+			if (i <= questionAnswer.Length) {
+				Destroy (inputButtons [i]);
 			}
 		}
 
