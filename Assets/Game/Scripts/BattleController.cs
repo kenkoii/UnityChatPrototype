@@ -7,6 +7,15 @@ using UnityEngine.SceneManagement;
 /* Controls the battle */
 public class BattleController : EnglishRoyaleElement
 {
+	public Text skill1Name;
+	public Text skill1GpCost;
+
+	public Text skill2Name;
+	public Text skill2GpCost;
+
+	public Text skill3Name;
+	public Text skill3GpCost;
+
 	public int playerHP = 10;
 	public int enemyHP = 10;
 	public int prepareTime = 3;
@@ -36,7 +45,6 @@ public class BattleController : EnglishRoyaleElement
 	private Text cachedBattleResult;
 
 
-
 	/// <summary>
 	/// Delay before start of battle
 	/// </summary>
@@ -58,7 +66,6 @@ public class BattleController : EnglishRoyaleElement
 				timeLeft--;
 				return;
 			} 
-			Debug.Log ("hello");
 			app.component.phaseManagerComponent.StartPhase1 ();
 			app.view.gameTimerView.ToggleTimer (false);
 			stoptimer = false;
@@ -313,7 +320,7 @@ public class BattleController : EnglishRoyaleElement
 		}
 
 		//reset effects done by skill
-		app.model.battleModel.ResetPlayerStats();
+		app.controller.gameController.ResetPlayerDamage();
 		Debug.Log ("player damage reset! now damage is: " + app.model.battleModel.playerDamage);
 		
 	}

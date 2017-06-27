@@ -34,9 +34,7 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 
 				} 
 
-			} else if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-				//skill here
-			}	
+			} 	
 		}
 			
 	}

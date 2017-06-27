@@ -66,6 +66,7 @@ public class QuestionManagerComponent : EnglishRoyaleElement
 			app.controller.questionController.TimeLeft = questionTime;
 			break;
 		}
+			
 	}
 	public void DebugOnClick(){
 		/*

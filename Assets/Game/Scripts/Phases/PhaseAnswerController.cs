@@ -58,7 +58,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 				timeLeft--;
 				return;
 			} 
-				
 		
 			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2), app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 				QuestionStart (gp, qtimeLeft);
