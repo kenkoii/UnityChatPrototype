@@ -14,6 +14,8 @@ public class GameController : EnglishRoyaleElement
 		app.model.battleModel.playerGP = 0;
 		app.model.battleModel.playerMaxGP = 9;
 		app.model.battleModel.playerDamage = 5;
+
+	
 	}
 
 	public void ResetPlayerDamage ()

@@ -42,7 +42,14 @@ public class BattleModel : EnglishRoyaleElement
 
 	public int gpEarned{ get; set; }
 
-	public int skill1GPCost {
+	private int skill1GPCost;
+	private int skill2GPCost;
+	private int skill3GPCost;
+	private string skill1Name;
+	private string skill2Name;
+	private string skill3Name;
+
+	public int Skill1GPCost {
 		get{ return skill1GPCost; } 
 		set {
 			skill1GPCost = value;
@@ -50,7 +57,7 @@ public class BattleModel : EnglishRoyaleElement
 		}
 	}
 
-	public int skill2GPCost {
+	public int Skill2GPCost {
 		get{ return skill2GPCost; } 
 		set {
 			skill2GPCost = value;
@@ -58,7 +65,7 @@ public class BattleModel : EnglishRoyaleElement
 		}
 	}
 
-	public int skill3GPCost {
+	public int Skill3GPCost {
 		get{ return skill3GPCost; }  
 		set {
 			skill3GPCost = value;
@@ -66,7 +73,7 @@ public class BattleModel : EnglishRoyaleElement
 		}
 	}
 
-	public string skill1Name {
+	public string Skill1Name {
 		get{ return skill1Name; } 
 		set {
 			skill1Name = value;
@@ -74,7 +81,7 @@ public class BattleModel : EnglishRoyaleElement
 		}
 	}
 
-	public string skill2Name {
+	public string Skill2Name {
 		get{ return skill2Name; }  
 		set {
 			skill2Name = value;
@@ -82,7 +89,7 @@ public class BattleModel : EnglishRoyaleElement
 		}
 	}
 
-	public string skill3Name {
+	public string Skill3Name {
 		get{ return skill3Name; } 
 		set {
 			skill3Name = value;

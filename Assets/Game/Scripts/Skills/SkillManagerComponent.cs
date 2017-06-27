@@ -10,9 +10,9 @@ public class SkillManagerComponent : EnglishRoyaleElement
 
 	//test only... call before battle in future where player can select which skill
 	void Start(){
-//		SetSkill1 (app.controller.skill1Controller);
-//		SetSkill2 (app.controller.skill1Controller);
-//		SetSkill3 (app.controller.skill1Controller);
+		SetSkill1 (app.controller.skill1Controller);
+		SetSkill2 (app.controller.skill1Controller);
+		SetSkill3 (app.controller.skill1Controller);
 	}
 
 	/// <summary>
@@ -42,10 +42,11 @@ public class SkillManagerComponent : EnglishRoyaleElement
 	{
 		this.skill1 = skill1;
 		this.skill1.SetSkill (delegate(string skillName, int gpCost) {
-			app.model.battleModel.skill1GPCost = gpCost;
-			app.model.battleModel.skill1Name = skillName;
+			app.model.battleModel.Skill1GPCost = gpCost;
+			app.model.battleModel.Skill1Name = skillName;
 
-
+			app.controller.battleController.skill1Name.text = skillName;
+			app.controller.battleController.skill1GpCost.text = "" +gpCost;
 		});
 	}
 
@@ -53,8 +54,8 @@ public class SkillManagerComponent : EnglishRoyaleElement
 	{
 		this.skill2 = skill2;
 		this.skill2.SetSkill (delegate(string skillName, int gpCost) {
-			app.model.battleModel.skill1GPCost = gpCost;
-			app.model.battleModel.skill1Name = skillName;
+			app.model.battleModel.Skill2GPCost = gpCost;
+			app.model.battleModel.Skill2Name = skillName;
 
 			app.controller.battleController.skill2Name.text = skillName;
 			app.controller.battleController.skill2GpCost.text = "" +gpCost;
@@ -65,9 +66,9 @@ public class SkillManagerComponent : EnglishRoyaleElement
 	public void SetSkill3 (ISkill skill3)
 	{
 		this.skill3 = skill3;
-		this.skill2.SetSkill (delegate(string skillName, int gpCost) {
-			app.model.battleModel.skill1GPCost = gpCost;
-			app.model.battleModel.skill1Name = skillName;
+		this.skill3.SetSkill (delegate(string skillName, int gpCost) {
+			app.model.battleModel.Skill3GPCost = gpCost;
+			app.model.battleModel.Skill3Name = skillName;
 
 			app.controller.battleController.skill3Name.text = skillName;
 			app.controller.battleController.skill3GpCost.text = "" +gpCost;
