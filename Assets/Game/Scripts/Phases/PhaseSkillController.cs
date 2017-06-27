@@ -18,19 +18,19 @@ public class PhaseSkillController : EnglishRoyaleElement
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
-			if (app.model.battleModel.skill1GPCost > app.controller.battleController.playerGP) {
+			if (app.model.battleModel.Skill1GPCost > app.controller.battleController.playerGP) {
 				skillButton1.interactable = false;
 			} else {
 				skillButton1.interactable = true;
 			}
 
-			if (app.model.battleModel.skill2GPCost > app.controller.battleController.playerGP) {
+			if (app.model.battleModel.Skill2GPCost > app.controller.battleController.playerGP) {
 				skillButton2.interactable = false;
 			} else {
 				skillButton2.interactable = true;
 			}
 
-			if (app.model.battleModel.skill3GPCost > app.controller.battleController.playerGP) {
+			if (app.model.battleModel.Skill3GPCost > app.controller.battleController.playerGP) {
 				skillButton3.interactable = false;
 			} else {
 				skillButton3.interactable = true;
@@ -83,7 +83,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.skill1GPCost;
+			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill1GPCost;
 		});
 
 	}
@@ -93,7 +93,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.skill2GPCost;
+			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill2GPCost;
 		});
 	}
 
@@ -102,7 +102,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
 		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.skill3GPCost;
+			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill3GPCost;
 		});
 	}
 
