@@ -7,7 +7,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 {
 
 	public GameObject questionSelect;
-	public GameObject[] battleUI;
 	private bool hasAnswered = false;
 	private bool stoptimer = false;
 	private int timeLeft;
@@ -18,9 +17,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		timeLeft = 5;
 		stoptimer = true;
 		InvokeRepeating ("StartTimer", 0, 1);
-		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI [i].SetActive (false);
-		}
 		questionSelect.SetActive (true);
 
 	}
@@ -73,9 +69,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
-		if (gp > 0) {
-			//do tweening here
-		}
 
 		app.model.battleModel.gpEarned = gp;
 		app.controller.battleController.SetPlayerGP (gp);
@@ -93,9 +86,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 	private void HideUI ()
 	{
-		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI [i].SetActive (true);
-		}
 		questionSelect.SetActive (false);
 		app.view.gameTimerView.ToggleTimer (false);
 
