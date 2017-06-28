@@ -100,9 +100,7 @@ public class BattleController : EnglishRoyaleElement
 	public void SetPlayerGP (int playerGP)
 	{
 		this.playerGP += playerGP;
-		if (playerGP != 0) {
-			app.controller.tweenController.TweenPlayerGPSlider (this.playerGP, 1, true);
-		}
+
 	}
 
 	public void InitialPlayerState (int playerHP, string playerName, int playerGP)

@@ -9,13 +9,15 @@ public class PhaseSkillController : EnglishRoyaleElement
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
+	public GameObject skillDescription;
+
 	private bool stoptimer = false;
 	private int timeLeft;
 	public Button attackButton;
 
 	public void OnEnable ()
 	{
-		
+		Debug.Log ("Starting Skill Phase");
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
@@ -59,7 +61,10 @@ public class PhaseSkillController : EnglishRoyaleElement
 	void OnDisable ()
 	{
 		attackButton.gameObject.SetActive (false);
-
+		skillDescription.SetActive (false);
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI [i].SetActive (false);
+		}
 		CancelInvoke ("StartTimer");
 	}
 
@@ -77,6 +82,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 		skillButton2.interactable = buttonEnable;
 		skillButton3.interactable = buttonEnable;
 		attackButton.interactable = buttonEnable;
+
 	}
 
 	public void SelectSkill1 ()
@@ -92,7 +98,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 	public void SelectSkill2 ()
 	{
 		SelectSkill (delegate() {
-			app.component.skillManagerComponent.ActivateSkill1 ();
+			app.component.skillManagerComponent.ActivateSkill2 ();
 		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill2GPCost;
 		});
@@ -101,10 +107,30 @@ public class PhaseSkillController : EnglishRoyaleElement
 	public void SelectSkill3 ()
 	{
 		SelectSkill (delegate() {
-			app.component.skillManagerComponent.ActivateSkill1 ();
+			app.component.skillManagerComponent.ActivateSkill3 ();
 		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill3GPCost;
 		});
+	}
+
+	public void Skill1Description(){
+		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill1Description;
+		skillDescription.SetActive (true);
+
+	}
+
+	public void Skill2Description(){
+		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill2Description;
+		skillDescription.SetActive (true);
+	}
+
+	public void Skill3Description(){
+		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill3Description;
+		skillDescription.SetActive (true);
+	}
+
+	public void CloseDescription(){
+		skillDescription.SetActive (false);
 	}
 
 	private void SelectSkill (Action activateSkill, Action skillCost)
