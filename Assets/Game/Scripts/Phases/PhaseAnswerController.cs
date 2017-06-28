@@ -73,6 +73,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		app.model.battleModel.gpEarned = gp;
 		app.controller.battleController.SetPlayerGP (gp);
 
+		app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 				Debug.Log ("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
@@ -80,7 +81,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 			} else {
 				Debug.Log ("skill less gp");
 			}
-		}
+		} 
 		HideUI ();
 	}
 
