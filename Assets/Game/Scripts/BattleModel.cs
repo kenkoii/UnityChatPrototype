@@ -48,6 +48,9 @@ public class BattleModel : EnglishRoyaleElement
 	private string skill1Name;
 	private string skill2Name;
 	private string skill3Name;
+	public string skill1Description{ get; set; }
+	public string skill2Description{ get; set; }
+	public string skill3Description{ get; set; }
 
 	public int Skill1GPCost {
 		get{ return skill1GPCost; } 

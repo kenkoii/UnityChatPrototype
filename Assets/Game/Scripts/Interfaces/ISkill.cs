@@ -5,6 +5,6 @@ public interface ISkill {
 
 	void Activate ();
 
-	void SetSkill(Action<string, int> skillParam);
+	void SetSkill(Action<string,string, int> skillParam);
 
 }
