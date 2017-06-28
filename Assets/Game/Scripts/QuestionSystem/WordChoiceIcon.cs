@@ -166,8 +166,8 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 	public void PopulateQuestionList ()
 	{
 		questionlist.Clear ();
-		CSVParser cs = new CSVParser ();
-		List<string> databundle = cs.GetQuestions ("wordchoice");
+		//CSVParser cs = new CSVParser ();
+		List<string> databundle = CSVParser.GetQuestions ("wordchoice");
 		int i = 0;
 		int randomnum = UnityEngine.Random.Range (1, 3);
 		foreach (string questions in databundle) {

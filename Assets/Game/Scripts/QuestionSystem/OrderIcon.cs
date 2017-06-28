@@ -68,8 +68,8 @@ public class OrderIcon : MonoBehaviour, IQuestion {
 
 	}
 	public void GetQuestions(){
-		CSVParser cs = new CSVParser ();
-		List<string> databundle = cs.GetQuestions ("ordersample");
+		//CSVParser cs = new CSVParser ();
+		List<string> databundle = CSVParser.GetQuestions ("ordersample");
 		int i = 0;
 		foreach(string questions in databundle){
 

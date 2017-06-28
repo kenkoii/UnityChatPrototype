@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CSVParser {
-	private string questionData;
-	private string answerData;
-	public string replacedAsset;
+public static class CSVParser {
+	private static string questionData;
+	private static string answerData;
+	private static string replacedAsset;
 
-	public List<string> GetQuestions(string resource){
+	public static List<string> GetQuestions(string resource){
 		char lineSeperater = '\n'; // It defines line seperate character
 		char fieldSeperator = ',';
 		TextAsset csvFile;
@@ -109,6 +109,37 @@ public class CSVParser {
 							break;
 						case 4:
 							answerData = answerData + "]" + field;
+							questions.Add (questionData + "]" + answerData);
+							questionData = "";
+							fieldindexer = 0;
+							break;
+						}
+					}
+				}
+
+			}
+			break;
+		case "slotmachine":
+			string[] slotMachineRecord = csvFile.text.Split (lineSeperater);
+			foreach (string record in slotMachineRecord) {
+				string[] fields = record.Split (fieldSeperator);
+				index += 1;
+				if (index > 1 && index<27) {
+					foreach (string field in fields) {
+						fieldindexer += 1;
+						switch (fieldindexer) {
+						case 1:
+							questionData = field;
+							break;
+						case 2:
+							answerData = field;
+							break;
+						case 3:
+							field.TrimEnd (' ');
+
+							string removeSpace = field.Remove(field.Length - 1);
+							answerData = answerData + "]" + removeSpace;
+
 							questions.Add (questionData + "]" + answerData);
 							questionData = "";
 							fieldindexer = 0;

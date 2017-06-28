@@ -25,8 +25,9 @@ public class scrollBallScript : MonoBehaviour {
 	}
 	void Update(){
 		r2d.position = Vector3.MoveTowards(r2d.transform.position, GameObject.Find("Indicator"+indicatornum).transform.position, speed);
+		//r2d.LookAt (GameObject.Find ("Indicator" + indicatornum).transform);
 		if (r2d.position == GameObject.Find ("Indicator" + indicatornum).transform.position) {
-		//	Destroy (r2d.gameObject);
+		  Destroy (r2d.gameObject);
 		}
 	}
 		

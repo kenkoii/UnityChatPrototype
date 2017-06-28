@@ -18,7 +18,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	private static List<string> questionsDone = new List<string> ();
 	private static int round = 1;
 	private int letterno;
-	private GameObject[] selectionButtons = new GameObject[13];
+	private static GameObject[] selectionButtons = new GameObject[13];
 	private GameObject[] inputButtons = new GameObject[13];
 	private static int currentround = 1;
 	public static int answerindex = 1;
@@ -43,6 +43,9 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	{
 		foreach (Transform child in GameObject.Find("QuestionModalContent").transform) {
 			GameObject.Destroy(child.gameObject);
+		}
+		for (int i = 0; i < selectionButtons.Length - 1; i++) {
+			selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
 		}
 		questionlist = new List<Question> ();
 
@@ -107,7 +110,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	public void LetterOnClick ()
 	{
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			//iTween.ShakePosition (EventSystem.current.currentSelectedGameObject, new Vector3 (10, 10, 10), 0.5f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} else {
 			for (int i = 0; i < selectionButtons.Length - 1; i++) {
@@ -154,7 +156,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
 					inputButtons [i].transform.position, 
-					Quaternion.identity);
+					Quaternion.identity, questionModal.transform);
 			}
 			indicators[currentround-1].transform.GetChild (0).GetComponent<Text> ().text = "1 GP";
 			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
@@ -163,19 +165,21 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		} else {
 			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < questionAnswer.Length; i++) {
-				inputButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
-				inputButtons [i].GetComponent<Image> ().color = Color.green;
+				answerlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
+				answerlist [i].GetComponent<Image> ().color = Color.green;
 			}
 		}
 		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
 		Invoke("OnEnd", 1f);
 	}
+
 	public void TweenCallBack(){
 		indicators[currentround-1].
 		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
 		indicators[currentround-1].
 		transform.GetChild (0).GetComponent<Text> ().text = " ";
 	}
+
 	public void OnEnd(){
 		QuestionController qc = new QuestionController ();
 		Clear ();
@@ -192,8 +196,8 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void PopulateQuestionList(){
 
-		CSVParser cs = new CSVParser ();
-		List<string> databundle = cs.GetQuestions ("wingquestion");
+		//CSVParser cs = new CSVParser ();
+		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
 		int i = 0;
 		foreach(string questions in databundle ){
 			string[] splitter = databundle[i].Split (']');	
@@ -204,8 +208,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 			i+=1;
 		}
-
-
 	}
 
 	public void ShuffleAlgo ()
@@ -256,7 +258,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	}
 	public void Clear ()
 	{
-
 		answerindex = 1;
 		for (int i = 0; i < selectionButtons.Length - 1; i++) {
 			selectionButtons [i].transform.GetChild (0).GetComponent<Text> ().text = "";

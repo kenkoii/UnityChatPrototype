@@ -15,18 +15,21 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 	/// <param name="param">Parameter.</param>
 	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
+		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 		app.component.firebaseDatabaseComponent.AttackPhase (app.model.battleModel.playerName,DicToJsonStr (param));
 
 	}
 
 	public void RPCWrapSkill ()
 	{
+		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 		app.component.firebaseDatabaseComponent.SkillPhase ();
 	
 	}
 		
 	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
 	{
+		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 		app.component.firebaseDatabaseComponent.AnswerPhase (receiveTime, receiveAnswer);
 
 	}
