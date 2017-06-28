@@ -100,7 +100,9 @@ public class BattleController : EnglishRoyaleElement
 	public void SetPlayerGP (int playerGP)
 	{
 		this.playerGP += playerGP;
-		app.controller.tweenController.TweenPlayerGPSlider (this.playerGP, 1, true);
+		if (playerGP != 0) {
+			app.controller.tweenController.TweenPlayerGPSlider (this.playerGP, 1, true);
+		}
 	}
 
 	public void InitialPlayerState (int playerHP, string playerName, int playerGP)
@@ -122,7 +124,7 @@ public class BattleController : EnglishRoyaleElement
 		enemyMaxHP = enemyHP;
 		enemyHPBar.maxValue = enemyMaxHP;
 	}
-		
+
 	public void SetAttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
 	{
 
@@ -164,7 +166,7 @@ public class BattleController : EnglishRoyaleElement
 
 		}
 
-		Debug.Log ("HOST IS" +username[0]);
+		Debug.Log ("HOST IS" + username [0]);
 
 		int attackOrder = 0;
 
@@ -205,10 +207,11 @@ public class BattleController : EnglishRoyaleElement
 
 			AttackParameter (username [0], param [0], true);
 			AttackParameter (username [1], param [1], true);
-			StartCoroutine( StartAttackSequence (3));
+			StartCoroutine (StartAttackSequence (3));
 			break;
 		}
 	}
+
 	public void CheckBattleStatus (bool secondCheck)
 	{
 		
@@ -285,7 +288,8 @@ public class BattleController : EnglishRoyaleElement
 
 	}
 
-	IEnumerator StartAttackSequence(int sequenceType){
+	IEnumerator StartAttackSequence (int sequenceType)
+	{
 
 		switch (sequenceType) {
 		case 1:
@@ -320,7 +324,7 @@ public class BattleController : EnglishRoyaleElement
 		}
 
 		//reset effects done by skill
-		app.controller.gameController.ResetPlayerDamage();
+		app.controller.gameController.ResetPlayerDamage ();
 		Debug.Log ("player damage reset! now damage is: " + app.model.battleModel.playerDamage);
 		
 	}

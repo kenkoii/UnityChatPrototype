@@ -7,19 +7,24 @@ using UnityEngine.UI;
 
 public class QuestionManagerComponent : EnglishRoyaleElement
 {
-	private static int questiontype = 0;
+	//private static int questiontype = 0;
 	public GameObject[] questionTypeModals;
 
-	private int numberofQuestionTypes = 2;
-	private List<string> questionTypeName = new List<string>();
+	//private int numberofQuestionTypes = 2;
+	//private List<string> questionTypeName = new List<string>();
 	void Start ()
 	{
+		foreach (GameObject g in questionTypeModals) {
+			Debug.Log (g.name);
+
+		}
+		//Debug.Log (questionTypeModals [0].name);
 		//questionTypeModals [3].SetActive (true);
-		questionTypeName.Add ("SelectLetterIconModal");
-		questionTypeName.Add ("TypingModal");
-		questionTypeName.Add ("ChangeOrderModal");
-		questionTypeName.Add ("WordChoiceModal");
-		numberofQuestionTypes = questionTypeName.Count;
+		//questionTypeName.Add ("SelectLetterIconModal");
+		//questionTypeName.Add ("TypingModal");
+		//questionTypeName.Add ("ChangeOrderModal");
+		//questionTypeName.Add ("WordChoiceModal");
+		//numberofQuestionTypes = questionTypeName.Count;
 		// 0 = SelectLetter
 		// 1 = Order
 		// 2 = ChangeOrder
@@ -31,7 +36,9 @@ public class QuestionManagerComponent : EnglishRoyaleElement
 	}
 
 	public void QuestionHide(){
+
 		for (int i = 0; i < questionTypeModals.Length; i++) {
+			//Debug.Log (questionTypeModals[i].name);
 			questionTypeModals [i].SetActive (false);
 		}
 	}
@@ -63,6 +70,12 @@ public class QuestionManagerComponent : EnglishRoyaleElement
 			//questionTypeModals[2].SetActive (true);
 			WordChoiceIcon wordchoiceIcon = app.view.questionSystemView.wordChoiceIcon;
 			app.controller.questionController.SetQuestion (wordchoiceIcon, questionTime, onResult);
+			app.controller.questionController.TimeLeft = questionTime;
+			break;
+		case 4:
+			//questionTypeModals[2].SetActive (true);
+			SlotMachineIcon slotMachineIcon = app.view.questionSystemView.slotMachineIcon;
+			app.controller.questionController.SetQuestion (slotMachineIcon, questionTime, onResult);
 			app.controller.questionController.TimeLeft = questionTime;
 			break;
 		}

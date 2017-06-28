@@ -61,23 +61,6 @@ public class QuestionController : EnglishRoyaleElement
 
 	public void SetQuestion (IQuestion questiontype, int qTime, Action<int, int> Result)
 	{
-		
-		string entityChosen = questiontype.GetType ().ToString ();
-		string modalName = "";
-		switch (entityChosen) {
-		case "TypingIcon":
-			modalName = "TypingModal";
-			break;
-		case "SelectLetterIcon":
-			modalName = "SelectLetterIconModal";
-			break;
-		case "ChangeOrderIcon":
-			modalName = "ChangeOrderModal";
-			break;
-		case "WordChoiceIcon":
-			modalName = "WordChoiceIcon";
-			break;
-		}
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 			Destroy (GameObject.Find ("output" + i));
@@ -87,6 +70,7 @@ public class QuestionController : EnglishRoyaleElement
 		}
 		timeLeft = qTime;
 		questiontype.Activate (this.gameObject, qTime, Result);
+
 		stoptimer = true;
 	}
 
@@ -110,7 +94,9 @@ public class QuestionController : EnglishRoyaleElement
 
 	public void ComputeScore ()
 	{
-		app.component.questionManagerComponent.QuestionHide ();
+		QuestionManagerComponent questionManagement = FindObjectOfType<QuestionManagerComponent>();
+		questionManagement.QuestionHide ();
+//		app.component.questionManagerComponent.QuestionHide ();
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}
@@ -119,7 +105,6 @@ public class QuestionController : EnglishRoyaleElement
 		}
 		onResult.Invoke (correctAnswers,timeLeft);
 		correctAnswers = 0;
-
 	}
 
 
@@ -131,7 +116,6 @@ public class QuestionController : EnglishRoyaleElement
 		if (round > roundlimit) {
 			stoptimer = false;
 			ComputeScore ();
-
 		} 
 
 	}

@@ -16,6 +16,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 	private float[] positionCompare = new float[5];
 	private float positionCounter = 0.5f;
 	private float scrollIncrement = 0.25f;
+	private float yposition = 0f;
 	private int slotIndex = 0;
 	private bool stopDrag = false;
 	private static string writtenAnswer;
@@ -48,19 +49,33 @@ public class SlotMachineOnChange : MonoBehaviour {
 		slotContent = myScrollRect.content;
 		contentPosition = slotContent.transform.position.y;
 		positionCounter = 1.0f;
+		/*
+		for(int i = 0;i< 5;i++){
+			topScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
+				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
+			bottomScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
+				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
+		}*/
+	}
+	void Start(){
+		getContentPosition ();
+		GetSlots ();
+		getScrollItem ();
+		topScrollRect.verticalNormalizedPosition =  positionCounter == 1 ? 
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, -1, 0.5f):
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter + (scrollIncrement * 2), 0.5f);
+		bottomScrollRect.verticalNormalizedPosition = positionCounter == 0 ? 
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, 2.0f, 0.5f) :
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter - (scrollIncrement * 2), 0.5f);
 		for(int i = 0;i< 5;i++){
 			topScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
 				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
 			bottomScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
 				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
 		}
-	}
-	void Start(){
-		getContentPosition ();
-		GetSlots ();
-		getScrollItem ();
-	}
 
+
+	}
 	public void getScrollItem(){
 		slotIndex = numberOfTextSlots;
 		foreach (float p in positionCompare) {
@@ -193,27 +208,29 @@ public class SlotMachineOnChange : MonoBehaviour {
 	public void OnButtonDown(){
 		getContentPosition ();
 		GetSlots ();
-		if (positionCounter <= 1f && positionCounter >= -0.9f) {
-			switch (EventSystem.current.currentSelectedGameObject.name) {
-			case "UpIcon":	
-				positionCounter  += 0.25f;
-				break;
-			case "DownIcon":
-				positionCounter -= 0.25f;
-				break;
-			}
+		switch (EventSystem.current.currentSelectedGameObject.name) {
+		case "UpIcon":	
+			yposition += 0.25f;
+			break;
+		case "DownIcon":
+			yposition -= 0.25f;
+			break;
 		}
+		OnScroll (new Vector2(0, yposition));
 		//getScrollItem ();
 	}
 
 	void Update(){
 		//getScrollItem ();
+		/*
 		topScrollRect.verticalNormalizedPosition =  positionCounter == 1 ? 
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, -1, 0.5f):
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter + (scrollIncrement * 2), 0.5f);
 		bottomScrollRect.verticalNormalizedPosition = positionCounter == 0 ? 
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, 2.0f, 0.5f) :
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter - (scrollIncrement * 2), 0.5f);
+		*/
+		//myScrollRect.verticalNormalizedPosition = yposition;
 
 	}
 
@@ -305,7 +322,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 		_hasDisabledGridComponents = true; 
 	}
 	private Vector2 _newAnchoredPosition = Vector2.zero;
-	//TO DISABLE FLICKERING OBJECT WHEN SCROLL VIEW IS IDLE IN BETWEEN OBJECTS
+
 	private float _treshold = 100f; 
 	private int _itemCount = 0;
 	private float _recordOffsetX = 0;
@@ -314,32 +331,27 @@ public class SlotMachineOnChange : MonoBehaviour {
 	public void OnScroll(Vector2 pos)
 	{
 		positionCounter = Mathf.Round (pos.y * 100f) / 100f;
-		GetSlots ();
+		Debug.Log (positionCounter % 0.25f);
+		Debug.Log (myScrollRect.verticalNormalizedPosition);
+		//&& (myScrollRect.velocity.y<50f || myScrollRect.velocity.y> -50)
+		if ((positionCounter % 0.25f) == 0 ) {
+			//if (!stopDrag) {
+			myScrollRect.verticalNormalizedPosition = positionCounter;
+			//stopDrag = true;
+			myScrollRect.enabled = false;
+			myScrollRect.enabled = true;
+			//}
+		}
 
+
+		yposition = pos.y;
+		GetSlots ();
 		//Debug.Log (Mathf.Round (positionCounter * 100f) / 100f);
 		if(!_hasDisabledGridComponents)
 			DisableGridComponents();
 
 		for(int i=0;i<items.Count;i++)
 		{
-			if(_isHorizontal)
-			{
-				if (_scrollRect.transform.InverseTransformPoint(items[i].gameObject.transform.position).x > _disableMarginX + _treshold)
-				{
-					_newAnchoredPosition = items[i].anchoredPosition;
-					_newAnchoredPosition.x -= _itemCount * _recordOffsetX;
-					items[i].anchoredPosition = _newAnchoredPosition;
-					_scrollRect.content.GetChild(_itemCount-1).transform.SetAsFirstSibling();
-				}
-				else if (_scrollRect.transform.InverseTransformPoint(items[i].gameObject.transform.position).x < -_disableMarginX)
-				{
-					_newAnchoredPosition = items[i].anchoredPosition;
-					_newAnchoredPosition.x += _itemCount * _recordOffsetX;
-					items[i].anchoredPosition = _newAnchoredPosition;
-					_scrollRect.content.GetChild(0).transform.SetAsLastSibling();
-				}
-			}
-
 			if(_isVertical)
 			{
 				if (_scrollRect.transform.InverseTransformPoint(items[i].gameObject.transform.position).y > _disableMarginY + _treshold)
@@ -360,11 +372,10 @@ public class SlotMachineOnChange : MonoBehaviour {
 
 		}
 
-		if ((positionCounter % 0.25) == 0) {
-			if (!stopDrag) {
-				stopDrag = true;
-				myScrollRect.enabled = false;
-			}
-		}
+		topScrollRect.verticalNormalizedPosition =  
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition + (scrollIncrement * 2), 0.5f);
+		bottomScrollRect.verticalNormalizedPosition = 
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition - (scrollIncrement * 2), 0.5f);
+
 	}
 }

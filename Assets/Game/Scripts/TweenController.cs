@@ -13,7 +13,7 @@ public class TweenController : EnglishRoyaleElement {
 	}
 
 	public void TweenPlayerHPSlider(float endValue, float duration, bool snapping){
-		TweenSlider (app.model.tweenModel.enemyHpSlider, endValue, duration, snapping);
+		TweenSlider (app.model.tweenModel.playerHpSlider, endValue, duration, snapping);
 		TweenPlayerHPGroup (new Vector3(1.2F,1.2F,1.2F), 1);
 	}
 
@@ -57,13 +57,12 @@ public class TweenController : EnglishRoyaleElement {
 		app.model.tweenModel.waitOpponentGroup.DOScale(new Vector3(1,0,0), duration);
 	}
 
-	public void TweenRotateForever(Transform rotateObject){
+	public void TweenRotateForever(RectTransform rotateObject){
 		
 		Sequence mySequence = DOTween.Sequence();
-		mySequence.Append(rotateObject.DORotate(new Vector3(0, 0, -360), 5, RotateMode.FastBeyond360).SetEase(Ease.Linear)).SetLoops(-1);
+		mySequence.Append(rotateObject.DOLocalRotate(new Vector3(0, 0, -360), 5, RotateMode.FastBeyond360).SetEase(Ease.Linear)).SetLoops(-1);
 	}
-
-
+		
 	//for test tween
 	public void TestButton(){
 		TweenStartWaitOpponent (0.2f);

@@ -8,5 +8,5 @@ public class QuestionSystemView : EnglishRoyaleElement {
 	public ChangeOrderIcon changeOrderIcon;
 	public SelectLetterIcon selectLetterIcon;
 	public WordChoiceIcon wordChoiceIcon;
-
+	public SlotMachineIcon slotMachineIcon;
 }

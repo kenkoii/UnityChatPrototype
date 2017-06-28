@@ -11,7 +11,7 @@ public class TweenModel : EnglishRoyaleElement {
 	public Transform playerGPGroup;
 	public Transform enemyHPGroup;
 
-	public Transform loadingIndicator;
+	public RectTransform loadingIndicator;
 
 	public Transform waitOpponentGroup;
 }

@@ -183,8 +183,8 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 		transform.GetChild (0).GetComponent<Text> ().text = " ";
 	}
 	public void PopulateQuestionList(){
-		CSVParser cs = new CSVParser ();
-		List<string> databundle = cs.GetQuestions ("wingquestion");
+		//CSVParser cs = new CSVParser ();
+		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
 		int i = 0;
 		foreach(string questions in databundle ){
 			string[] splitter = databundle[i].Split (']');	
