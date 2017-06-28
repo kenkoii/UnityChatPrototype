@@ -27,10 +27,10 @@ public class LobbyController : EnglishRoyaleElement
 	{
 		switch(modeName){
 
-		case "Mode2":
+		case "Mode1":
 			app.model.battleModel.modePrototype = ModeEnum.Mode1;
 			break;
-		case "Mode4":
+		case "Mode2":
 			app.model.battleModel.modePrototype = ModeEnum.Mode2;
 			break;
 		}

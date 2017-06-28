@@ -31,9 +31,8 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// set the name and cost of skill in placeholder
 	/// </summary>
 	/// <param name="skillParam">Skill parameter.</param>
-	public void SetSkill (Action<string, int> skillParam)
-	{
-		skillParam (skillName, skillCost);
+	public void SetSkill(Action<string,string, int> skillParam){
+		skillParam (skillName,skillDescription, skillCost);
 	}
 
 
