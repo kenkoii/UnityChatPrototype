@@ -44,7 +44,7 @@ public class SkillManagerComponent : EnglishRoyaleElement
 		this.skill1.SetSkill (delegate(string skillName, string skillDescription , int gpCost) {
 			app.model.battleModel.Skill1GPCost = gpCost;
 			app.model.battleModel.Skill1Name = skillName;
-			app.model.battleModel.skill2Description = skillDescription;
+			app.model.battleModel.skill1Description = skillDescription;
 
 			app.controller.battleController.skill1Name.text = skillName;
 			app.controller.battleController.skill1GpCost.text = "" +gpCost;
@@ -71,7 +71,7 @@ public class SkillManagerComponent : EnglishRoyaleElement
 		this.skill3.SetSkill (delegate(string skillName, string skillDescription, int gpCost) {
 			app.model.battleModel.Skill3GPCost = gpCost;
 			app.model.battleModel.Skill3Name = skillName;
-			app.model.battleModel.skill2Description = skillDescription;
+			app.model.battleModel.skill3Description = skillDescription;
 
 			app.controller.battleController.skill3Name.text = skillName;
 			app.controller.battleController.skill3GpCost.text = "" +gpCost;

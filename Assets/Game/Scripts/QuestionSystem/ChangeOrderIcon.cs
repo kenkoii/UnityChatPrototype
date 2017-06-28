@@ -5,7 +5,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
-public class ChangeOrderIcon : MonoBehaviour, IQuestion{
+public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	private static int round = 1;
 	private Action<int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
@@ -102,6 +102,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 		QuestionDoneCallback (false);
 	}
 	public void InputOnClick(){
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			//EventSystem.current.currentSelectedGameObject.transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
@@ -138,6 +139,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	}
 		
 	public void OutputOnClick(){
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
@@ -154,6 +156,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
+			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
 			for (int i = 0; i < questionAnswer.Length; i++) {
@@ -167,6 +170,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion{
 			Invoke("TweenCallBack", 1f);
 
 		} else {
+			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
 			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				outputlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();

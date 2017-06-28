@@ -21,6 +21,8 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 		app.controller.battleController.playerHP += 10;
 			
 		app.controller.battleController.playerGP -= skillCost;
+		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
+
 
 		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();

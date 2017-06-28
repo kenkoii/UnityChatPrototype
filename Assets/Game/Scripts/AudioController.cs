@@ -25,7 +25,12 @@
 		case AudioEnum.Hit:
 			app.model.audioModel.hit.Play ();
 			break;
-
+		case AudioEnum.Correct:
+			app.model.audioModel.correct.Play ();
+			break;
+		case AudioEnum.Mistake:
+			app.model.audioModel.mistake.Play ();
+			break;
 		}
 
 	}

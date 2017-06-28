@@ -4,7 +4,7 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 {
 	public void StartPhase1 ()
 	{
-		Debug.Log ("Starting phase 1");
+		
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			PhaseActivate (false, true, false);
 		} else {
@@ -15,7 +15,7 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 
 	public void StartPhase2 ()
 	{
-		Debug.Log ("Starting phase 2");
+		
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			PhaseActivate (true, false, false);
 		} else {
@@ -25,7 +25,7 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 
 	public void StartPhase3 ()
 	{
-		Debug.Log ("Starting phase 3");
+		
 		PhaseActivate (false, false, true);
 	}
 

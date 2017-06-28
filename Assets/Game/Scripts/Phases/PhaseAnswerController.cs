@@ -13,7 +13,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 	public void OnEnable ()
 	{
-
+		Debug.Log ("Starting Answer Phase");
 		hasAnswered = false;
 		timeLeft = 5;
 		stoptimer = true;
@@ -73,8 +73,11 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 		app.model.battleModel.gpEarned = gp;
 		app.controller.battleController.SetPlayerGP (gp);
-
+		if (gp != 0) {
+			app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
+		}
 		app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
+
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 				Debug.Log ("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);

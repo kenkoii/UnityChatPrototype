@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class TypingIcon : MonoBehaviour, IQuestion{
+public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private static List<Question> questionlist = new List<Question> ();
 	private static string questionAnswer;
 	private string questionString;
@@ -103,6 +103,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
+			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
 			for (int i = 0; i < questionAnswer.Length; i++) {
@@ -115,6 +116,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 		} else {
+			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
 			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				outputlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
@@ -154,6 +156,7 @@ public class TypingIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void OutputOnClick(){
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			//iTween.ShakePosition(EventSystem.current.currentSelectedGameObject, new Vector3(10,10,10), 0.5f);
 			//EventSystem.current.currentSelectedGameObject.transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);

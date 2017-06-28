@@ -17,7 +17,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	public void OnEnable ()
 	{
-		
+		Debug.Log ("Starting Skill Phase");
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
@@ -61,7 +61,10 @@ public class PhaseSkillController : EnglishRoyaleElement
 	void OnDisable ()
 	{
 		attackButton.gameObject.SetActive (false);
-
+		skillDescription.SetActive (false);
+		for (int i = 0; i < battleUI.Length; i++) {
+			battleUI [i].SetActive (false);
+		}
 		CancelInvoke ("StartTimer");
 	}
 
@@ -79,6 +82,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 		skillButton2.interactable = buttonEnable;
 		skillButton3.interactable = buttonEnable;
 		attackButton.interactable = buttonEnable;
+
 	}
 
 	public void SelectSkill1 ()
