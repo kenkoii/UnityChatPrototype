@@ -30,9 +30,11 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	private List<string> wrongChoices = new List<string> ();
 	private List<GameObject> answerClicked = new List<GameObject> ();
 	private bool isSynonym = false;
+	private bool justSkipped = false;
 
 	public void Activate (GameObject entity, float timeduration, Action<int,int> Result)
 	{
+		inputlist.Clear ();
 		round = 1;
 		currentround = 1;
 		correctAnswers = 0;
@@ -142,7 +144,10 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 		}
 		//iTween.ShakePosition (questionModal, new Vector3 (10, 10, 10), 0.5f);
 		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
+		QuestionController qc = new QuestionController();
+		qc.Stoptimer = false;
 		Invoke("OnEnd", 1f);
+	
 	}
 
 	public void TweenCallBack(){
@@ -153,7 +158,10 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	}
 
 	public void OnEnd(){
-		QuestionController qc = new QuestionController ();
+		QuestionController qc = new QuestionController();
+		qc.Stoptimer = true;
+		justSkipped = true;
+
 		Clear ();
 		answerindex = 1;
 		currentround = currentround + 1;
@@ -196,7 +204,10 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	}
 
 	public void OnSkipClick(){
-		QuestionDoneCallback (false);
+		if (!justSkipped) {
+			QuestionDoneCallback (false);
+			justSkipped = true;
+		}
 	}
 
 	public void ShuffleAlgo ()

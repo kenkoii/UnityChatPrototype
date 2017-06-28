@@ -13,6 +13,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	private static string questionAnswer;
 	private string questionString;
 	private string questionData = "";
+	private int letterno;
 	private int roundlimit = 3;
 	private bool isSynonym = true;
 	public static int currentround = 1;
@@ -20,14 +21,14 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	private string antonymData = "";
 	public GameObject[] indicators = new GameObject[3];
 	public static int correctAnswers;
+	private int numberOfRoulletes = 6;
 	private static GameObject questionModal;
-	public GameObject[] roulletes = new GameObject[6];
+	private static List<GameObject> roulletes = new List<GameObject>();
 	private static int randomnum = 0;
 	private static List<string> questionsDone = new List<string>();
 	private List<GameObject> roulleteText = new List<GameObject>();
 	private static bool instantiateDone = false;
 	private static GameObject ballInstantiated;
-
 
 	public string answerwrote {
 		get;
@@ -37,19 +38,26 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		round = 1;
 		correctAnswers = 0;
+		instantiateDone = false;
 		currentround = 1;
 		NextRound (round);
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
-
 	}
 
 	public void NextRound(int round){
-		
-		foreach (GameObject g in roulletes) {
-			g.SetActive (true);
+		for (int i = 0; i < numberOfRoulletes; i++) {
+			if (!instantiateDone) {
+				roulletes.Add(GameObject.Find ("Roullete" + (i + 1)));
+
+				if (i == numberOfRoulletes - 1) {
+					instantiateDone = true;
+
+				}
+			} else {
+				roulletes [i].SetActive (true);
+			}
 		}
-	
 		PopulateQuestionList ();
 		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
 		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
@@ -80,6 +88,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void findSlotMachines(){
+
 		roulleteText.Clear ();
 		GameObject content;
 		Debug.Log (questionAnswer + "/" + questionAnswer.Length);
@@ -111,7 +120,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 			},currentround,correctAnswers
 		);
 	}
-		
+
 	public void getAnswer(string ans){
 		if (questionAnswer == ans) {
 			correctAnswerGot ();
@@ -120,21 +129,20 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		}
 
 	}
-	public void onSkip(){
-		
-	}
 	public void correctAnswerGot(){
-			correctAnswers = correctAnswers + 1;
+
+		//iTween.ShakePosition(questionModal, new Vector3(10,10,10), 0.5f);
+		correctAnswers = correctAnswers + 1;
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 			Instantiate (ballInstantiated, 
-				this.roulletes [i].transform.position, 
+				roulletes [i].transform.position, 
 				Quaternion.identity);
 		}
-			GameObject.Find ("Indicator"+currentround).GetComponent<Image> ().color = Color.blue;
-			correctAnswers = correctAnswers + 1;
-			currentround += 1;
-			QuestionDoneCallback (true);
+		GameObject.Find ("Indicator"+currentround).GetComponent<Image> ().color = Color.blue;
+		correctAnswers = correctAnswers + 1;
+		currentround += 1;
+		QuestionDoneCallback (true);
 	}
 
 	public void PopulateQuestionList(){
@@ -170,7 +178,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		int letterIndex = 0;
 		int letterStartIndex = 0;
 		int letterEndIndex = 5;
-	    randomnum = UnityEngine.Random.Range (letterStartIndex+1, letterEndIndex);
+		randomnum = UnityEngine.Random.Range (letterStartIndex+1, letterEndIndex);
 		for (int i = 0; i < roulleteText.Count; i++) {
 			roulleteText [i].transform.GetChild (0).GetComponent<Text> ().text = (i%randomnum)==0 ?
 				questionAnswer [letterIndex].ToString ().ToUpper ():
