@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Skill1Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 4;
+	private int skillCost = 1;
 	private string skillName = "Air Render ";
 	private string skillDescription = "Skill Description: Releases a striking wind to the enemy. Answering more correct answers will multiply wind damage";
+	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	/// <summary>
 	/// activate skill
@@ -14,19 +15,24 @@ public class Skill1Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate ()
 	{
-		
+		float damage = 0;
 		if (app.model.battleModel.gpEarned != 0) {
-			app.model.battleModel.playerDamage += 2 * app.model.battleModel.gpEarned;
+			damage = 2 * app.model.battleModel.gpEarned;
 		} else {
-			app.model.battleModel.playerDamage += 2;
+			damage += 2;
 		}
+
+		param [ParamNames.SkillDamage.ToString ()] = damage;
 
 		app.controller.battleController.playerGP -= skillCost;
 
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
 
+		if (param != null) {
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.playerName, app.component.rpcWrapperComponent.DicToJsonStr (param));
+		}
 
-		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();
 		} 
 	}

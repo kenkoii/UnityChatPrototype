@@ -89,8 +89,10 @@ public class PhaseSkillController : EnglishRoyaleElement
 	{
 		SelectSkill (delegate() {
 			app.component.skillManagerComponent.ActivateSkill1 ();
+
 		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill1GPCost;
+
 		});
 
 	}
@@ -101,6 +103,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 			app.component.skillManagerComponent.ActivateSkill2 ();
 		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill2GPCost;
+
 		});
 	}
 
@@ -110,6 +113,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 			app.component.skillManagerComponent.ActivateSkill3 ();
 		}, delegate() {
 			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill3GPCost;
+
 		});
 	}
 

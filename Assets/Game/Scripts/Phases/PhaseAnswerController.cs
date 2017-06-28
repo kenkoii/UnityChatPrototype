@@ -81,7 +81,9 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
 				Debug.Log ("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
-				app.model.battleModel.playerSkillChosen ();
+				if(app.model.battleModel.playerSkillChosen != null){
+					app.model.battleModel.playerSkillChosen ();
+				}
 			} else {
 				Debug.Log ("skill less gp");
 			}

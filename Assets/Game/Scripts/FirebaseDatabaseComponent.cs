@@ -216,7 +216,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 			sendInitialVisitorState.Invoke (receiveMessage);
 			isMatchMakeSuccess = true;
 			onSuccessMatchMake (true);
-			Debug.Log ("matching success: " +isMatchMakeSuccess);
+			Debug.Log ("matching success: " + isMatchMakeSuccess);
 		});
 	
 	}
@@ -413,7 +413,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// <param name="param">Parameter.</param>
 	public void SetParam (string name, string param)
 	{
-
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
 		BattleStatus battleStatus = new BattleStatus (name, param);
@@ -454,7 +453,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 			return TransactionResult.Success (mutableData);
 		});
 	}
-		
+
 	/// <summary>
 	/// Answer Phase
 	/// </summary>

@@ -26,6 +26,7 @@ public class BattleModel : EnglishRoyaleElement
 
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
+
 	public Action playerSkillChosen{ get; set; }
 
 	public int skillChosenCost{ get; set; }

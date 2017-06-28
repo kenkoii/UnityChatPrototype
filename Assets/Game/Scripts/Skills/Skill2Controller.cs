@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Skill2Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 7;
+	private int skillCost = 1;
 	private string skillName = "Sunder";
 	private string skillDescription = "Deals a considerable amount of damage while absorbing life points at the same time.";
-
+	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	/// <summary>
 	/// activate skill
@@ -15,16 +15,17 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate ()
 	{
-		Debug.Log ("activate skill");
-
-		app.model.battleModel.playerDamage += 15;
-		app.controller.battleController.playerHP += 10;
+		param [ParamNames.SkillDamage.ToString ()] = 15;
+		param [ParamNames.SkillHeal.ToString ()] = 10;
 			
 		app.controller.battleController.playerGP -= skillCost;
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
 
+		if (param != null) {
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.playerName, app.component.rpcWrapperComponent.DicToJsonStr (param));
+		}
 
-		if (app.model.battleModel.modePrototype != ModeEnum.Mode2) {
+		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
 			app.component.rpcWrapperComponent.RPCWrapSkill ();
 		} 
 	}
