@@ -15,6 +15,7 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	public void OnEnable ()
 	{
+		
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {

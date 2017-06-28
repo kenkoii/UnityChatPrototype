@@ -61,6 +61,9 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				} else {
 					app.component.phaseManagerComponent.StartPhase2 ();
 				}
+				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+			} else {
+				app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 			}
 			break;
 
@@ -71,12 +74,17 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				} else {
 					app.component.phaseManagerComponent.StartPhase3 ();
 				}
+				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+			} else {
+				app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 			}
 			break;
 
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-
+				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+			} else {
+				app.controller.tweenController.TweenStartWaitOpponent (0.2f);
 			}
 		
 			break;

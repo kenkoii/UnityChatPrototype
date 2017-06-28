@@ -9,14 +9,17 @@ public class TweenController : EnglishRoyaleElement {
 	//HP GP Sliders
 	public void TweenPlayerGPSlider(float endValue, float duration, bool snapping){
 		TweenSlider (app.model.tweenModel.playerGpSlider, endValue, duration, snapping);
+		TweenPlayerGPGroup (new Vector3(1.2F,1.2F,1.2F), 1);
 	}
 
 	public void TweenPlayerHPSlider(float endValue, float duration, bool snapping){
 		TweenSlider (app.model.tweenModel.enemyHpSlider, endValue, duration, snapping);
+		TweenPlayerHPGroup (new Vector3(1.2F,1.2F,1.2F), 1);
 	}
 
 	public void TweenEnemyHPSlider(float endValue, float duration, bool snapping){
 		TweenSlider (app.model.tweenModel.enemyHpSlider, endValue, duration, snapping);
+		TweenEnemyHPGroup (new Vector3(1.2F,1.2F,1.2F), 1);
 	}
 
 	private void TweenSlider(Slider slider,float endValue, float duration, bool snapping){
