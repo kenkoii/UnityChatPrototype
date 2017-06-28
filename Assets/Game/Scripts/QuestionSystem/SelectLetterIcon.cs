@@ -8,7 +8,7 @@ using System.Net;
 using System.IO;
 using DG.Tweening;
 
-public class SelectLetterIcon : MonoBehaviour, IQuestion
+public class SelectLetterIcon : EnglishRoyaleElement, IQuestion 
 {
 	private string questionData = "";
 	private string answerData = "";
@@ -83,6 +83,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void AnswerOnClick ()
 	{
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		Debug.Log (EventSystem.current.currentSelectedGameObject);
 		string answerclicked = "";
 
@@ -109,6 +110,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void LetterOnClick ()
 	{
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} else {
@@ -150,6 +152,8 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
+			app.controller.audioController.PlayAudio (AudioEnum.Correct);
+
 			correctAnswers = correctAnswers + 1;
 			indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
 			for (int i = 0; i < questionAnswer.Length; i++) {
@@ -163,6 +167,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			Invoke("TweenCallBack", 1f);
 
 		} else {
+			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
 			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				answerlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
@@ -195,8 +200,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	}
 
 	public void PopulateQuestionList(){
-
-		//CSVParser cs = new CSVParser ();
 		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
 		int i = 0;
 		foreach(string questions in databundle ){

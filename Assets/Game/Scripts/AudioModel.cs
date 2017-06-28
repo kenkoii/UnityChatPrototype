@@ -12,6 +12,7 @@ public class AudioModel : EnglishRoyaleElement
 	public AudioSource skill;
 	public AudioSource win;
 	public AudioSource hit;
-
+	public AudioSource mistake;
+	public AudioSource correct;
 
 }

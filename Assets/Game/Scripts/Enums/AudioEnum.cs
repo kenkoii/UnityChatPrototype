@@ -7,6 +7,8 @@ public enum AudioEnum
 	Lose,
 	Skill,
 	Win,
-	Hit
+	Hit,
+	Mistake,
+	Correct
 
 }

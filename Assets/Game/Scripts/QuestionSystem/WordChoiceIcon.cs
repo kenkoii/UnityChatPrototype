@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class WordChoiceIcon : MonoBehaviour, IQuestion
+public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 {
 	private static int round = 1;
 	private static List<Question> questionlist = new List<Question> ();
@@ -75,6 +75,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 
 	public void InputOnClick ()
 	{
+		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		GameObject answerclick = EventSystem.current.currentSelectedGameObject;
 
 		if (answerclick.GetComponent<Image> ().color == Color.gray) {
@@ -113,6 +114,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
+			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
 			for (int i = 0; i < answerClicked.Count; i++) {
@@ -125,6 +127,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 		} else {
+			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
 			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < inputlist.Count; i++) {
 
