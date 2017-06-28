@@ -227,6 +227,7 @@ public class BattleController : EnglishRoyaleElement
 	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
+			app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 
 			app.controller.cameraWorksController.StartWinLoseCamera ();
 			if (enemyHP > 0 && playerHP <= 0) {

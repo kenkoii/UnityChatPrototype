@@ -13,6 +13,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 
 	public void OnEnable ()
 	{
+
 		hasAnswered = false;
 		timeLeft = 5;
 		stoptimer = true;
