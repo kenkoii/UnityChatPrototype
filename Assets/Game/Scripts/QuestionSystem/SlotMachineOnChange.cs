@@ -59,8 +59,8 @@ public class SlotMachineOnChange : MonoBehaviour {
 	}
 	void Start(){
 		getContentPosition ();
-		GetSlots ();
-		getScrollItem ();
+
+		//getScrollItem ();
 		topScrollRect.verticalNormalizedPosition =  positionCounter == 1 ? 
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, -1, 0.5f):
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter + (scrollIncrement * 2), 0.5f);
@@ -73,6 +73,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 			bottomScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
 				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
 		}
+		GetSlots ();
 
 
 	}

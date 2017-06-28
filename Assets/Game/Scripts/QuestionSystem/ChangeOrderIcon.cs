@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	private static int round = 1;
-	private Action<int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
 	private static string questionAnswer;
 	private string questionString;
@@ -17,6 +16,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	public static int answerindex = 1;
 	private int roundlimit = 3;
 	private string answerwrote;
+	private bool justSkipped = false;
 	public static int currentround = 1;
 	public GameObject[] indicators = new GameObject[3];
 	public static int correctAnswers;
@@ -50,7 +50,6 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 				break;
 			}
 		} 
-	
 		questionsDone.Add (questionString);
 		GameObject questionInput = Resources.Load ("Prefabs/inputContainer") as GameObject;
 		GameObject greenInput = Resources.Load ("Prefabs/inputContainerUI") as GameObject;
@@ -81,12 +80,13 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 		}
 		ShuffleAlgo ();
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
-
 	}
 
 	public void OnEnd(){
+		justSkipped = false;
 		QuestionController qc = new QuestionController ();
 		Clear ();
+		qc.Stoptimer = true;
 		answerindex = 1;
 		currentround = currentround + 1;
 
@@ -98,9 +98,14 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 			Clear ();
 		}
 	}
+
 	public void OnSkipClick(){
-		QuestionDoneCallback (false);
+		if (!justSkipped) {
+			QuestionDoneCallback (false);
+			justSkipped = true;
+		}
 	}
+
 	public void InputOnClick(){
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
@@ -178,14 +183,18 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 			}
 		}
 		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
+		QuestionController qc = new QuestionController ();
+		qc.Stoptimer = false;
 		Invoke("OnEnd", 1f);
 	}
+
 	public void TweenCallBack(){
 		indicators[currentround-1].
 		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
 		indicators[currentround-1].
 		transform.GetChild (0).GetComponent<Text> ().text = " ";
 	}
+
 	public void PopulateQuestionList(){
 		//CSVParser cs = new CSVParser ();
 		List<string> databundle = CSVParser.GetQuestions ("wingquestion");

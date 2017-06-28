@@ -24,6 +24,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private static List<GameObject> inputlist = new List<GameObject>();
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
+	private bool justSkipped = false;
 
 	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		currentround = 1;
@@ -127,10 +128,16 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 
 		questionModal.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		clickable = false;
+		QuestionController qc = new QuestionController ();
+		qc.Stoptimer = false;
 		Invoke("OnEnd", 1f);
+
 	}
 	public void OnSkipClick(){
-		QuestionDoneCallback (false);
+		if (!justSkipped) {
+			QuestionDoneCallback (false);
+			justSkipped = true;
+		}
 	}
 	public void TweenCallBack(){
 		indicators[currentround-1].
@@ -140,9 +147,11 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	}
 
 	public void OnEnd(){
+		justSkipped = false;
 		QuestionController qc = new QuestionController ();
 		Clear ();
 		answerindex = 1;
+		qc.Stoptimer = true;
 		currentround = currentround + 1;
 
 		NextRound (currentround);

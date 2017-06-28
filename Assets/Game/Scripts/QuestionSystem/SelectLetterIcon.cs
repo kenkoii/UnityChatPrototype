@@ -24,6 +24,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	public static int answerindex = 1;
 	public List<string> answerIdentifier;
 	public string answerwrote;
+	private bool justSkipped = false;
 	public static string questionAnswer;
 	public static string questionString;
 	public static int correctAnswers;
@@ -175,6 +176,8 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			}
 		}
 		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
+		QuestionController qc = new QuestionController ();
+		qc.Stoptimer = false;
 		Invoke("OnEnd", 1f);
 	}
 
@@ -187,6 +190,9 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	public void OnEnd(){
 		QuestionController qc = new QuestionController ();
+		justSkipped = false;
+		qc.Stoptimer = true;
+
 		Clear ();
 		answerindex = 1;
 		currentround = currentround + 1;
@@ -257,7 +263,10 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	}
 	public void OnSkipClick(){
-		QuestionDoneCallback (false);
+		if (!justSkipped) {
+			QuestionDoneCallback (false);
+			justSkipped = true;
+		}
 	}
 	public void Clear ()
 	{
