@@ -26,15 +26,27 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
 				thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
-				
-
 				if (thisCurrentParameter.Count == 2) {
 					app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
 					thisCurrentParameter.Clear ();
-
 				} 
 
-			} 	
+			} 
+			if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
+				if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
+					app.model.battleModel.playerDamage += int.Parse (newParam.Value.ToString ());
+
+				} 
+			}
+			if (newParam.Key == ParamNames.SkillHeal.ToString ()) {
+				if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
+					app.controller.battleController.playerHP += int.Parse (newParam.Value.ToString ());
+				} else {
+					app.controller.battleController.enemyHP += int.Parse (newParam.Value.ToString ());
+				}
+			}
+
+
 		}
 			
 	}

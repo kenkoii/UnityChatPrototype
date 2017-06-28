@@ -41,7 +41,7 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 	/// </summary>
 	/// <returns>The to json string.</returns>
 	/// <param name="param">Parameter.</param>
-	private string DicToJsonStr (Dictionary<string, System.Object> param)
+	public string DicToJsonStr (Dictionary<string, System.Object> param)
 	{
 		string jsonStr = MiniJSON.Json.Serialize (param);
 		return jsonStr;
