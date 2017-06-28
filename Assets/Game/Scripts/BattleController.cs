@@ -50,6 +50,7 @@ public class BattleController : EnglishRoyaleElement
 	/// </summary>
 	public void StartPreTimer ()
 	{
+		
 		app.controller.cameraWorksController.StartIntroCamera ();
 		cachedBattleResult = battleResultText.GetComponent<Text> ();
 		timeLeft = 3;
@@ -108,6 +109,7 @@ public class BattleController : EnglishRoyaleElement
 		this.playerName = playerName;
 		this.playerGP = playerGP;
 		playerGPBar.maxValue = app.model.battleModel.playerMaxGP;
+		playerGPBar.value = 0;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
 		playerMaxGP = app.model.battleModel.playerMaxGP;
