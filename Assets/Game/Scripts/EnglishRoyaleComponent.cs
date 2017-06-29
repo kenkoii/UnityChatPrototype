@@ -5,4 +5,5 @@
 	public SkillManagerComponent skillManagerComponent;
 	public PhaseManagerComponent phaseManagerComponent;
 	public QuestionManagerComponent questionManagerComponent;
+	public SkillActivatorComponent skillActivatorComponent;
 }

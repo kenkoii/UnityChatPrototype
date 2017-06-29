@@ -15,15 +15,7 @@ public class Skill3Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate ()
 	{
-
-		float heal = 0;
-		if (app.model.battleModel.gpEarned != 0) {
-			heal = 2 * app.model.battleModel.gpEarned;
-		} else {
-			heal += 2;
-		}
-
-		param [ParamNames.SkillHeal.ToString ()] = heal;
+		param [ParamNames.Rejuvination.ToString ()] = 0;
 
 		app.controller.battleController.playerGP -= skillCost;
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
