@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum ParamNames {
 	Damage,
-	SkillDamage,
-	SkillHeal
+	Sunder,
+	AirRender,
+	Rejuvination
 
 }

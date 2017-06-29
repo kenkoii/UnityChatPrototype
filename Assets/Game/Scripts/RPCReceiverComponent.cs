@@ -32,18 +32,15 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				} 
 
 			} 
-			if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-				if (app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost)) {
-					app.model.battleModel.playerDamage += int.Parse (newParam.Value.ToString ());
-
-				} 
+			if (newParam.Key == ParamNames.AirRender.ToString ()) {
+				app.component.skillActivatorComponent.ActivateSkill(ParamNames.AirRender);
+				
 			}
-			if (newParam.Key == ParamNames.SkillHeal.ToString ()) {
-				if (app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost)) {
-					app.controller.battleController.playerHP += int.Parse (newParam.Value.ToString ());
-				} else {
-					app.controller.battleController.enemyHP += int.Parse (newParam.Value.ToString ());
-				}
+			if (newParam.Key == ParamNames.Sunder.ToString ()) {
+				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Sunder);
+			}
+			if (newParam.Key == ParamNames.Rejuvination.ToString ()) {
+				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Rejuvination);
 			}
 
 
