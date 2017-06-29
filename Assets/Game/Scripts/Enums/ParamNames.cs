@@ -6,6 +6,7 @@ public enum ParamNames {
 	Damage,
 	Sunder,
 	AirRender,
-	Rejuvination
+	Rejuvination,
+	BicPunch
 
 }

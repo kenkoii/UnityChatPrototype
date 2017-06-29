@@ -5,7 +5,7 @@ using UnityEngine;
 public class Skill3Controller: EnglishRoyaleElement, ISkill
 {
 	private int skillCost = 4;
-	private string skillName = "Rejuvination";
+	private string skillName = "Player HP + 2 * CORRECT ANSWER";
 	private string skillDescription = "Regenerates HP which is highly affected by number of correct answers";
 	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 

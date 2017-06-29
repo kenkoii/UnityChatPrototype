@@ -2,12 +2,12 @@
 using System;
 using UnityEngine;
 
-public class Skill2Controller: EnglishRoyaleElement, ISkill
+public class Skill4Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 7;
-	private string skillName = "Player HP + 10, Enemy HP - 15";
-	private string skillDescription = "Deals a considerable amount of damage while absorbing life points at the same time.";
-	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+	private int skillCost = 3;
+	private string skillName = "Enemy HP - 9";
+	private string skillDescription = "Deals a straight blow to opponent's guts!";
+	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	/// <summary>
 	/// activate skill
@@ -15,9 +15,10 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate ()
 	{
-		param [ParamNames.Sunder.ToString ()] = 0;
-			
+		param [ParamNames.BicPunch.ToString ()] = 0;
+
 		app.controller.battleController.playerGP -= skillCost;
+
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
 
 		if (param != null) {

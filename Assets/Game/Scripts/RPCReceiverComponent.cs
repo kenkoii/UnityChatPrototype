@@ -43,6 +43,10 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Rejuvination);
 			}
 
+			if (newParam.Key == ParamNames.BicPunch.ToString ()) {
+				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Rejuvination);
+			}
+
 
 		}
 			
