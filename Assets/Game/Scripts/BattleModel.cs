@@ -14,9 +14,9 @@ public class BattleModel : EnglishRoyaleElement
 
 	public float playerDamage{ get; set; }
 
-	public bool isPlayerVisitor{ get; set; }
+	public bool isHost{ get; set; }
 
-	public string attackerName{ get; set; }
+	public bool attackerBool{ get; set; }
 
 	public string battleState{ get; set; }
 

@@ -7,6 +7,7 @@ public class LobbyView : EnglishRoyaleElement
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
+	public InputField gameName;
 
 	public void SearchRoom ()
 	{

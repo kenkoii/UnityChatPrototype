@@ -30,8 +30,8 @@ public class BattleController : EnglishRoyaleElement
 	private int playerMaxGP = 10;
 	public Slider playerGPBar;
 
-	public string playerName = "Anonymous1";
-	public string enemyName = "Anonymous2";
+	public string playerName;
+	public string enemyName;
 
 	public Text playerNameText;
 	public Text playerHPText;
@@ -123,48 +123,48 @@ public class BattleController : EnglishRoyaleElement
 		enemyHPBar.maxValue = enemyMaxHP;
 	}
 
-	public void SetAttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
+	public void SetAttackMode2 (Dictionary<bool, Dictionary<string, object>> currentParam)
 	{
 
 		StartCoroutine (AttackMode2 (currentParam));
 	}
 
-	IEnumerator AttackMode2 (Dictionary<string, Dictionary<string, object>> currentParam)
+	IEnumerator AttackMode2 (Dictionary<bool, Dictionary<string, object>> currentParam)
 	{
-		List<string> username = new List<string> ();
+		List<bool> userHome = new List<bool> ();
 		List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
 
-		foreach (KeyValuePair<string, Dictionary<string, System.Object>> newParam in currentParam) {
-			username.Add (newParam.Key.ToString ());
+		foreach (KeyValuePair<bool, Dictionary<string, System.Object>> newParam in currentParam) {
+			userHome.Add (newParam.Key);
 			param.Add (newParam.Value);
 		}
 
 
 		//change order of list if host or visitor
 		if (app.component.firebaseDatabaseComponent.isHost) {
-			if (username [0] != app.model.battleModel.playerName) {
-				string tempName = username [1];
+			if (userHome [0] != app.model.battleModel.isHost) {
+				bool tempName = userHome [1];
 				Dictionary<string, System.Object> tempParam = param [1];
 
-				username.Insert (1, username [0]);
-				username.Insert (0, tempName);
+				userHome.Insert (1, userHome [0]);
+				userHome.Insert (0, tempName);
 				param.Insert (1, param [0]);
 				param.Insert (0, tempParam);
 			}
 		} else {
-			if (username [1] != app.model.battleModel.playerName) {
-				string tempName = username [0];
+			if (userHome [1] != app.model.battleModel.isHost) {
+				bool tempName = userHome [0];
 				Dictionary<string, System.Object> tempParam = param [0];
 
-				username.Insert (0, username [1]);
-				username.Insert (1, tempName);
+				userHome.Insert (0, userHome [1]);
+				userHome.Insert (1, tempName);
 				param.Insert (0, param [1]);
 				param.Insert (1, tempParam);
 			}
 
 		}
 
-		Debug.Log ("HOST IS" + username [0]);
+		Debug.Log ("HOST IS" + userHome [0]);
 
 		int attackOrder = 0;
 
@@ -187,24 +187,24 @@ public class BattleController : EnglishRoyaleElement
 		case 0:
 			Debug.Log ("player1 first attack");
 
-			AttackParameter (username [0], param [0]);
+			AttackParameter (userHome [0], param [0]);
 			yield return new WaitForSeconds (2);
-			AttackParameter (username [1], param [1]);
+			AttackParameter (userHome [1], param [1]);
 
 			break;
 		case 1:
 			Debug.Log ("player2 first attack");
 
-			AttackParameter (username [1], param [1]);
+			AttackParameter (userHome [1], param [1]);
 			yield return new WaitForSeconds (2);
-			AttackParameter (username [0], param [0]);
+			AttackParameter (userHome [0], param [0]);
 
 			break;
 		case 2:
 			Debug.Log ("same attack");
 
-			AttackParameter (username [0], param [0], true);
-			AttackParameter (username [1], param [1], true);
+			AttackParameter (userHome [0], param [0], true);
+			AttackParameter (userHome [1], param [1], true);
 			StartCoroutine (StartAttackSequence (3));
 			break;
 		}
@@ -262,12 +262,12 @@ public class BattleController : EnglishRoyaleElement
 		}
 	}
 
-	private void AttackParameter (string attackerName, Dictionary<string, System.Object> attackerParam, bool sameAttack = false)
+	private void AttackParameter (bool attackerBool, Dictionary<string, System.Object> attackerParam, bool sameAttack = false)
 	{
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
 		
-			if (attackerName.Equals (app.model.battleModel.playerName)) {
+			if (attackerBool.Equals (app.model.battleModel.isHost)) {
 		
 				enemyHP -= damage;
 				app.controller.tweenController.TweenEnemyHPSlider (enemyHP, 1, true);

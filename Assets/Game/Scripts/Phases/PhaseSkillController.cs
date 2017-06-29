@@ -60,12 +60,16 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	void OnDisable ()
 	{
+		CancelInvoke ("StartTimer");
+	}
+
+	public void HideSkillUI ()
+	{
 		attackButton.gameObject.SetActive (false);
 		skillDescription.SetActive (false);
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (false);
 		}
-		CancelInvoke ("StartTimer");
 	}
 
 	public void AttackButton ()
@@ -117,23 +121,27 @@ public class PhaseSkillController : EnglishRoyaleElement
 		});
 	}
 
-	public void Skill1Description(){
-		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill1Description;
+	public void Skill1Description ()
+	{
+		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill1Description;
 		skillDescription.SetActive (true);
 
 	}
 
-	public void Skill2Description(){
-		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill2Description;
+	public void Skill2Description ()
+	{
+		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill2Description;
 		skillDescription.SetActive (true);
 	}
 
-	public void Skill3Description(){
-		skillDescription.transform.GetChild (0).GetComponent<Text>().text = app.model.battleModel.skill3Description;
+	public void Skill3Description ()
+	{
+		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill3Description;
 		skillDescription.SetActive (true);
 	}
 
-	public void CloseDescription(){
+	public void CloseDescription ()
+	{
 		skillDescription.SetActive (false);
 	}
 

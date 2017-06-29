@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill1Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 1;
+	private int skillCost = 4;
 	private string skillName = "Air Render ";
 	private string skillDescription = "Skill Description: Releases a striking wind to the enemy. Answering more correct answers will multiply wind damage";
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
@@ -29,7 +29,7 @@ public class Skill1Controller: EnglishRoyaleElement, ISkill
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
 
 		if (param != null) {
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.playerName, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 		}
 
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {

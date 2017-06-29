@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill2Controller: EnglishRoyaleElement, ISkill
 {
-	private int skillCost = 1;
+	private int skillCost = 7;
 	private string skillName = "Sunder";
 	private string skillDescription = "Deals a considerable amount of damage while absorbing life points at the same time.";
 	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
@@ -22,7 +22,7 @@ public class Skill2Controller: EnglishRoyaleElement, ISkill
 		app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
 
 		if (param != null) {
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.playerName, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 		}
 
 		if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {

@@ -7,6 +7,8 @@ public class LobbyController : EnglishRoyaleElement
 {
 	public void SearchRoom ()
 	{
+		app.model.battleModel.playerName = app.view.lobbyView.gameName.text;
+
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		app.controller.screenController.StartMatchingScreen ();
 		app.component.firebaseDatabaseComponent.SearchRoom (delegate(bool result) {
