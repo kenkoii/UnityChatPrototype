@@ -78,7 +78,8 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 		GameObject answerclick = EventSystem.current.currentSelectedGameObject;
 
 		if (answerclick.GetComponent<Image> ().color == Color.gray) {
-			answerclick.GetComponent<Image> ().color = Color.white;
+			//(r/255, g/255, b/255, a/255
+			answerclick.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
 		} else {
 			answerclick.GetComponent<Image> ().color = Color.gray;
 		}
@@ -135,7 +136,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 					inputlist [i].GetComponent<Image> ().color = Color.red;
 
 				} else {
-					inputlist [i].GetComponent<Image> ().color = Color.white;
+					inputlist [i].GetComponent<Image> ().color = new Color (94f / 255, 255f / 255f, 148f / 255f);
 				}
 			}
 		}
@@ -156,7 +157,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	public void OnEnd(){
 		QuestionController qc = new QuestionController();
 		qc.Stoptimer = true;
-		justSkipped = true;
+		justSkipped = false;
 		Clear ();
 		currentround = currentround + 1;
 		NextRound (currentround);
@@ -260,7 +261,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	public void Clear ()
 	{
 		foreach (GameObject g in inputlist) {
-			g.GetComponent<Image> ().color = Color.white;
+			g.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
 		}
 	}
 }
