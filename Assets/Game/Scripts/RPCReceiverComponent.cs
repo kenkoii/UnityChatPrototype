@@ -75,9 +75,11 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				}
 				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 
+			
+			} else {
 				//hide skill ui 
 				app.controller.phaseSkillController.HideSkillUI ();
-			} 
+			}
 			break;
 
 		case MyConst.BATTLE_STATUS_SKILL:
@@ -94,6 +96,7 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
 				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+			} else {
 				//hide skill ui 
 				app.controller.phaseSkillController.HideSkillUI ();
 			}
