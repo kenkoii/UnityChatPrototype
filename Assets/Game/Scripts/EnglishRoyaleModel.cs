@@ -4,4 +4,6 @@
 	public CharacterAnimationModel characterAnimationModel;
 	public CameraWorksModel cameraWorksModel;
 	public TweenModel tweenModel;
+	public AnswerModel answerModel;
+	public GestureModel gestureModel;
 }

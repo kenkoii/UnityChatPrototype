@@ -32,21 +32,35 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 				} 
 
 			} 
+
+			if (newParam.Key == ParamNames.AnswerCorrect.ToString ()) {
+				app.controller.answerController.ValidateAnswer (true, int.Parse (newParam.Value.ToString ()));
+			}
+
+			if (newParam.Key == ParamNames.AnswerWrong.ToString ()) {
+				app.controller.answerController.ValidateAnswer (false, int.Parse (newParam.Value.ToString ()));
+			}
+
+			if (newParam.Key == ParamNames.Gesture.ToString ()) {
+				if (!(app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost))) {
+					app.controller.gestureController.SetEnemyGesture (int.Parse(newParam.Value.ToString()));
+				}
+			}
+
 			if (newParam.Key == ParamNames.AirRender.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill(ParamNames.AirRender);
+				app.component.skillActivatorComponent.ActivateSkill (ParamNames.AirRender,int.Parse(newParam.Value.ToString()));
 				
 			}
 			if (newParam.Key == ParamNames.Sunder.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Sunder);
+				app.component.skillActivatorComponent.ActivateSkill (ParamNames.Sunder,int.Parse(newParam.Value.ToString()));
 			}
 			if (newParam.Key == ParamNames.Rejuvination.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Rejuvination);
+				app.component.skillActivatorComponent.ActivateSkill (ParamNames.Rejuvination,int.Parse(newParam.Value.ToString()));
 			}
 
 			if (newParam.Key == ParamNames.BicPunch.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill(ParamNames.Rejuvination);
+				app.component.skillActivatorComponent.ActivateSkill (ParamNames.BicPunch,int.Parse(newParam.Value.ToString()));
 			}
-
 
 		}
 			

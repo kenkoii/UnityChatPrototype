@@ -6,13 +6,13 @@ using System;
 public class SkillActivatorComponent : EnglishRoyaleElement
 {
 
-	public void ActivateSkill (ParamNames paramName)
+	public void ActivateSkill (ParamNames paramName, int gpEarned = 0)
 	{
 		switch (paramName) {
 		case ParamNames.AirRender:
 			SetSkill (delegate() {
 				if (app.model.battleModel.gpEarned != 0) {
-					app.model.battleModel.playerDamage += 2 * app.model.battleModel.gpEarned;
+					app.model.battleModel.playerDamage += 2 * gpEarned;
 				} else {
 					app.model.battleModel.playerDamage += 2;
 				}
@@ -22,13 +22,13 @@ public class SkillActivatorComponent : EnglishRoyaleElement
 		case ParamNames.Rejuvination:
 			SetSkill (delegate() {
 				if (app.model.battleModel.gpEarned != 0) {
-					app.controller.battleController.playerHP += 2 * app.model.battleModel.gpEarned;
+					app.controller.battleController.playerHP += 2 * gpEarned;
 				} else {
 					app.model.battleModel.playerDamage += 2;
 				}
 			}, delegate() {
 				if (app.model.battleModel.gpEarned != 0) {
-					app.controller.battleController.enemyHP += 2 * app.model.battleModel.gpEarned;
+					app.controller.battleController.enemyHP += 2 * gpEarned;
 				} else {
 					app.model.battleModel.playerDamage += 2;
 				}

@@ -5,5 +5,6 @@ using UnityEngine;
 public class CharacterAnimationModel : EnglishRoyaleElement {
 	public Animator playerAnim;
 	public Animator enemyAnim;
-
+	public Animator playerGestureAnim;
+	public Animator enemyGestureAnim;
 }

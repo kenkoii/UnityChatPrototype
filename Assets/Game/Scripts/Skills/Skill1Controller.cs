@@ -15,7 +15,7 @@ public class Skill1Controller: EnglishRoyaleElement, ISkill
 	/// <param name="entity">Entity.</param>
 	public void Activate ()
 	{
-		param [ParamNames.AirRender.ToString ()] = 0;
+		param [ParamNames.AirRender.ToString ()] = app.model.battleModel.gpEarned;
 
 		app.controller.battleController.playerGP -= skillCost;
 

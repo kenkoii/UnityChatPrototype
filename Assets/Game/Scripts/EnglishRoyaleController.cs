@@ -15,4 +15,6 @@
 	public ScreenController screenController;
 	public CameraWorksController cameraWorksController;
 	public TweenController tweenController;
+	public AnswerController answerController;
+	public GestureController gestureController;
 }
