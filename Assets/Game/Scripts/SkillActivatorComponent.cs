@@ -38,14 +38,22 @@ public class SkillActivatorComponent : EnglishRoyaleElement
 		case ParamNames.Sunder:
 			SetSkill (delegate() {
 				app.controller.battleController.playerHP += 10;
-				app.model.battleModel.playerDamage += 15;
+				app.model.battleModel.playerDamage = 15;
 			}, delegate() {
 				app.controller.battleController.enemyHP += 10;
 			});
 			SetAnimation ("skill3");
 			break;
 
+		case ParamNames.BicPunch:
+			SetSkill (delegate() {
+				app.model.battleModel.playerDamage = 9;
+			});
+			SetAnimation ("skill4");
+			break;
+
 		}
+	
 	}
 
 

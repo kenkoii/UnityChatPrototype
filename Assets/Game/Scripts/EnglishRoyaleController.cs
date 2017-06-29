@@ -9,6 +9,7 @@
 	public Skill1Controller skill1Controller;
 	public Skill2Controller skill2Controller;
 	public Skill3Controller skill3Controller;
+	public Skill4Controller skill4Controller;
 	public AudioController audioController;
 	public CharacterAnimationController characterAnimationController;
 	public ScreenController screenController;

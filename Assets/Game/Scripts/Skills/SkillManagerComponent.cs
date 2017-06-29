@@ -11,7 +11,8 @@ public class SkillManagerComponent : EnglishRoyaleElement
 
 	//test only... call before battle in future where player can select which skill
 	void Start(){
-		SetSkill1 (app.controller.skill1Controller);
+//		SetSkill1 (app.controller.skill1Controller);
+		SetSkill1(app.controller.skill4Controller);
 		SetSkill2 (app.controller.skill2Controller);
 		SetSkill3 (app.controller.skill3Controller);
 	}

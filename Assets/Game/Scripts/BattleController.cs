@@ -336,7 +336,7 @@ public class BattleController : EnglishRoyaleElement
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = app.model.battleModel.playerDamage;
+		param [ParamNames.Damage.ToString ()] = app.model.battleModel.playerDamage + app.model.battleModel.gpEarned;
 		app.component.rpcWrapperComponent.RPCWrapAttack (param);
 	}
 }

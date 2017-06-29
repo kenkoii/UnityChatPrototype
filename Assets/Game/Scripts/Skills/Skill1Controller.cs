@@ -5,8 +5,8 @@ using UnityEngine;
 public class Skill1Controller: EnglishRoyaleElement, ISkill
 {
 	private int skillCost = 4;
-	private string skillName = "Air Render ";
-	private string skillDescription = "Skill Description: Releases a striking wind to the enemy. Answering more correct answers will multiply wind damage";
+	private string skillName = "Player Damage + 2 * CORRECT ANSWER";
+	private string skillDescription = "Releases a striking wind to the enemy. Answering more correct answers will multiply wind damage";
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	/// <summary>
