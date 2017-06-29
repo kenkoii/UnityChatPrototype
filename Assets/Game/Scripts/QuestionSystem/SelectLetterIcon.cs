@@ -13,13 +13,12 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	private string questionData = "";
 	private string answerData = "";
 	private GameObject[] answerlist = new GameObject[13];
-	private GameObject[] selectionlist = new GameObject[13];
 	public static List<Question> questionlist;
 	private static List<string> questionsDone = new List<string> ();
 	private static int round = 1;
 	private int letterno;
-	private static GameObject[] selectionButtons = new GameObject[13];
-	private GameObject[] inputButtons = new GameObject[13];
+	private static List<GameObject> selectionButtons = new List<GameObject>();
+	private GameObject[] inputButtons = new GameObject[12];
 	private static int currentround = 1;
 	public static int answerindex = 1;
 	public List<string> answerIdentifier;
@@ -30,6 +29,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	public static int correctAnswers;
 	private static GameObject questionModal;
 	public GameObject[] indicators = new GameObject[3];
+
 	public void Activate (GameObject entity, float timeduration, Action<int,int> Result)
 	{
 		round = 1;
@@ -42,11 +42,12 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	public void NextRound (int round)
 	{
+		selectionButtons.Clear ();
 		foreach (Transform child in GameObject.Find("QuestionModalContent").transform) {
 			GameObject.Destroy(child.gameObject);
 		}
-		for (int i = 0; i < selectionButtons.Length - 1; i++) {
-			selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
+		foreach (Transform child in GameObject.Find("LetterViewContent").transform) {
+			selectionButtons.Add (child.gameObject);
 		}
 		questionlist = new List<Question> ();
 
@@ -92,7 +93,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			//iTween.ShakePosition (EventSystem.current.currentSelectedGameObject, new Vector3 (10, 10, 10), 0.5f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} else {
-			for (int i = 1; i < selectionButtons.Length + 1; i++) {
+			for (int i = 1; i < selectionButtons.Count + 1; i++) {
 				if (EventSystem.current.currentSelectedGameObject.name == ("input" + i)) {
 					answerclicked = inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
 					inputButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
@@ -115,7 +116,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} else {
-			for (int i = 0; i < selectionButtons.Length - 1; i++) {
+			for (int i = 0; i < selectionButtons.Count - 1; i++) {
 				selectionButtons [i] = GameObject.Find ("Letter" + (i + 1));
 				if (i <= inputButtons.Length) {
 					inputButtons [i] = GameObject.Find ("input" + (i + 1));
@@ -221,34 +222,9 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	public void ShuffleAlgo ()
 	{
+		Debug.Log ("SelectionListCount"+selectionButtons.Count);
 		int[] RandomExist = new int[questionAnswer.Length];
 		string temp = questionAnswer;
-
-		letterno = 0;
-		int randomnum = 0;      
-		for (int z = 0; z < temp.Length; z++) {
-			randomnum = UnityEngine.Random.Range (1, selectionlist.Length);        
-			RandomExist [letterno] = randomnum;
-			while (true) {
-				int index = Array.IndexOf (RandomExist, randomnum);
-				if (index > -1) {
-					randomnum = UnityEngine.Random.Range (1, selectionlist.Length);
-				} else {
-					break;
-				}
-			}
-			for (int i = 0; i < selectionlist.Length; i++) {
-				if (randomnum == i) {
-					
-					GameObject.Find ("Letter" + i).GetComponent<Image> ().
-					transform.GetChild (0).GetComponent<Text> ().text = temp [letterno].ToString ().ToUpper ();       
-				}			
-			}
-			RandomExist [letterno] = randomnum;
-			letterno = letterno + 1;
-
-		}
-
 		for (int f = 1; f < 13; f++) {
 			string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			int randomnum2 = UnityEngine.Random.Range (1, 26);
@@ -256,10 +232,36 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			if (index > -1) {
 
 			} else {
-				GameObject.Find ("Letter" + f).GetComponent<Image> ().transform.GetChild (0).GetComponent<Text> ().text = 
+				selectionButtons[f-1].GetComponent<Image> ().transform.GetChild (0).GetComponent<Text> ().text = 
 					alphabet [randomnum2].ToString ().ToUpper ();
 			}
 		}
+		letterno = 0;
+		int randomnum = 0;      
+		for (int z = 0; z < temp.Length; z++) {
+			randomnum = UnityEngine.Random.Range (1, selectionButtons.Count);        
+			RandomExist [letterno] = randomnum;
+			while (true) {
+				int index = Array.IndexOf (RandomExist, randomnum);
+				if (index > -1) {
+					randomnum = UnityEngine.Random.Range (1, selectionButtons.Count);
+				} else {
+					break;
+				}
+			}
+			for (int i = 0; i < selectionButtons.Count; i++) {
+				if (randomnum == i) {
+					selectionButtons[i].GetComponent<Image> ().
+					transform.GetChild (0).GetComponent<Text> ().text = temp [letterno].ToString ().ToUpper ();    
+					Debug.Log (selectionButtons[i].name);
+				}			
+			}
+			RandomExist [letterno] = randomnum;
+			letterno = letterno + 1;
+
+		}
+
+
 
 	}
 	public void OnSkipClick(){
@@ -271,7 +273,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	public void Clear ()
 	{
 		answerindex = 1;
-		for (int i = 0; i < selectionButtons.Length - 1; i++) {
+		for (int i = 0; i < selectionButtons.Count; i++) {
 			selectionButtons [i].transform.GetChild (0).GetComponent<Text> ().text = "";
 			if (i <= questionAnswer.Length) {
 				Destroy (inputButtons [i]);
