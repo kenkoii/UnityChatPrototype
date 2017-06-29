@@ -48,7 +48,7 @@ public class SkillManagerComponent : EnglishRoyaleElement
 			app.model.battleModel.skill1Description = skillDescription;
 
 			app.controller.battleController.skill1Name.text = skillName;
-			app.controller.battleController.skill1GpCost.text = "" +gpCost;
+			app.controller.battleController.skill1GpCost.text = "" +gpCost + "GP";
 		});
 	}
 
@@ -61,7 +61,7 @@ public class SkillManagerComponent : EnglishRoyaleElement
 			app.model.battleModel.skill2Description = skillDescription;
 
 			app.controller.battleController.skill2Name.text = skillName;
-			app.controller.battleController.skill2GpCost.text = "" +gpCost;
+			app.controller.battleController.skill2GpCost.text = "" +gpCost + "GP";
 
 		});
 	}
@@ -75,7 +75,7 @@ public class SkillManagerComponent : EnglishRoyaleElement
 			app.model.battleModel.skill3Description = skillDescription;
 
 			app.controller.battleController.skill3Name.text = skillName;
-			app.controller.battleController.skill3GpCost.text = "" +gpCost;
+			app.controller.battleController.skill3GpCost.text = "" +gpCost + "GP";
 
 		});
 	}

@@ -28,7 +28,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 			questionSelect.SetActive (false);
 		}
 		CancelInvoke ("StartTimer");
-
 	}
 
 	public void OnQuestionSelect ()

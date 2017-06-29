@@ -313,7 +313,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	private void CreateRoom ()
 	{
 		app.controller.gameController.UpdateGame ();
-		app.model.battleModel.playerName = "Player 1";
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
 		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
 
@@ -327,7 +326,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	private void JoinRoom ()
 	{
-		app.model.battleModel.playerName = "Player 2";
 		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL);
 
 	}
@@ -341,6 +339,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus)
 	{
 		this.isHost = isHost;
+		app.model.battleModel.isHost = isHost;
 		MessageListener ();
 		User user = new User (app.model.battleModel.playerName, app.model.battleModel.playerLife, app.model.battleModel.playerGP);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
@@ -355,7 +354,6 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 		CheckInitialPhase ();
 
 		InitialStateListener ();
-		app.model.battleModel.isPlayerVisitor = !isHost;
 	}
 
 	public void UpdateBattleStatus (string stateName, int stateCount)
@@ -411,11 +409,11 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void SetParam (string name, string param)
+	public void SetParam (bool userHome, string param)
 	{
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		BattleStatus battleStatus = new BattleStatus (name, param);
+		BattleStatus battleStatus = new BattleStatus (userHome, param);
 		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
@@ -558,7 +556,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void AttackPhase (string name, string param)
+	public void AttackPhase (bool userHome, string param)
 	{
 		GetLatestKey (3, delegate(string resultString) {
 			
@@ -571,7 +569,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
-					SetParam (name, param);
+					SetParam (userHome, param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				} 

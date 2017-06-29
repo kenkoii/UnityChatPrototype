@@ -16,7 +16,7 @@ public class RPCWrapperComponent: EnglishRoyaleElement
 	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
 		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
-		app.component.firebaseDatabaseComponent.AttackPhase (app.model.battleModel.playerName,DicToJsonStr (param));
+		app.component.firebaseDatabaseComponent.AttackPhase (app.model.battleModel.isHost,DicToJsonStr (param));
 
 	}
 

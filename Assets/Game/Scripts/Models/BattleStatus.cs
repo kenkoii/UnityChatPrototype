@@ -5,23 +5,23 @@ using UnityEngine;
 /* Battle Status Model */
 public class BattleStatus
 {
-	public string username;
+	public bool userHome;
 	public string param;
 
 	public BattleStatus ()
 	{
 	}
 
-	public BattleStatus (string username, string param)
+	public BattleStatus (bool userHome, string param)
 	{
-		this.username = username;
+		this.userHome = userHome;
 		this.param = param;
 	}
 
 	public Dictionary<string, System.Object> ToDictionary ()
 	{
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object> ();
-		result ["username"] = username;
+		result ["userHome"] = userHome;
 		result ["param"] = param;
 
 		return result;

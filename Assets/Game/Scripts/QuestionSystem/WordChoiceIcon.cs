@@ -14,7 +14,6 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	private string questionString;
 	private string questionData = "";
 	private int letterno;
-	public static int answerindex = 1;
 	private string answertemp;
 	private int roundlimit = 3;
 	public static int currentround = 1;
@@ -48,8 +47,6 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 		PopulateQuestionList ();
 
 		int randomize;
-		foreach (Question q in questionlist) {
-		}
 		randomize = UnityEngine.Random.Range (0, questionlist.Count);
 		questionAnswer = questionlist [randomize].answer.ToUpper ().ToString ();
 
@@ -142,7 +139,6 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 				}
 			}
 		}
-		//iTween.ShakePosition (questionModal, new Vector3 (10, 10, 10), 0.5f);
 		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
 		QuestionController qc = new QuestionController();
 		qc.Stoptimer = false;
@@ -161,9 +157,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 		QuestionController qc = new QuestionController();
 		qc.Stoptimer = true;
 		justSkipped = true;
-
 		Clear ();
-		answerindex = 1;
 		currentround = currentround + 1;
 		NextRound (currentround);
 		qc.Returner (delegate {
@@ -177,7 +171,6 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	public void PopulateQuestionList ()
 	{
 		questionlist.Clear ();
-		//CSVParser cs = new CSVParser ();
 		List<string> databundle = CSVParser.GetQuestions ("wordchoice");
 		int i = 0;
 		int randomnum = UnityEngine.Random.Range (1, 3);
@@ -269,6 +262,5 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 		foreach (GameObject g in inputlist) {
 			g.GetComponent<Image> ().color = Color.white;
 		}
-		answerindex = 1;
 	}
 }

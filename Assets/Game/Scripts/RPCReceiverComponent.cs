@@ -6,7 +6,7 @@ using UnityEngine;
 /* Handles receiving of RPC status */
 public class RPCReceiverComponent: EnglishRoyaleElement
 {
-	Dictionary<string, Dictionary<string, object>> thisCurrentParameter = new Dictionary<string, Dictionary<string, object>> ();
+	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
 	int battleCount;
 	string battleState;
 
@@ -17,15 +17,15 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 	/// <param name="rpcDetails">Rpc details.</param>
 	public void ReceiveRPC (Dictionary<string, System.Object> rpcDetails)
 	{
-		string username = (string)rpcDetails ["username"];
+		bool userHome = (bool)rpcDetails ["userHome"];
 		Dictionary<string, System.Object> param = JsonStrToDic ((string)rpcDetails ["param"]);
 	
-		app.model.battleModel.attackerName = username;
+		app.model.battleModel.attackerBool = userHome;
 		app.model.battleModel.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
-				thisCurrentParameter.Add (app.model.battleModel.attackerName, app.model.battleModel.attackerParam);
+				thisCurrentParameter.Add (app.model.battleModel.attackerBool, app.model.battleModel.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
 					thisCurrentParameter.Clear ();
@@ -33,13 +33,13 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 
 			} 
 			if (newParam.Key == ParamNames.SkillDamage.ToString ()) {
-				if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
+				if (app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost)) {
 					app.model.battleModel.playerDamage += int.Parse (newParam.Value.ToString ());
 
 				} 
 			}
 			if (newParam.Key == ParamNames.SkillHeal.ToString ()) {
-				if (app.model.battleModel.attackerName.Equals (app.model.battleModel.playerName)) {
+				if (app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost)) {
 					app.controller.battleController.playerHP += int.Parse (newParam.Value.ToString ());
 				} else {
 					app.controller.battleController.enemyHP += int.Parse (newParam.Value.ToString ());
@@ -74,6 +74,9 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 					app.component.phaseManagerComponent.StartPhase2 ();
 				}
 				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+
+				//hide skill ui 
+				app.controller.phaseSkillController.HideSkillUI ();
 			} 
 			break;
 
@@ -91,6 +94,8 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
 				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+				//hide skill ui 
+				app.controller.phaseSkillController.HideSkillUI ();
 			}
 		
 			break;
@@ -131,22 +136,25 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 	/// <param name="isHome">If set to <c>true</c> is home.</param>
 	private void ReceivInitialState (Dictionary<string, System.Object> ititialState, bool isHome)
 	{
-		string username = (string)ititialState ["username"];
+		string gameName = (string)ititialState ["gameName"];
 		int life = int.Parse (ititialState ["life"].ToString ());
 		int gp = int.Parse (ititialState ["gp"].ToString ());
 
 
 		if (isHome) {
-			if (app.model.battleModel.isPlayerVisitor) {
-				app.controller.battleController.InitialEnemyState (life, username);
+			if (app.model.battleModel.isHost) {
+				app.controller.battleController.InitialPlayerState (life, gameName, gp);
 			} else {
-				app.controller.battleController.InitialPlayerState (life, username, gp);
+
+				app.controller.battleController.InitialEnemyState (life, gameName);
 			}
 		} else {
-			if (app.model.battleModel.isPlayerVisitor) {
-				app.controller.battleController.InitialPlayerState (life, username, gp);
+			if (app.model.battleModel.isHost) {
+
+				app.controller.battleController.InitialEnemyState (life, gameName);
 			} else {
-				app.controller.battleController.InitialEnemyState (life, username);
+
+				app.controller.battleController.InitialPlayerState (life, gameName, gp);
 			}
 		}
 
