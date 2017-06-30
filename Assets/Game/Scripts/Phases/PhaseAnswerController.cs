@@ -31,10 +31,6 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		CancelInvoke ("StartTimer");
 	}
 
-	void Update(){
-		app.controller.gestureController.HasAnswered (hasAnswered);
-	}
-
 	public void OnQuestionSelect ()
 	{
 		stoptimer = false;
