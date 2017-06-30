@@ -17,7 +17,6 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private string answerwrote;
 	public static int currentround = 1;
 	private bool clickable = true;
-	public GameObject[] indicators = new GameObject[3];
 	public static int correctAnswers;
 	private string answerData = "";
 	private static GameObject questionModal;
@@ -25,7 +24,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
 	private bool justSkipped = false;
-
+	public GameObject gpText;
 	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		currentround = 1;
 		correctAnswers = 0;
@@ -65,11 +64,13 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 			output.transform.GetChild (0).GetComponent<Text> ().text = "";
 		}
 		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
+		outputlist [0].transform.GetChild (0).
+		GetComponent<Text> ().text = questionAnswer[0].ToString().ToUpper();
+		outputlist [0].GetComponent<Button> ().enabled = false;
 	}
 
 	public void InputOnClick(){
 		if (!clickable) {
-			//iTween.ShakePosition(EventSystem.current.currentSelectedGameObject, new Vector3(10,10,10), 0.5f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} 
 		else {
@@ -106,26 +107,31 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 		if (result) {
 			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
-			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.blue;
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
 					outputlist [i].transform.position, 
 					Quaternion.identity);
 			}
-			indicators[currentround-1].transform.GetChild (0).GetComponent<Text> ().text = "1 GP";
-			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
+			gpText.GetComponent<Text> ().text = "1 GP";
+			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 		} else {
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerWrong.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+
 			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
-			GameObject.Find ("Indicator" + currentround).GetComponent<Image> ().color = Color.red;
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				outputlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
 				outputlist [i].GetComponent<Image> ().color = Color.green;
 			}
 		}
-		//iTween.ShakePosition (questionModal, new Vector3 (10, 10, 10), 0.5f);
-
+	
 		questionModal.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		clickable = false;
 		QuestionController qc = new QuestionController ();
@@ -140,10 +146,8 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 		}
 	}
 	public void TweenCallBack(){
-		indicators[currentround-1].
-		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
-		indicators[currentround-1].
-		transform.GetChild (0).GetComponent<Text> ().text = " ";
+		gpText.transform.DOScale (new Vector3(1,1,1),1.0f);
+		gpText.GetComponent<Text> ().text = " ";
 	}
 
 	public void OnEnd(){
@@ -167,8 +171,6 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	public void OutputOnClick(){
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			//iTween.ShakePosition(EventSystem.current.currentSelectedGameObject, new Vector3(10,10,10), 0.5f);
-			//EventSystem.current.currentSelectedGameObject.transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} else {
 			EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
@@ -176,7 +178,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	}
 	public void PopulateQuestionList(){
 		//CSVParser cs = new CSVParser ();
-		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
+		List<string> databundle = CSVParser.GetQuestions ("SelectChangeTyping");
 		int i = 0;
 		foreach(string questions in databundle ){
 			string[] splitter = databundle[i].Split (']');	

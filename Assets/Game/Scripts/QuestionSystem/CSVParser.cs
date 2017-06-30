@@ -18,13 +18,13 @@ public static class CSVParser {
 		csvFile = Resources.Load (resource) as TextAsset;
 		List<string> questions = new List<string> ();
 		switch (resource) {
-		case "wingquestion":
+		case "SelectChangeTyping":
 
 			string[] records = csvFile.text.Split (lineSeperater);
 			foreach (string record in records) {
 
 				index += 1;
-				if (index > 4) {
+				if (index > 5) {
 					string replacee = "";
 					//char[] charhelper = new char[record.Length];
 					int numberOfComma = 0;

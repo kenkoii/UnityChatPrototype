@@ -7,6 +7,7 @@ public class AnswerController : EnglishRoyaleElement
 {
 	private Sprite correct;
 	private Sprite wrong;
+	private Sprite empty;
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 
@@ -16,9 +17,11 @@ public class AnswerController : EnglishRoyaleElement
 //		param [ParamNames.AnswerCorrect.ToString ()] = 1;
 //		app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 
-		ResetAnswer ();
+
 		correct = app.model.answerModel.correct;
 		wrong = app.model.answerModel.wrong;
+		empty = app.model.answerModel.empty;
+		ResetAnswer ();
 	}
 
 	public void ValidateAnswer (bool isCorrect, int questionNumber)
@@ -87,12 +90,14 @@ public class AnswerController : EnglishRoyaleElement
 
 	public void ResetAnswer ()
 	{
-		app.model.answerModel.playerPlaceHolder1.sprite = app.model.answerModel.empty;
-		app.model.answerModel.playerPlaceHolder2.sprite = app.model.answerModel.empty;
-		app.model.answerModel.playerPlaceHolder3.sprite = app.model.answerModel.empty;
+		
+		app.model.answerModel.playerPlaceHolder1.sprite = empty;
+		app.model.answerModel.playerPlaceHolder2.sprite = empty;
+		app.model.answerModel.playerPlaceHolder3.sprite = empty;
 
-		app.model.answerModel.enemyPlaceHolder1.sprite = app.model.answerModel.empty;
-		app.model.answerModel.enemyPlaceHolder2.sprite = app.model.answerModel.empty;
-		app.model.answerModel.enemyPlaceHolder3.sprite = app.model.answerModel.empty;
+		app.model.answerModel.enemyPlaceHolder1.sprite = empty;
+		app.model.answerModel.enemyPlaceHolder2.sprite = empty;
+		app.model.answerModel.enemyPlaceHolder3.sprite = empty;
+		Debug.Log ("reset answers");
 	}
 }

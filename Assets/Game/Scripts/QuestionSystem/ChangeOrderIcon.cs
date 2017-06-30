@@ -18,14 +18,14 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	private string answerwrote;
 	private bool justSkipped = false;
 	public static int currentround = 1;
-	public GameObject[] indicators = new GameObject[3];
+
 	public static int correctAnswers;
 	private string answerData = "";
 	private static GameObject questionModal;
 	private static List<GameObject> inputlist = new List<GameObject>();
 	private static List<GameObject> outputlist = new List<GameObject>();
 	private static List<string> questionsDone = new List<string>();
-
+	public GameObject gpText;
 	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
 		round = 1;
 		currentround = 1;
@@ -109,7 +109,6 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	public void InputOnClick(){
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			//EventSystem.current.currentSelectedGameObject.transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
 		} 
 		else {
@@ -163,20 +162,26 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 		if (result) {
 			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
-			indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
 					outputlist [i].transform.position, 
 					Quaternion.identity);
 			}
-			indicators[currentround-1].transform.GetChild (0).GetComponent<Text> ().text = "1 GP";
-			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
+			gpText.GetComponent<Text> ().text = "1 GP";
+			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 
 		} else {
 			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
-			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerWrong.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				outputlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
 				outputlist [i].GetComponent<Image> ().color = Color.green;
@@ -189,15 +194,12 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 	}
 
 	public void TweenCallBack(){
-		indicators[currentround-1].
-		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
-		indicators[currentround-1].
-		transform.GetChild (0).GetComponent<Text> ().text = " ";
+		gpText.transform.DOScale (new Vector3(1,1,1),1.0f);
+		gpText.GetComponent<Text> ().text = " ";
 	}
 
 	public void PopulateQuestionList(){
-		//CSVParser cs = new CSVParser ();
-		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
+		List<string> databundle = CSVParser.GetQuestions ("SelectChangeTyping");
 		int i = 0;
 		foreach(string questions in databundle ){
 			string[] splitter = databundle[i].Split (']');	

@@ -10,12 +10,12 @@ public class SlotMachineOnChange : MonoBehaviour {
 	private ScrollRect topScrollRect;
 	private ScrollRect bottomScrollRect;
 	private List<GameObject> textSlots = new List<GameObject>();
-	private int numberOfTextSlots = 5;
+	private int numberOfTextSlots = 3;
 	private float contentPosition;
 	private RectTransform slotContent;
-	private float[] positionCompare = new float[5];
+	private float[] positionCompare = new float[3];
 	private float positionCounter = 0.5f;
-	private float scrollIncrement = 0.25f;
+	private float scrollIncrement = 0.50f;
 	private float yposition = 0f;
 	private int slotIndex = 0;
 	private bool stopDrag = false;
@@ -44,37 +44,31 @@ public class SlotMachineOnChange : MonoBehaviour {
 
 	public void getContentPosition(){
 		myScrollRect = GetComponent<ScrollRect>();
-		topScrollRect = myScrollRect.transform.GetChild(1).GetComponent<ScrollRect> ();
-		bottomScrollRect = myScrollRect.transform.GetChild(2).GetComponent<ScrollRect> ();
 		slotContent = myScrollRect.content;
 		contentPosition = slotContent.transform.position.y;
 		positionCounter = 1.0f;
-		/*
-		for(int i = 0;i< 5;i++){
-			topScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
-				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
-			bottomScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
-				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
-		}*/
+
+	
 	}
 	void Start(){
-		getContentPosition ();
-
-		//getScrollItem ();
+		getContentPosition ();;
+		/*
 		topScrollRect.verticalNormalizedPosition =  positionCounter == 1 ? 
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, -1, 0.5f):
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter + (scrollIncrement * 2), 0.5f);
 		bottomScrollRect.verticalNormalizedPosition = positionCounter == 0 ? 
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, 2.0f, 0.5f) :
 			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter - (scrollIncrement * 2), 0.5f);
-		for(int i = 0;i< 5;i++){
-			topScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
-				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
-			bottomScrollRect.transform.GetChild (0).GetChild (0).GetChild(i).GetChild (0).GetComponent<Text> ().text =
-				myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).GetChild (0).GetComponent<Text> ().text;
-		}
+			*/
+		/*
+		topScrollRect.verticalNormalizedPosition =  
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition + (scrollIncrement * 2), 0.5f);
+		bottomScrollRect.verticalNormalizedPosition = 
+			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition - (scrollIncrement * 2), 0.5f);
+		*/
+	
+	
 		GetSlots ();
-
 
 	}
 	public void getScrollItem(){
@@ -120,13 +114,28 @@ public class SlotMachineOnChange : MonoBehaviour {
 		roullete6Answer = "";
 	}
 	public void GetSlots(){
-		textSlots.Clear ();
-
+		//textSlots.Clear ();
+		/*
 		for (int i = 0; i < numberOfTextSlots; i++) {
 			textSlots.Add (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).gameObject);
-			positionCompare [i] = myScrollRect.verticalNormalizedPosition;
+			//positionCompare [i] = myScrollRect.verticalNormalizedPosition;
+
+
+		}*/
+	
+		switch(myScrollRect.transform.GetChild (0).GetChild (0).GetChild (0).gameObject.name){
+		case "SlotText1":
+			getAnswer (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (1).gameObject);
+			break;
+		case "SlotText2":
+			getAnswer (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (2).gameObject);
+			break;
+		case "SlotText3":
+			getAnswer (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (0).gameObject);
+			break;
 		}
 
+		/*
 		deductedPosition = positionCounter;
 		if (positionCounter > 1) {
 			deductedPosition = (deductedPosition / 0.25f);
@@ -179,13 +188,32 @@ public class SlotMachineOnChange : MonoBehaviour {
 		case "Roullete6":
 			roullete6Answer = getAnswer();
 			break;
-		}
-		writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
-		SlotMachineIcon smi = new SlotMachineIcon ();
-		smi.getAnswer (writtenAnswer);
+		}*/
+
 
 	}
-	public string getAnswer(){
+	public void getAnswer(GameObject g){
+		switch (myScrollRect.transform.parent.parent.name) {
+		case "Roullete1":
+			roullete1Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		case "Roullete2":
+			roullete2Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		case "Roullete3":
+			roullete3Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		case "Roullete4":
+			roullete4Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		case "Roullete5":
+			roullete5Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		case "Roullete6":
+			roullete6Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			break;
+		}
+		/*
 		string ans = "";
 		switch (deductedPosition.ToString()) {
 		case "0":
@@ -204,34 +232,25 @@ public class SlotMachineOnChange : MonoBehaviour {
 			ans = items [0].transform.GetChild (0).GetComponent<Text> ().text;
 			break;
 		}
-		return ans;
+		return ans;*/
+		writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
+		Debug.Log (writtenAnswer);
+		SlotMachineIcon smi = new SlotMachineIcon ();
+		smi.getAnswer (writtenAnswer);
+
 	}
 	public void OnButtonDown(){
 		getContentPosition ();
-		GetSlots ();
+
 		switch (EventSystem.current.currentSelectedGameObject.name) {
 		case "UpIcon":	
-			yposition += 0.25f;
+			myScrollRect.content.GetChild (_itemCount - 1).transform.SetAsFirstSibling ();
 			break;
 		case "DownIcon":
-			yposition -= 0.25f;
+			_scrollRect.content.GetChild(0).transform.SetAsLastSibling();
 			break;
 		}
-		OnScroll (new Vector2(0, yposition));
-		//getScrollItem ();
-	}
-
-	void Update(){
-		//getScrollItem ();
-		/*
-		topScrollRect.verticalNormalizedPosition =  positionCounter == 1 ? 
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, -1, 0.5f):
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter + (scrollIncrement * 2), 0.5f);
-		bottomScrollRect.verticalNormalizedPosition = positionCounter == 0 ? 
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, 2.0f, 0.5f) :
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, positionCounter - (scrollIncrement * 2), 0.5f);
-		*/
-		//myScrollRect.verticalNormalizedPosition = yposition;
+		getAnswer (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (1).gameObject);
 
 	}
 
@@ -331,23 +350,20 @@ public class SlotMachineOnChange : MonoBehaviour {
 
 	public void OnScroll(Vector2 pos)
 	{
+		
 		positionCounter = Mathf.Round (pos.y * 100f) / 100f;
-		Debug.Log (positionCounter % 0.25f);
-		Debug.Log (myScrollRect.verticalNormalizedPosition);
-		//&& (myScrollRect.velocity.y<50f || myScrollRect.velocity.y> -50)
-		if ((positionCounter % 0.25f) == 0 ) {
-			//if (!stopDrag) {
+		//Debug.Log (positionCounter);
+		//Debug.Log (Mathf.Round (myScrollRect.verticalNormalizedPosition * 100f) / 100f);
+
+
+		if ((positionCounter % 5.22f) == 0 ) {
+			Debug.Log("FOUND: "+positionCounter);
 			myScrollRect.verticalNormalizedPosition = positionCounter;
-			//stopDrag = true;
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
-			//}
 		}
 
-
 		yposition = pos.y;
-		GetSlots ();
-		//Debug.Log (Mathf.Round (positionCounter * 100f) / 100f);
 		if(!_hasDisabledGridComponents)
 			DisableGridComponents();
 
@@ -372,11 +388,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 			}
 
 		}
-
-		topScrollRect.verticalNormalizedPosition =  
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition + (scrollIncrement * 2), 0.5f);
-		bottomScrollRect.verticalNormalizedPosition = 
-			Mathf.Lerp(myScrollRect.verticalNormalizedPosition, yposition - (scrollIncrement * 2), 0.5f);
+		GetSlots ();
 
 	}
 }

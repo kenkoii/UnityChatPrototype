@@ -9,6 +9,7 @@ public class PhaseAttackController : EnglishRoyaleElement
 
 	void OnEnable ()
 	{
+		app.controller.answerController.ResetAnswer ();
 		Debug.Log ("Starting attack phase");
 		app.view.gameTimerView.ToggleTimer (false);
 		stoptimer = true;
