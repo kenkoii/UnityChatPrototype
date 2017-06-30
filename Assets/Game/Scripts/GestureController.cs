@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GestureController : EnglishRoyaleElement
 {
+	private bool hasAnswered = false;
+
 
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
@@ -64,17 +66,38 @@ public class GestureController : EnglishRoyaleElement
 			break;
 		}
 	}
-		
-	private void SendGesture(int gestureNumber){
+
+	private void SendGesture (int gestureNumber)
+	{
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
-		app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+		app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+	}
+
+	//Hide gesture camera after displaying
+	IEnumerator StartTimer (bool isPlayer)
+	{
+		yield return new WaitForSeconds (1);
+		if (!isPlayer) {
+			app.controller.cameraWorksController.HideGestureCamera ();
+		}
 	}
 
 	private void ShowGesture (bool isPlayer, string param)
 	{
+		StartCoroutine (StartTimer (isPlayer));
 		app.controller.characterAnimationController.SetTriggerAnim (isPlayer, param);
 		if (!isPlayer) {
 			//camera works here also put if answering
+			if (hasAnswered) {
+				app.controller.cameraWorksController.HideGestureCamera ();
+			} else {
+				app.controller.cameraWorksController.ShowGestureCamera ();
+			}
 		}
+	}
+
+	public void HasAnswered (bool hasAnswered)
+	{
+		this.hasAnswered = hasAnswered;
 	}
 }
