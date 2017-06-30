@@ -83,17 +83,7 @@ public class GestureController : EnglishRoyaleElement
 		StartCoroutine (StartTimer (isPlayer));
 		app.controller.characterAnimationController.SetTriggerAnim (isPlayer, param);
 		if (!isPlayer) {
-			//camera works here also put if answering
-			if (hasAnswered == true) {
-				app.controller.cameraWorksController.HideGestureCamera ();
-			} else {
-				app.controller.cameraWorksController.ShowGestureCamera ();
-			}
+			app.controller.cameraWorksController.ShowGestureCamera ();
 		}
-	}
-
-	public void HasAnswered (bool hasAnswered)
-	{
-		this.hasAnswered = hasAnswered;
 	}
 }
