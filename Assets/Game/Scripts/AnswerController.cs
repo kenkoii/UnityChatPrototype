@@ -9,6 +9,7 @@ public class AnswerController : EnglishRoyaleElement
 	private Sprite wrong;
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
+
 	void Start ()
 	{
 //		use this to call

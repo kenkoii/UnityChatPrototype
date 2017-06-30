@@ -11,10 +11,11 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	private bool stoptimer = false;
 	private int timeLeft;
 
-	public void OnEnable ()
+	void OnEnable ()
 	{
 		Debug.Log ("Starting Answer Phase");
 		hasAnswered = false;
+
 		timeLeft = 5;
 		stoptimer = true;
 		InvokeRepeating ("StartTimer", 0, 1);
@@ -28,6 +29,10 @@ public class PhaseAnswerController : EnglishRoyaleElement
 			questionSelect.SetActive (false);
 		}
 		CancelInvoke ("StartTimer");
+	}
+
+	void Update(){
+		app.controller.gestureController.HasAnswered (hasAnswered);
 	}
 
 	public void OnQuestionSelect ()
