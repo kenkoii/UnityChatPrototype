@@ -9,13 +9,4 @@ public class CharacterAnimationController :  EnglishRoyaleElement
 			app.model.characterAnimationModel.enemyAnim.SetTrigger(param);
 		}
 	}
-
-	public void SetTriggerGestureAnim(bool isPLayer, string param){
-		if (isPLayer) {
-			app.model.characterAnimationModel.playerGestureAnim.SetTrigger (param);
-		} else {
-			app.model.characterAnimationModel.enemyGestureAnim.SetTrigger (param);
-		}
-	}
-
 }

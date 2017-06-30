@@ -17,15 +17,9 @@ public class GestureController : EnglishRoyaleElement
 		app.model.gestureModel.gestureButtonContainer.SetActive (false);
 	}
 
-
 	public void HidePlayerGestureContainer ()
 	{
 		app.model.gestureModel.playerGestureContainer.SetActive (false);
-	}
-
-	public void HideEnemyGestureContainer ()
-	{
-		app.model.gestureModel.enemyGestureContainer.SetActive (false);
 	}
 
 	public void ShowPlayerGesture1 ()
@@ -70,18 +64,7 @@ public class GestureController : EnglishRoyaleElement
 			break;
 		}
 	}
-
-	IEnumerator StartTimer (bool isPLayer)
-	{
-		yield return new WaitForSeconds (1);
-		if (isPLayer) {
-			HidePlayerGestureContainer ();
-		} else {
-			HideEnemyGestureContainer ();
-		}
-
-	}
-
+		
 	private void SendGesture(int gestureNumber){
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
 		app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
@@ -89,13 +72,9 @@ public class GestureController : EnglishRoyaleElement
 
 	private void ShowGesture (bool isPlayer, string param)
 	{
-		StartCoroutine (StartTimer (isPlayer));
-		if (isPlayer) {
-			app.model.gestureModel.playerGestureContainer.SetActive (true);
-		} else {
-			app.model.gestureModel.enemyGestureContainer.SetActive (true);
+		app.controller.characterAnimationController.SetTriggerAnim (isPlayer, param);
+		if (!isPlayer) {
+			//camera works here also put if answering
 		}
-		app.controller.characterAnimationController.SetTriggerGestureAnim (isPlayer, param);
-
 	}
 }
