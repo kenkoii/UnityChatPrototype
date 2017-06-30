@@ -18,11 +18,7 @@ public class GestureController : EnglishRoyaleElement
 	{
 		app.model.gestureModel.gestureButtonContainer.SetActive (false);
 	}
-
-	public void HidePlayerGestureContainer ()
-	{
-		app.model.gestureModel.playerGestureContainer.SetActive (false);
-	}
+		
 
 	public void ShowPlayerGesture1 ()
 	{
@@ -76,7 +72,7 @@ public class GestureController : EnglishRoyaleElement
 	//Hide gesture camera after displaying
 	IEnumerator StartTimer (bool isPlayer)
 	{
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (1.5f);
 		if (!isPlayer) {
 			app.controller.cameraWorksController.HideGestureCamera ();
 		}
@@ -88,7 +84,7 @@ public class GestureController : EnglishRoyaleElement
 		app.controller.characterAnimationController.SetTriggerAnim (isPlayer, param);
 		if (!isPlayer) {
 			//camera works here also put if answering
-			if (hasAnswered) {
+			if (hasAnswered == true) {
 				app.controller.cameraWorksController.HideGestureCamera ();
 			} else {
 				app.controller.cameraWorksController.ShowGestureCamera ();

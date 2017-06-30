@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: fef3ea7a736f04264b42a9ef5d9763cf
-timeCreated: 1497866710
+timeCreated: 1498795994
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -180,7 +180,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
@@ -292,11 +292,11 @@ ModelImporter:
     - boneName: upper_arm_L
       humanName: LeftUpperArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: -48.13559, z: 0}
+        max: {x: 0, y: 29.83049, z: 0}
         value: {x: 0, y: 0, z: 0}
         length: 0
-        modified: 0
+        modified: 1
     - boneName: upper_arm_R
       humanName: RightUpperArm
       limit:
@@ -308,11 +308,11 @@ ModelImporter:
     - boneName: forearm_L
       humanName: LeftLowerArm
       limit:
-        min: {x: 0, y: 0, z: 0}
-        max: {x: 0, y: 0, z: 0}
+        min: {x: 0, y: 0, z: -29.10039}
+        max: {x: 0, y: 0, z: 110.2216}
         value: {x: 0, y: 0, z: 0}
         length: 0
-        modified: 0
+        modified: 1
     - boneName: forearm_R
       humanName: RightLowerArm
       limit:
@@ -677,7 +677,7 @@ ModelImporter:
     - name: thumb_01_L
       parentName: palm_01_L
       position: {x: -0.022142489, y: 0.08996966, z: -0.026201475}
-      rotation: {x: 0.6724833, y: -0.22295108, z: -0.13308725, w: 0.6930705}
+      rotation: {x: 0.6724834, y: -0.2229511, z: -0.13308726, w: 0.69307053}
       scale: {x: 1.0000001, y: 1, z: 1}
     - name: thumb_02_L
       parentName: thumb_01_L
@@ -697,7 +697,7 @@ ModelImporter:
     - name: f_middle_01_L
       parentName: palm_02_L
       position: {x: -0.3861083, y: 0.000000052154064, z: -0.000000035390258}
-      rotation: {x: -0.022105223, y: 0.0203345, z: -0.035834912, w: 0.99890625}
+      rotation: {x: -0.022105224, y: 0.020334503, z: -0.035834916, w: 0.9989063}
       scale: {x: 0.9999998, y: 0.99999994, z: 1.0000001}
     - name: f_middle_02_L
       parentName: f_middle_01_L
@@ -762,7 +762,7 @@ ModelImporter:
     - name: forearm_R
       parentName: upper_arm_R
       position: {x: -1.7405214, y: 0.00000011920929, z: 0.000000033527613}
-      rotation: {x: -0.12605159, y: 0.039093886, z: 0.02601984, w: 0.9909115}
+      rotation: {x: -0.1260516, y: 0.03909389, z: 0.026019841, w: 0.99091154}
       scale: {x: 0.9999999, y: 1, z: 1}
     - name: hand_R
       parentName: forearm_R
@@ -852,7 +852,7 @@ ModelImporter:
     - name: f_pinky_01_R
       parentName: palm_04_R
       position: {x: -0.3983089, y: 0.000000040978193, z: -0.00000007636845}
-      rotation: {x: 0.16977027, y: -0.10611415, z: 0.07144374, w: 0.9771456}
+      rotation: {x: 0.16977029, y: -0.10611416, z: 0.071443744, w: 0.9771457}
       scale: {x: 1, y: 0.9999999, z: 0.99999994}
     - name: f_pinky_02_R
       parentName: f_pinky_01_R
