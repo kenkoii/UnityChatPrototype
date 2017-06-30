@@ -64,9 +64,7 @@ public class QuestionController : EnglishRoyaleElement
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 			Destroy (GameObject.Find ("output" + i));
-			if (i < 3) {
-				GameObject.Find ("Indicator" + (i + 1)).GetComponent<Image> ().color = Color.gray;
-			}
+
 		}
 		timeLeft = qTime;
 		questiontype.Activate (this.gameObject, qTime, Result);

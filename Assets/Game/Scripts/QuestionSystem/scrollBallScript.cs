@@ -4,29 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class scrollBallScript : MonoBehaviour {
-
+	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 	public float speed = 200.0f;
 	Transform r2d;
 	private int indicatornum = 1;
+	//public GameObject[] indicators = new GameObject[]
 	// Function called once when the bullet is created
 	void Start () {
 		r2d = GetComponent<Transform>();
 		for (int i = 1; i < 4; i++) {
-			if (GameObject.Find ("Indicator" + i).GetComponent<Image> ().color
-			    != Color.blue && GameObject.Find ("Indicator" + i).GetComponent<Image> ().color
-			    != Color.red) {
-				indicatornum = i - 1;
+			if (GameObject.Find ("PlayerPlaceHolder" + i).GetComponent<Image> ().sprite.name
+				=="UI-new-empty-indicator") {
+				indicatornum = i;
 
 				break;
 			} else {
 				indicatornum = 3;
 			}
 		}
+		Debug.Log (indicatornum);
 	}
 	void Update(){
-		r2d.position = Vector3.MoveTowards(r2d.transform.position, GameObject.Find("Indicator"+indicatornum).transform.position, speed);
-		//r2d.LookAt (GameObject.Find ("Indicator" + indicatornum).transform);
-		if (r2d.position == GameObject.Find ("Indicator" + indicatornum).transform.position) {
+		//param [ParamNames.AnswerWrong.ToString ()] = currentround;
+		r2d.position = Vector3.MoveTowards(r2d.transform.position, GameObject.Find("PlayerPlaceHolder"+indicatornum).transform.position, speed);
+		if (r2d.position == GameObject.Find ("PlayerPlaceHolder" + indicatornum).transform.position) {
 		  Destroy (r2d.gameObject);
 		}
 	}

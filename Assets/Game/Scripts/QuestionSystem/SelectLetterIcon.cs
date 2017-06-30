@@ -28,7 +28,8 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	public static string questionString;
 	public static int correctAnswers;
 	private static GameObject questionModal;
-	public GameObject[] indicators = new GameObject[3];
+	public GameObject Gptext;
+	 
 
 	public void Activate (GameObject entity, float timeduration, Action<int,int> Result)
 	{
@@ -155,22 +156,27 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	{
 		if (result) {
 			app.controller.audioController.PlayAudio (AudioEnum.Correct);
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 
 			correctAnswers = correctAnswers + 1;
-			indicators[currentround-1].GetComponent<Image> ().color = Color.blue;
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
 					inputButtons [i].transform.position, 
 					Quaternion.identity, questionModal.transform);
 			}
-			indicators[currentround-1].transform.GetChild (0).GetComponent<Text> ().text = "1 GP";
-			indicators[currentround-1].transform.GetChild (0).DOScale (new Vector3 (5, 5, 5), 1.0f);
+			Gptext.GetComponent<Text> ().text = "1 GP";
+			Gptext.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 
 		} else {
 			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
-			indicators[currentround-1].GetComponent<Image> ().color = Color.red;
+			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+			param [ParamNames.AnswerWrong.ToString ()] = currentround;
+			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				answerlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
 				answerlist [i].GetComponent<Image> ().color = Color.green;
@@ -183,10 +189,8 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	}
 
 	public void TweenCallBack(){
-		indicators[currentround-1].
-		transform.GetChild (0).DOScale (new Vector3(1,1,1),1.0f);
-		indicators[currentround-1].
-		transform.GetChild (0).GetComponent<Text> ().text = " ";
+		Gptext.transform.DOScale (new Vector3(1,1,1),1.0f);
+		Gptext.GetComponent<Text> ().text = " ";
 	}
 
 	public void OnEnd(){
@@ -207,7 +211,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	}
 
 	public void PopulateQuestionList(){
-		List<string> databundle = CSVParser.GetQuestions ("wingquestion");
+		List<string> databundle = CSVParser.GetQuestions ("SelectChangeTyping");
 		int i = 0;
 		foreach(string questions in databundle ){
 			string[] splitter = databundle[i].Split (']');	

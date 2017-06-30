@@ -14,10 +14,7 @@ public class QuestionManagerComponent : EnglishRoyaleElement
 	//private List<string> questionTypeName = new List<string>();
 	void Start ()
 	{
-		foreach (GameObject g in questionTypeModals) {
-			Debug.Log (g.name);
 
-		}
 		//Debug.Log (questionTypeModals [0].name);
 		//questionTypeModals [3].SetActive (true);
 		//questionTypeName.Add ("SelectLetterIconModal");

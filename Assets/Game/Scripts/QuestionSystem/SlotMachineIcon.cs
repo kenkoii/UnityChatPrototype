@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class SlotMachineIcon : MonoBehaviour, IQuestion{
+public class SlotMachineIcon : EnglishRoyaleElement, IQuestion{
 	private static int round = 1;
 	private Action<int> onResult;
 	private static List<Question> questionlist = new List<Question> ();
@@ -56,6 +56,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 				}
 			} else {
 				roulletes [i].SetActive (true);
+				//roulletes [i].transform.GetChild(0).GetChild(0).GetComponent<ScrollRect> ().verticalNormalizedPosition = 0f;
 			}
 		}
 		PopulateQuestionList ();
@@ -94,7 +95,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		Debug.Log (questionAnswer + "/" + questionAnswer.Length);
 		for (int i = 1; i <= questionAnswer.Length; i++) {
 			content = GameObject.Find ("RoulleteContent"+i);
-			for (int j = 0; j < 5; j++) {
+			for (int j = 0; j < 3; j++) {
 				roulleteText.Add (content.transform.GetChild(j).gameObject);
 			}
 		}
@@ -131,7 +132,6 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	}
 	public void correctAnswerGot(){
 
-		//iTween.ShakePosition(questionModal, new Vector3(10,10,10), 0.5f);
 		correctAnswers = correctAnswers + 1;
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
@@ -177,7 +177,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		string Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		int letterIndex = 0;
 		int letterStartIndex = 0;
-		int letterEndIndex = 5;
+		int letterEndIndex = 3;
 		randomnum = UnityEngine.Random.Range (letterStartIndex+1, letterEndIndex);
 		for (int i = 0; i < roulleteText.Count; i++) {
 			roulleteText [i].transform.GetChild (0).GetComponent<Text> ().text = (i%randomnum)==0 ?
@@ -186,12 +186,11 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 			if ((i % randomnum) == 0) {
 				letterIndex += 1;
 				letterStartIndex = letterEndIndex;
-				letterEndIndex = letterEndIndex + 5;
+				letterEndIndex = letterEndIndex + 3;
 				randomnum = UnityEngine.Random.Range (letterStartIndex, letterEndIndex);
+			
 			}
 		}
 	}
-	public void Clear(){
-		questionModal.transform.GetChild (0).GetComponent<Text> ().text = "";
-	}
+
 }

@@ -1,7 +1,7 @@
 Given,Synonym,Antonym,Choices
 happy,jolly / cheerful,sad / unhappy,excited
 sad,unhappy / gloomy,happy / jolly,ill
-big,large / use,tiny / minute,boring
+big,large / huge,tiny / minute,boring
 push,force / shove,pull / drag,greatest
 hide,conceal / suppress,expose / reveal,smart
 long,lengthy / stretched,short / brief,powerful
@@ -13,7 +13,7 @@ fast,agile / swift,slow / gradual,memorable
 selfish,greedy / self-centered,generous / benevolent,striking
 easy,simple / effortless,complicated / hard,sweet
 loud,vociferous / noisy,quiet / soft,funny
-minor,inferior / lesser,superior / improtant,give
+minor,inferior / lesser,superior / important,give
 work,job / task,leisure / unemployment,take
 sink,plunge / submerge,emerge / ascend,lumber
 achieve,accomplish / attain,fail / give up,movie
@@ -24,13 +24,59 @@ illegible,unreadable / unclear,readable / decipherable,abandon
 cold,cool / frozen,hot / warm,tummy
 friendly,affable / helpful,estranged / hostile,odor
 lost,missing / gone,found / retained,lose
-,,,ignore
-,,,dawn
-,,,wage
-,,,slang
-,,,seldom
-,,,emerge
-,,,always
-,,,essential
-,,,astray
-,,,bad
+extend,lenthen / stretch,reduce/ shrink,ignore
+beautiful,pretty / lovely,ugly / awful,dawn
+far,distant / away,near / close,wage
+enough,adequate / ample,lacking / insufficient,slang
+young,inexperienced / juvenile,old / adult,seldom
+friend,fellow / pal,enemy / foe,emerge
+wet,soaked / soggy,dry / arid,always
+truth,factual / correctness,lie / falsity,essential
+abandon,leave / forsake,save / retain,astray
+ill,sick / unhealthy,healthy / well,bad
+genuine,real / authentic,bogus / fake,pocket
+correct,right / spot on,wrong / incorrect,plough
+give,provide / supply,take / receive,pleasure
+start,begin / commence,end / finish,poor
+smelly,foul / fetid,fragrant / aromatic,ticket
+rough,coarse / uneven,smooth / even,by
+same,identical / duplicate,different / distinct,have
+doubt,distrust / uncertain,trust / assurance,prison
+comfort,relief / solace,distress / torment,private
+profit,income / earning,loss / expense,tired
+fat,chubby / plump,slender / skinny,train
+sharp,pointed / tipped,blunt / rounded,view
+peace,serenity / order,war / conflict,wax
+high,raised / elevated,low / flat,way
+possible,feasible / achievable,impossible / unattainable,reward
+,,,crime
+,,,cruel
+,,,cry
+,,,cup
+,,,current
+,,,sail
+,,,salt
+,,,same
+,,,scale
+,,,school
+,,,development
+,,,dauhter
+,,,down
+,,,map
+,,,whistle
+,,,ever
+,,,meal
+,,,measure
+,,,shame
+,,,shoe
+,,,acid
+,,,angle
+,,,arm
+,,,army
+,,,bath
+,,,base
+,,,bee
+,,,blue
+,,,board
+,,,carriage
+,,,chalk
