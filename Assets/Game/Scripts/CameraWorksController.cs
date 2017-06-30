@@ -11,10 +11,10 @@
 	}
 
 	public void ShowGestureCamera(){
-		app.model.cameraWorksModel.gestureCamera.enabled = true;
+		app.model.cameraWorksModel.gestureCamera.SetActive (true);
 	}
 
 	public void HideGestureCamera(){
-		app.model.cameraWorksModel.gestureCamera.enabled = false;
+		app.model.cameraWorksModel.gestureCamera.SetActive (false);
 	}
 }
