@@ -25,7 +25,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private static List<string> questionsDone = new List<string>();
 	private bool justSkipped = false;
 	public GameObject gpText;
-	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
+	public void Activate(Action<int,int> Result){
 		currentround = 1;
 		correctAnswers = 0;
 		NextRound (currentround);
@@ -133,6 +133,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 		}
 	
 		questionModal.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
+
 		clickable = false;
 		QuestionController qc = new QuestionController ();
 		qc.Stoptimer = false;
@@ -178,6 +179,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	}
 	public void PopulateQuestionList(){
 		//CSVParser cs = new CSVParser ();
+		/*
 		List<string> databundle = CSVParser.GetQuestions ("SelectChangeTyping");
 		int i = 0;
 		foreach(string questions in databundle ){
@@ -186,7 +188,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 			answerData = splitter [1];
 				questionlist.Add (new Question (questionData, answerData, 0));
 			i+=1;
-		}
+		}*/
 	}
 
 	public void Clear(){

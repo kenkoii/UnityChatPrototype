@@ -18,7 +18,7 @@ public class QuestionController : EnglishRoyaleElement
 	private int totalGP;
 	private static int questionsTime;
 	public static Action<int,int> onResult;
-	// Use this for initialization
+
 	public bool onFinishQuestion {
 		get;
 		set;
@@ -67,8 +67,7 @@ public class QuestionController : EnglishRoyaleElement
 
 		}
 		timeLeft = qTime;
-		questiontype.Activate (this.gameObject, qTime, Result);
-
+		questiontype.Activate (Result);
 		stoptimer = true;
 	}
 
@@ -94,7 +93,7 @@ public class QuestionController : EnglishRoyaleElement
 	{
 		QuestionManagerComponent questionManagement = FindObjectOfType<QuestionManagerComponent>();
 		questionManagement.QuestionHide ();
-//		app.component.questionManagerComponent.QuestionHide ();
+
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
 		}

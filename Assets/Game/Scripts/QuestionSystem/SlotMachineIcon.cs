@@ -35,7 +35,7 @@ public class SlotMachineIcon : EnglishRoyaleElement, IQuestion{
 		set;
 	}
 
-	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
+	public void Activate(Action<int,int> Result){
 		round = 1;
 		correctAnswers = 0;
 		instantiateDone = false;
@@ -146,6 +146,7 @@ public class SlotMachineIcon : EnglishRoyaleElement, IQuestion{
 	}
 
 	public void PopulateQuestionList(){
+		/*
 		questionlist.Clear ();
 		List<string> databundle = CSVParser.GetQuestions ("slotmachine");
 		int i = 0;
@@ -169,7 +170,7 @@ public class SlotMachineIcon : EnglishRoyaleElement, IQuestion{
 				}
 			}
 			i+=1;
-		}
+		}*/
 	}
 
 	public void ShuffleAlgo ()
