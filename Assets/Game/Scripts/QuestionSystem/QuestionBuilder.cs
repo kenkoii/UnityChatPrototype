@@ -2,12 +2,58 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CSVParser {
+public static class QuestionBuilder {
 	private static string questionData;
 	private static string answerData;
 	private static string replacedAsset;
+	private static string questionAnswer;
+	private static string questionString;
+	private static List<string> questionsDone = new List<string> ();
+	private static List<Question> questionList = new List<Question>();
+	private static Dictionary<string, string> answerQuestion = new Dictionary<string, string> ();
 
-	public static List<string> GetQuestions(string resource){
+	public static void PopulateQuestion(string questionName){
+		questionList.Clear ();
+		//SelectChangeTyping
+		List<string> databundle = CSVParser (questionName);
+		int i = 0;
+		foreach(string questions in databundle ){
+			string[] splitter = databundle[i].Split (']');	
+			string questionData = splitter [0];
+			string answerData = splitter [1];
+			i+=1;
+			questionList.Add (new Question (questionData, answerData, 0));
+		}
+	}
+
+	public static Question GetQuestion(){
+		QuestionChecker (true);
+		Question questionGot = new Question(questionString,questionAnswer,0);
+		return questionGot;
+	}
+
+	private static void QuestionChecker(bool initRandom){
+		if (initRandom) {
+			QuestionRandomizer ();
+			return;
+		}
+		if (questionsDone.Contains (questionString)) {
+			QuestionRandomizer ();
+			return;
+		}
+		questionsDone.Add (questionString);
+	}
+
+	private static void QuestionRandomizer(){
+		int randomize = UnityEngine.Random.Range (0, questionList.Count);
+		questionAnswer = questionList [randomize].answer.ToUpper ().ToString ();
+		questionString = questionList [randomize].question;
+		QuestionChecker (false);
+
+	}
+
+
+	public static List<string> CSVParser(string resource){
 		char lineSeperater = '\n'; // It defines line seperate character
 		char fieldSeperator = ',';
 		TextAsset csvFile;

@@ -5,119 +5,118 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
-public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
-	private static int round = 1;
-	private static List<Question> questionlist = new List<Question> ();
-	private static string questionAnswer;
-	private string questionString;
-	private string questionData = "";
-	private static string[] answerIdentifier = new string[13];
-	private int letterno;
-	public static int answerindex = 1;
-	private int roundlimit = 3;
-	private string answerwrote;
-	private bool justSkipped = false;
-	public static int currentround = 1;
 
-	public static int correctAnswers;
-	private string answerData = "";
-	private static GameObject questionModal;
-	private static List<GameObject> inputlist = new List<GameObject>();
-	private static List<GameObject> outputlist = new List<GameObject>();
-	private static List<string> questionsDone = new List<string>();
+public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
+{
+	private int currentRound = 1;
+	private int correctAnswers;
+	private int answerindex = 1;
+	public List<GameObject> answerIdentifier;
+	private string answerWrote;
+	private bool justSkippedQuestion = false;
+	private string questionAnswer = "";
+	private string question = "";
 	public GameObject gpText;
-	public void Activate(GameObject entity,float timeduration,Action<int,int> Result){
-		round = 1;
-		currentround = 1;
+	private List<GameObject> selectionButtons = new List<GameObject>();
+	private List<GameObject> answerButtons = new List<GameObject>();
+	private QuestionController questionControl;
+	private AudioController audioControl;
+	public GameObject inputPrefab;
+	public GameObject outputPrefab;
+
+	public void Activate (Action<int,int> Result)
+	{
+		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
+		currentRound = 1;
 		correctAnswers = 0;
-		NextRound (round);
+		NextQuestion ();
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
 
 	}
 
-	public void NextRound(int round){
-		PopulateQuestionList ();
-
-		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
-		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
-		questionString = questionlist [randomize].question;
-		while (questionsDone.Contains (questionString)) {
-			randomize = UnityEngine.Random.Range (0, questionlist.Count);
-			questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
-			questionString = questionlist [randomize].question;
-			if (!questionsDone.Contains (questionString)) {
-				break;
-			}
-		} 
-		questionsDone.Add (questionString);
-		GameObject questionInput = Resources.Load ("Prefabs/inputContainer") as GameObject;
-		GameObject greenInput = Resources.Load ("Prefabs/inputContainerUI") as GameObject;
-		questionModal = GameObject.Find("ChangeOrderModal");
-		inputlist.Clear ();
-		outputlist.Clear ();
-		for (int i = 0; i < questionAnswer.Length; i++) {
-			GameObject input = Instantiate (greenInput) as GameObject; 
-			input.transform.SetParent (questionModal.transform.GetChild (2).
-				transform.GetChild (0).GetChild (0).transform, false);
-			input.name = "input" + (i + 1);
-			input.GetComponent<Button>().onClick.AddListener (() => {
-				questionModal.GetComponent<ChangeOrderIcon>().InputOnClick();
-			});
-			inputlist.Add(input);
-			input.transform.GetChild (0).GetComponent<Text> ().text = "";
-
-			GameObject output = Instantiate (questionInput) as GameObject; 
-			output.transform.SetParent (questionModal.transform.GetChild (1).
-				transform.GetChild (0).GetChild (0).transform, false);
-			output.name = "output" + (i + 1);
-			output.GetComponent<Button>().onClick.AddListener (() => {
-				questionModal.GetComponent<ChangeOrderIcon>().OutputOnClick();
-			});
-			outputlist.Add(output);
-
-			output.transform.GetChild (0).GetComponent<Text> ().text = "";
-		}
+	public void NextQuestion ()
+	{
+		LoadQuestion ();
+		PopulateInputHolders ();
 		ShuffleAlgo ();
-		questionModal.transform.GetChild (0).GetComponent<Text> ().text = questionString;
+
 	}
 
-	public void OnEnd(){
-		justSkipped = false;
+	private void LoadQuestion ()
+	{
+		Question questionLoaded = QuestionBuilder.GetQuestion ();
+		questionAnswer = questionLoaded.answer;
+		question = questionLoaded.question;
+		gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
+	}
+
+	private void PopulateInputHolders ()
+	{
+		selectionButtons.Clear ();
+		answerButtons.Clear();
+		for (int i = 0; i < questionAnswer.Length; i++) {
+			GameObject input = Instantiate (outputPrefab) as GameObject; 
+			input.transform.SetParent (gameObject.transform.GetChild (2).
+				transform.GetChild (0).GetChild (0).transform, false);
+			input.name = "input" + (i + 1);
+			input.GetComponent<Button> ().onClick.AddListener (() => {
+				gameObject.GetComponent<ChangeOrderIcon> ().SelectionOnClick ();
+			});
+			selectionButtons.Add(input);
+
+			input.transform.GetChild (0).GetComponent<Text> ().text = "";
+
+			GameObject output = Instantiate (inputPrefab) as GameObject; 
+			output.transform.SetParent (gameObject.transform.GetChild (1).
+				transform.GetChild (0).GetChild (0).transform, false);
+			output.name = "output" + (i + 1);
+			output.GetComponent<Button> ().onClick.AddListener (() => {
+				gameObject.GetComponent<ChangeOrderIcon> ().AnswerOnClick ();
+			});
+			answerButtons.Add(output);
+			output.transform.GetChild (0).GetComponent<Text> ().text = "";
+		}
+	}
+
+	public void OnEnd ()
+	{
+		justSkippedQuestion = false;
 		QuestionController qc = new QuestionController ();
 		Clear ();
 		qc.Stoptimer = true;
 		answerindex = 1;
-		currentround = currentround + 1;
+		currentRound = currentRound + 1;
 
-		NextRound (currentround);
+		NextQuestion ();
 		qc.Returner (delegate {
 			qc.onFinishQuestion = true;
-		}, currentround, correctAnswers);
-		if (currentround == 4) {
+		}, currentRound, correctAnswers);
+		if (currentRound == 4) {
 			Clear ();
 		}
 	}
 
-	public void OnSkipClick(){
-		if (!justSkipped) {
+	public void OnSkipClick ()
+	{
+		if (!justSkippedQuestion) {
 			QuestionDoneCallback (false);
-			justSkipped = true;
+			justSkippedQuestion = true;
 		}
 	}
 
-	public void InputOnClick(){
+	public void SelectionOnClick ()
+	{
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
-		} 
-		else {
-			answerwrote = "";
-			int k = 1;
-			foreach (GameObject findEmpty in outputlist) {
+			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
+		} else {
+			answerWrote = "";
+			int i = 1;
+			foreach (GameObject findEmpty in answerButtons) {
 				if (findEmpty.transform.GetChild (0).GetComponent<Text> ().text == "") {
-					answerindex = k;
-					outputlist [(answerindex - 1)].transform.GetChild (0).
+					answerindex = i;
+					answerButtons [(answerindex - 1)].transform.GetChild (0).
 					GetComponent<Text> ().text 
 					= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
 					EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
@@ -125,15 +124,15 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 				} else {
 					
 				}
-				k++;
+				i++;
 			}
-			foreach(GameObject readWrittenAnswer in outputlist){
-				answerwrote = answerwrote + (readWrittenAnswer.transform.GetChild (0).GetComponent<Text> ().text);
+
+			foreach (GameObject readWrittenAnswer in answerButtons) {
+				answerWrote = answerWrote + (readWrittenAnswer.transform.GetChild (0).GetComponent<Text> ().text);
 			}
-			answerIdentifier [(answerindex - 1)] = EventSystem.current.currentSelectedGameObject.name;
-			if (answerwrote.Length == questionAnswer.Length) {
-				
-				if (answerwrote.ToUpper () == questionAnswer.ToUpper ()) {
+			answerIdentifier.Add(EventSystem.current.currentSelectedGameObject);
+			if (answerWrote.Length == questionAnswer.Length) {
+				if (answerWrote.ToUpper () == questionAnswer.ToUpper ()) {
 					QuestionDoneCallback (true);
 				} else {
 					QuestionDoneCallback (false);
@@ -141,114 +140,107 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion{
 			}
 		}
 	}
-		
-	public void OutputOnClick(){
+
+	public void AnswerOnClick ()
+	{
 		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
+			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
 		} else {
-			for (int i = 1; i < inputlist.Count+1; i++) {
+			for (int i = 1; i < selectionButtons.Count+ 1; i++) {
 				if (EventSystem.current.currentSelectedGameObject.name == ("output" + i)) {
-					answerclicked = outputlist [i-1].transform.GetChild (0).GetComponent<Text> ().text;
-					outputlist [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
-					GameObject.Find (answerIdentifier [i-1]).transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
+					answerclicked = answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
+					answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
+					answerIdentifier [i - 1].transform.GetChild (0).GetComponent<Text> ().text = 
+						answerclicked;
 				}
 			}
 		}
 	}
+
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
 			app.controller.audioController.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			param [ParamNames.AnswerCorrect.ToString ()] = currentRound;
+			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
-					outputlist [i].transform.position, 
+					answerButtons [i].transform.position, 
 					Quaternion.identity);
 			}
 			gpText.GetComponent<Text> ().text = "1 GP";
 			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
-			Invoke("TweenCallBack", 1f);
+			Invoke ("TweenCallBack", 1f);
 
 		} else {
 			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerWrong.ToString ()] = currentround;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			param [ParamNames.AnswerWrong.ToString ()] = currentRound;
+			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
 
 			for (int i = 0; i < questionAnswer.Length; i++) {
-				outputlist [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
-				outputlist [i].GetComponent<Image> ().color = Color.green;
+				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString ().ToUpper ();
+				answerButtons [i].GetComponent<Image> ().color = Color.green;
 			}
 		}
-		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
+		gameObject.transform.DOShakePosition (1.0f, 30.0f, 50, 90, true);
 		QuestionController qc = new QuestionController ();
 		qc.Stoptimer = false;
-		Invoke("OnEnd", 1f);
+		Invoke ("OnEnd", 1f);
 	}
 
-	public void TweenCallBack(){
-		gpText.transform.DOScale (new Vector3(1,1,1),1.0f);
+	public void TweenCallBack ()
+	{
+		gpText.transform.DOScale (new Vector3 (1, 1, 1), 1.0f);
 		gpText.GetComponent<Text> ().text = " ";
-	}
-
-	public void PopulateQuestionList(){
-		List<string> databundle = CSVParser.GetQuestions ("SelectChangeTyping");
-		int i = 0;
-		foreach(string questions in databundle ){
-			string[] splitter = databundle[i].Split (']');	
-
-			questionData = splitter [0];
-			answerData = splitter [1];
-				questionlist.Add (new Question (questionData, answerData, 0));
-			i+=1;
-		}
 	}
 
 	public void ShuffleAlgo ()
 	{
-		List<int> RandomExist = new List<int>();
+		List<int> RandomExist = new List<int> ();
 		string temp = questionAnswer;
 
-		letterno = 0;
+		int letterno = 0;
 		int randomnum = 0;      
 		for (int z = 0; z < temp.Length; z++) {
-			randomnum = UnityEngine.Random.Range (0, inputlist.Count);        
+			randomnum = UnityEngine.Random.Range (0, questionAnswer.Length);        
 			int whileindex = 0;
 			while (true) {
 				if (whileindex > 100) {
 					break;
 				}
-				bool index = RandomExist.Contains(randomnum);
+				bool index = RandomExist.Contains (randomnum);
 				if (index) {
-					randomnum = UnityEngine.Random.Range (0, inputlist.Count);
+					randomnum = UnityEngine.Random.Range (0, questionAnswer.Length);
 				} else {
 					break;
 				}
 				whileindex++;
 			}
-
-			inputlist[letterno].transform.GetChild(0).GetComponent<Text>().text = 
-				temp[randomnum].ToString().ToUpper();
+			Debug.Log (letterno);
+			selectionButtons [letterno].transform.GetChild (0).GetComponent<Text> ().text = 
+				temp [randomnum].ToString ().ToUpper ();
 			RandomExist.Add (randomnum);
 			letterno = letterno + 1;
 		}
 	}
-	public void Clear(){
+
+	public void Clear ()
+	{
 
 		answerindex = 1;
-		foreach (GameObject i in inputlist) {
+		foreach (GameObject i in selectionButtons) {
 			Destroy (i);
 		}
-		foreach (GameObject o in outputlist) {
+		foreach (GameObject o in answerButtons) {
 			Destroy (o);
 		}
-		questionModal.transform.GetChild (0).GetComponent<Text> ().text = "";
+		gameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
 	}
 }

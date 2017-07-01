@@ -22,10 +22,9 @@ public class scrollBallScript : MonoBehaviour {
 				indicatornum = 3;
 			}
 		}
-		Debug.Log (indicatornum);
+		//TweenController.TweenJumpTo (r2d.transform,);
 	}
 	void Update(){
-		//param [ParamNames.AnswerWrong.ToString ()] = currentround;
 		r2d.position = Vector3.MoveTowards(r2d.transform.position, GameObject.Find("PlayerPlaceHolder"+indicatornum).transform.position, speed);
 		if (r2d.position == GameObject.Find ("PlayerPlaceHolder" + indicatornum).transform.position) {
 		  Destroy (r2d.gameObject);

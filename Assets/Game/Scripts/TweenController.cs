@@ -62,9 +62,20 @@ public class TweenController : EnglishRoyaleElement {
 		Sequence mySequence = DOTween.Sequence();
 		mySequence.Append(rotateObject.DOLocalRotate(new Vector3(0, 0, -360), 5, RotateMode.FastBeyond360).SetEase(Ease.Linear)).SetLoops(-1);
 	}
-		
+
+	public static void TweenTextScale(Transform text, Vector3 endValue, float duration){
+		text.transform.DOScale (endValue,duration);
+	}
+
+	public static void TweenShakePosition(Transform obj,float duration, float strength, int vibrato, float randomness){
+	//	obj.transform.DOShakePosition(1.0f, 30.0f, 50,90);
+		obj.transform.DOShakePosition(duration, strength, vibrato,randomness, true);
+	}
 	//for test tween
 	public void TestButton(){
 		TweenStartWaitOpponent (0.2f);
+	}
+	public static void TweenJumpTo(Transform obj, Vector3 endValue, float jumpPower,int numJumps,float duration){
+		//obj.DOJump ();
 	}
 }

@@ -32,7 +32,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	private string wrongChoiceGot = "";
 	public GameObject gpText;
 
-	public void Activate (GameObject entity, float timeduration, Action<int,int> Result)
+	public void Activate (Action<int,int> Result)
 	{
 		currentround = 1;
 		correctAnswers = 0;
@@ -181,6 +181,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 
 	public void PopulateQuestionList ()
 	{
+		/*
 		questionlist.Clear ();
 		List<string> databundle = CSVParser.GetQuestions ("wordchoice");
 		int i = 0;
@@ -204,7 +205,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 				}
 			}
 			i += 1;
-		}
+		}*/
 	}
 
 	public void OnSkipClick(){
