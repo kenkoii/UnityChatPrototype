@@ -12,14 +12,14 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	public List<GameObject> answerIdentifier;
+	private List<GameObject> answerIdentifier = new List<GameObject>();
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
 	private GameObject questionContainer;
 	public GameObject gPtext;
 	public GameObject[] selectionButtons = new GameObject[12];
-	private GameObject[] answerButtons = new GameObject[12];
+	private List<GameObject> answerButtons = new List<GameObject>();
 	private QuestionController questionControl;
 	private AudioController audioControl;
 	public GameObject inputPrefab;
@@ -48,6 +48,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 		LoadQuestion ();
 		PopulateAnswerHolder ();
 		SelectionInit ();
+
 	}
 
 	private void LoadQuestion ()
@@ -60,21 +61,22 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	private void PopulateAnswerHolder()
 	{
+		answerButtons.Clear ();
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			GameObject answerPrefab = Instantiate (inputPrefab) as GameObject; 
 			answerPrefab.transform.SetParent (answerContent.transform, false);
 			answerPrefab.name = "input" + (i + 1);
 			answerPrefab.GetComponent<Button> ().onClick.AddListener (() => {
-				AnswerOnClick (answerPrefab.GetComponent<Button> ());
+				OnAnswerClick (answerPrefab.GetComponent<Button> ());
 			});
-			answerButtons [i] = answerPrefab;
+			answerButtons.Add(answerPrefab);
 			answerPrefab.transform.GetChild (0).GetComponent<Text> ().text = "";
 			answerPrefab.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
 		}
 	}
 
 
-	public void AnswerOnClick (Button answerButton)
+	public void OnAnswerClick (Button answerButton)
 	{
 		audioControl.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
@@ -98,7 +100,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 		}
 	}
 
-	public void SelectionOnClick (Button letterButton)
+	public void OnSelectionClick (Button letterButton)
 	{
 		audioControl.PlayAudio (AudioEnum.ClickButton);
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
@@ -107,21 +109,17 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			
 			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
 				GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
-
 				if (string.IsNullOrEmpty(findEmpty.GetComponent<Text> ().text)) {
 					answerindex = j;
 					break;
 				} 
 			}
-
-			answerIdentifier [(answerindex - 1)] = letterButton.gameObject;
+			answerIdentifier .Add(letterButton.gameObject);
 			answerWrote = "";
 
 			answerButtons [(answerindex - 1)].transform.GetChild (0).GetComponent<Text> ().text 
 			= letterButton.transform.GetChild (0).GetComponent<Text> ().text;
-
 			letterButton.transform.GetChild (0).GetComponent<Text> ().text = "";
-
 			for (int j = 0; j < questionAnswer.Length; j++) {
 				answerWrote += answerButtons [j].transform.GetChild (0).GetComponent<Text> ().text;
 			}
@@ -246,14 +244,11 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	public void ClearAnswerList ()
 	{
-		if (answerButtons.Length > 0) {
+		
+		if (answerButtons.Count > 0) {
 			answerindex = 1;
-
-			for (int i = 0; i < selectionButtons.Length; i++) {
-				selectionButtons [i].transform.GetChild (0).GetComponent<Text> ().text = "";
-				if (i <= questionAnswer.Length) {
-					Destroy (answerButtons [i]);
-				}
+			foreach (GameObject o in answerButtons) {
+				Destroy (o);
 			}
 		}
 

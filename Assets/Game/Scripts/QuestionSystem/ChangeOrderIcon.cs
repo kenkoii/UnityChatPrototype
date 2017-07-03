@@ -37,6 +37,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 
 	public void NextQuestion ()
 	{
+		answerIdentifier.Clear();
 		LoadQuestion ();
 		PopulateInputHolders ();
 		ShuffleAlgo ();
