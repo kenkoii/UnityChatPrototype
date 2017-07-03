@@ -15,7 +15,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
 	private GameObject questionContainer;
-	public GameObject gPtext;
+	public GameObject gpText;
 	public GameObject[] selectionButtons = new GameObject[12];
 	private List<GameObject> answerButtons = new List<GameObject>();
 	private QuestionController questionControl;
@@ -24,6 +24,14 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 	public GameObject answerContent;
 	public Text questionText;
 	private bool selectionIsClickable = true;
+	private Text buttonText;
+
+	void Start(){
+		buttonText = this.transform.GetChild (0).GetComponent<Text> ();
+		questionControl = app.controller.questionController;
+		audioControl = app.controller.audioController;
+		questionContainer = gameObject;
+	}
 
 	public void Activate(Action<int,int> Result){
 		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
@@ -46,6 +54,7 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 		GetComponent<Text> ().text = questionAnswer[0].ToString().ToUpper();
 		answerButtons [0].GetComponent<Button> ().enabled = false;
 	}
+
 	private void PopulateAnswerHolder(){
 		answerButtons.Clear ();
 		for (int i = 0; i < questionAnswer.Length; i++) {
@@ -57,8 +66,8 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 				gameObject.GetComponent<TypingIcon>().OnAnswerClick();
 			});
 			answerButtons.Add(answerPrefab);
-
 			answerPrefab.transform.GetChild (0).GetComponent<Text> ().text = "";
+			answerPrefab.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
 		}
 	}
 	private void LoadQuestion ()
@@ -95,72 +104,46 @@ public class TypingIcon : EnglishRoyaleElement, IQuestion{
 			if (answerWrote.Length == questionAnswer.Length) {
 
 				if (answerWrote.ToUpper () == questionAnswer.ToUpper ()) {
-					QuestionDoneCallback (true);
+					CheckAnswer (true);
 				} else {
-					QuestionDoneCallback (false);
+					CheckAnswer (false);
 				}
 			}
 		}
 	}
-	public void QuestionDoneCallback (bool result)
+	public void CheckAnswer (bool result)
 	{
-		if (result) {
-			app.controller.audioController.PlayAudio (AudioEnum.Correct);
-			correctAnswers = correctAnswers + 1;
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerCorrect.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
-
-			for (int i = 0; i < questionAnswer.Length; i++) {
-				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
-				Instantiate (ballInstantiated, 
-					answerButtons [i].transform.position, 
-					Quaternion.identity);
-			}
-			gPtext.GetComponent<Text> ().text = "1 GP";
-			gPtext.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
-			Invoke("TweenCallBack", 1f);
-		} else {
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerWrong.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
-
-			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
-			for (int i = 0; i < questionAnswer.Length; i++) {
-				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString().ToUpper();
-				answerButtons [i].GetComponent<Image> ().color = Color.green;
-			}
-		}
-	
-		gameObject.transform.DOShakePosition(0.2f, 30.0f, 50, 0f, true);
-
-		selectionIsClickable = false;
-		QuestionController qc = new QuestionController ();
-		qc.Stoptimer = false;
-		Invoke("OnEnd", 1f);
+		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject,audioControl);
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		param [isCorrectParam] = currentRound;
+		app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+		questionControl.Stoptimer = false;
+		Invoke ("OnFinishQuestion", 1f);
 
 	}
 	public void OnSkipClick(){
 		if (!hasSkippedQuestion) {
-			QuestionDoneCallback (false);
+			CheckAnswer (false);
 			hasSkippedQuestion = true;
 		}
 	}
 	public void TweenCallBack(){
-		gPtext.transform.DOScale (new Vector3(1,1,1),1.0f);
-		gPtext.GetComponent<Text> ().text = " ";
+		gpText.transform.DOScale (new Vector3(1,1,1),1.0f);
+		gpText.GetComponent<Text> ().text = " ";
 	}
 
-	public void OnEnd(){
-		selectionIsClickable = false;
-		QuestionController qc = new QuestionController ();
+	public void OnFinishQuestion(){
+		TweenCallBack ();
+		hasSkippedQuestion = false;
 		Clear ();
 		answerindex = 1;
-		qc.Stoptimer = true;
 		currentRound = currentRound + 1;
 		NextRound ();
-		qc.Returner (delegate {
-			qc.onFinishQuestion = true;
+		questionControl.Stoptimer = true;
+		questionControl.Returner (delegate {
+			questionControl.onFinishQuestion = true;
 		}, currentRound, correctAnswers);
 		selectionIsClickable = true;
 	}
