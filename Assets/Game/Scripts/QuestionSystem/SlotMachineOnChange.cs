@@ -18,6 +18,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 	private float scrollIncrement = 0.50f;
 	private float yposition = 0f;
 	private int slotIndex = 0;
+	private GameObject itemGot;
 	private bool stopDrag = false;
 	private static string writtenAnswer;
 	private static string roullete1Answer;
@@ -114,15 +115,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 		roullete6Answer = "";
 	}
 	public void GetSlots(){
-		//textSlots.Clear ();
-		/*
-		for (int i = 0; i < numberOfTextSlots; i++) {
-			textSlots.Add (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (i).gameObject);
-			//positionCompare [i] = myScrollRect.verticalNormalizedPosition;
 
-
-		}*/
-	
 		switch(myScrollRect.transform.GetChild (0).GetChild (0).GetChild (0).gameObject.name){
 		case "SlotText1":
 			getAnswer (myScrollRect.transform.GetChild (0).GetChild (0).GetChild (1).gameObject);
@@ -135,64 +128,9 @@ public class SlotMachineOnChange : MonoBehaviour {
 			break;
 		}
 
-		/*
-		deductedPosition = positionCounter;
-		if (positionCounter > 1) {
-			deductedPosition = (deductedPosition / 0.25f);
-			while (deductedPosition >= 5) {
-				deductedPosition = deductedPosition - 5;
-			}
-		} else if (positionCounter < 0) {
-			deductedPosition = (-deductedPosition / 0.25f);
-			while (deductedPosition > 5) {
-				deductedPosition = deductedPosition - 5;
-
-			}
-			switch (deductedPosition.ToString ()) {
-			case "1":
-				deductedPosition = 4.0f;
-				break;
-			case "2":
-				deductedPosition = 3.0f;
-				break;
-			case "3":
-				deductedPosition = 2.0f;
-				break;
-			case "4":
-				deductedPosition = 1.0f;
-				break;
-			case "5":
-				deductedPosition = 0f;
-				break;
-			}
-		} else {
-			deductedPosition = (deductedPosition * 4);
-		}
-
-		switch (myScrollRect.transform.parent.parent.name) {
-		case "Roullete1":
-			roullete1Answer = getAnswer();
-			break;
-		case "Roullete2":
-			roullete2Answer = getAnswer();
-			break;
-		case "Roullete3":
-			roullete3Answer = getAnswer();
-			break;
-		case "Roullete4":
-			roullete4Answer = getAnswer();
-			break;
-		case "Roullete5":
-			roullete5Answer = getAnswer();
-			break;
-		case "Roullete6":
-			roullete6Answer = getAnswer();
-			break;
-		}*/
-
-
 	}
 	public void getAnswer(GameObject g){
+		itemGot = g;
 		switch (myScrollRect.transform.parent.parent.name) {
 		case "Roullete1":
 			roullete1Answer = g.transform.GetChild(0).GetComponent<Text>().text;
@@ -351,14 +289,20 @@ public class SlotMachineOnChange : MonoBehaviour {
 	public void OnScroll(Vector2 pos)
 	{
 		
-		positionCounter = Mathf.Round (pos.y * 100f) / 100f;
-		//Debug.Log (positionCounter);
-		//Debug.Log (Mathf.Round (myScrollRect.verticalNormalizedPosition * 100f) / 100f);
-
-
-		if ((positionCounter % 5.22f) == 0 ) {
-			Debug.Log("FOUND: "+positionCounter);
-			myScrollRect.verticalNormalizedPosition = positionCounter;
+		positionCounter = Mathf.Round (slotContent.transform.localPosition.y * 100f) / 100f;
+		Canvas.ForceUpdateCanvases();
+		/*
+		slotContent.anchoredPosition.y =
+			myScrollRect.transform.InverseTransformPoint(slotContent.position.y)
+			- myScrollRect.transform.InverseTransformPoint(itemGot.transform.position.y);
+			*/
+		//.Log(positionCounter);
+		//Debug.Log (Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f);
+		Debug.Log((positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0"));
+		string distanceDiff = (positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0");
+		if (distanceDiff=="-180") {
+			Debug.Log (distanceDiff);
+			//myScrollRect.verticalNormalizedPosition = positionCounter;
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
