@@ -19,10 +19,13 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	public GameObject gpText;
 	private List<GameObject> selectionButtons = new List<GameObject>();
 	private List<GameObject> answerButtons = new List<GameObject>();
-	private QuestionController questionControl;
-	private AudioController audioControl;
 	public GameObject inputPrefab;
 	public GameObject outputPrefab;
+	private GameObject questionContainer;
+
+	void Start(){
+		questionContainer = gameObject;
+	}
 
 	public void Activate (Action<int,int> Result)
 	{
@@ -77,21 +80,22 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 			});
 			answerButtons.Add(output);
 			output.transform.GetChild (0).GetComponent<Text> ().text = "";
+			output.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
 		}
 	}
 
-	public void OnEnd ()
+	public void OnFinishQuestion ()
 	{
+		TweenCallBack ();
 		justSkippedQuestion = false;
-		QuestionController qc = new QuestionController ();
 		Clear ();
-		qc.Stoptimer = true;
+		QuestionController.Instance.Stoptimer = true;
 		answerindex = 1;
 		currentRound = currentRound + 1;
 
 		NextQuestion ();
-		qc.Returner (delegate {
-			qc.onFinishQuestion = true;
+		QuestionController.Instance.Returner (delegate {
+			QuestionController.Instance.onFinishQuestion = true;
 		}, currentRound, correctAnswers);
 		if (currentRound == 4) {
 			Clear ();
@@ -162,38 +166,14 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 
 	public void QuestionDoneCallback (bool result)
 	{
-		if (result) {
-			AudioController.Instance.PlayAudio (AudioEnum.Correct);
-			correctAnswers = correctAnswers + 1;
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerCorrect.ToString ()] = currentRound;
-			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
-
-			for (int i = 0; i < questionAnswer.Length; i++) {
-				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
-				Instantiate (ballInstantiated, 
-					answerButtons [i].transform.position, 
-					Quaternion.identity);
-			}
-			gpText.GetComponent<Text> ().text = "1 GP";
-			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
-			Invoke ("TweenCallBack", 1f);
-
-		} else {
-			AudioController.Instance.PlayAudio (AudioEnum.Mistake);
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerWrong.ToString ()] = currentRound;
-			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
-
-			for (int i = 0; i < questionAnswer.Length; i++) {
-				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString ().ToUpper ();
-				answerButtons [i].GetComponent<Image> ().color = Color.green;
-			}
-		}
-		gameObject.transform.DOShakePosition (1.0f, 30.0f, 50, 90, true);
-		QuestionController qc = new QuestionController ();
-		qc.Stoptimer = false;
-		Invoke ("OnEnd", 1f);
+		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		param [isCorrectParam] = currentRound;
+		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr(param));
+		QuestionController.Instance.Stoptimer = false;
+		Invoke ("OnFinishQuestion", 1f);
 	}
 
 	public void TweenCallBack ()
@@ -230,6 +210,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 			RandomExist.Add (randomnum);
 			letterno = letterno + 1;
 		}
+
 	}
 
 	public void Clear ()
