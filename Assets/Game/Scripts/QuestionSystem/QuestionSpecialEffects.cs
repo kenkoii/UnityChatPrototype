@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuestionSpecialEffects : EnglishRoyaleElement  {
+public class QuestionSpecialEffects : MonoBehaviour  {
 	private GameObject questionTypeComponent;
-	private AudioController audioControl;
 	private string questionAnswer;
 	private bool answerResult;
-	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject gpText, GameObject questionType, AudioController audioController){
-		audioControl = audioController;
+	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject gpText, GameObject questionType){
+
 		answerResult = result;
 		questionAnswer = answer;
 		ShowAnswer (answerButtons);
@@ -27,7 +26,7 @@ public class QuestionSpecialEffects : EnglishRoyaleElement  {
 	}
 
 	private void AudioEffect(AudioEnum audioNum){
-		audioControl.PlayAudio (audioNum);
+		AudioController.Instance.PlayAudio (audioNum);
 	}
 
 	private void GpGotEffect(GameObject gpText){

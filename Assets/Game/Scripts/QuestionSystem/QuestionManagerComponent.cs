@@ -5,7 +5,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class QuestionManagerComponent : EnglishRoyaleElement
+public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerComponent>
 {
 	//private static int questiontype = 0;
 	public GameObject[] questionTypeModals;
@@ -45,39 +45,42 @@ public class QuestionManagerComponent : EnglishRoyaleElement
 
 		switch (questionType) {
 		case 0:
-			SelectLetterIcon selectletterIcon = app.view.questionSystemView.selectLetterIcon;
+			SelectLetterIcon selectletterIcon = new SelectLetterIcon();
 			//questionTypeModals[0].SetActive (true);
-			app.controller.questionController.SetQuestion (selectletterIcon, questionTime, onResult);
-			app.controller.questionController.TimeLeft = questionTime;
+			QuestionController.Instance.SetQuestion (selectletterIcon, questionTime, onResult);
+
 
 			break;
 		case 1:
-			TypingIcon typingicon = app.view.questionSystemView.typingIcon;
+			TypingIcon typingicon = new TypingIcon();
 			//questionTypeModals[1].SetActive (true);
-			app.controller.questionController.SetQuestion (typingicon, questionTime, onResult);
-			app.controller.questionController.TimeLeft = questionTime;
+			QuestionController.Instance.SetQuestion (typingicon, questionTime, onResult);
+		
 			break;
 		case 2:
 			//questionTypeModals[2].SetActive (true);
-			ChangeOrderIcon changeOrderIcon = app.view.questionSystemView.changeOrderIcon;
-			app.controller.questionController.SetQuestion (changeOrderIcon, questionTime, onResult);
-			app.controller.questionController.TimeLeft = questionTime;
+			ChangeOrderIcon changeOrderIcon = new ChangeOrderIcon();
+			QuestionController.Instance.SetQuestion (changeOrderIcon, questionTime, onResult);
+		
 			break;
 		case 3:
 			//questionTypeModals[2].SetActive (true);
-			WordChoiceIcon wordchoiceIcon = app.view.questionSystemView.wordChoiceIcon;
-			app.controller.questionController.SetQuestion (wordchoiceIcon, questionTime, onResult);
-			app.controller.questionController.TimeLeft = questionTime;
+			WordChoiceIcon wordchoiceIcon = new WordChoiceIcon();
+			QuestionController.Instance.SetQuestion (wordchoiceIcon, questionTime, onResult);
+
 			break;
 		case 4:
 			//questionTypeModals[2].SetActive (true);
-			SlotMachineIcon slotMachineIcon = app.view.questionSystemView.slotMachineIcon;
-			app.controller.questionController.SetQuestion (slotMachineIcon, questionTime, onResult);
-			app.controller.questionController.TimeLeft = questionTime;
+			SlotMachineIcon slotMachineIcon = new SlotMachineIcon();
+
 			break;
 		}
+
+
 			
 	}
+
+
 	public void DebugOnClick(){
 		/*
 		int time;

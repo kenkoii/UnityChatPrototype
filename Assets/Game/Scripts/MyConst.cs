@@ -23,7 +23,6 @@ public static class MyConst
 	public  const string BATTLE_STATUS_ANSWER = "answer";
 	public  const string BATTLE_STATUS_SKILL = "skill";
 	public  const string BATTLE_STATUS_ATTACK = "attack";
-	public  const string BATTLE_STATUS_END = "end";
 	public  const string BATTLE_STATUS_STATE = "State";
 	public  const string BATTLE_STATUS_COUNT = "Count";
 

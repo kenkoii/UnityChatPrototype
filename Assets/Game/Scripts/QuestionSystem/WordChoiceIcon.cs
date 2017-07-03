@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
+public class WordChoiceIcon : MonoBehaviour, IQuestion
 {
 	private static List<Question> questionlist = new List<Question> ();
 	private static string questionAnswer;
@@ -76,7 +76,7 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	public void InputOnClick ()
 	{
 		if (!justAnswered) {
-			app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+			AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 			GameObject answerclick = EventSystem.current.currentSelectedGameObject;
 
 			if (answerclick.GetComponent<Image> ().color == Color.gray) {
@@ -120,11 +120,11 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
-			app.controller.audioController.PlayAudio (AudioEnum.Correct);
+			AudioController.Instance.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 			for (int i = 0; i < answerClicked.Count; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
 				Instantiate (ballInstantiated, 
@@ -135,10 +135,10 @@ public class WordChoiceIcon : EnglishRoyaleElement, IQuestion
 			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
 			Invoke("TweenCallBack", 1f);
 		} else {
-			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
+			AudioController.Instance.PlayAudio (AudioEnum.Mistake);
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerWrong.ToString ()] = currentround;
-			app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 
 			for (int i = 0; i < inputlist.Count; i++) {
 

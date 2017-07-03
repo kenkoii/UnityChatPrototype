@@ -1,20 +1,24 @@
-﻿public class CameraWorksController : EnglishRoyaleElement {
+﻿using UnityEngine;
+public class CameraWorksController: SingletonMonoBehaviour<CameraWorksController> {
+	public GameObject introCamera;
+	public GameObject winLoseCamera;
+	public GameObject gestureCamera;
 
 	public void StartIntroCamera(){
-		app.model.cameraWorksModel.introCamera.SetActive (true);
-		app.model.cameraWorksModel.winLoseCamera.SetActive (false);
+		introCamera.SetActive (true);
+		winLoseCamera.SetActive (false);
 	}
 
 	public void StartWinLoseCamera(){
-		app.model.cameraWorksModel.introCamera.SetActive (false);
-		app.model.cameraWorksModel.winLoseCamera.SetActive (true);
+		introCamera.SetActive (false);
+		winLoseCamera.SetActive (true);
 	}
 
 	public void ShowGestureCamera(){
-		app.model.cameraWorksModel.gestureCamera.SetActive (true);
+		gestureCamera.SetActive (true);
 	}
 
 	public void HideGestureCamera(){
-		app.model.cameraWorksModel.gestureCamera.SetActive (false);
+		gestureCamera.SetActive (false);
 	}
 }

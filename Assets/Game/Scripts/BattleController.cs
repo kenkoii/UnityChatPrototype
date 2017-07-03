@@ -5,20 +5,14 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /* Controls the battle */
-public class BattleController : EnglishRoyaleElement
+public class BattleController : SingletonMonoBehaviour<BattleController>
 {
-	public Text skill1Name;
-	public Text skill1GpCost;
+	public Text[] skillName;
+	public Text[] skillGpCost;
 
-	public Text skill2Name;
-	public Text skill2GpCost;
-
-	public Text skill3Name;
-	public Text skill3GpCost;
-
-	public int playerHP = 10;
-	public int enemyHP = 10;
-	public int prepareTime = 3;
+	private int playerHP = 10;
+	private int enemyHP = 10;
+	private int prepareTime = 3;
 
 	private int playerMaxHP = 10;
 	private int enemyMaxHP = 10;
@@ -26,7 +20,7 @@ public class BattleController : EnglishRoyaleElement
 	public Slider playerHPBar;
 	public Slider enemyHPBar;
 
-	public int playerGP = 10;
+	private int playerGP = 10;
 	private int playerMaxGP = 10;
 	public Slider playerGPBar;
 
@@ -44,14 +38,19 @@ public class BattleController : EnglishRoyaleElement
 	public GameObject battleResultText;
 	private Text cachedBattleResult;
 
+	List<bool> userHome = new List<bool> ();
+	List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
 
+
+	public int GetPlayerGP(){
+		return playerGP;
+	}
 	/// <summary>
 	/// Delay before start of battle
 	/// </summary>
 	public void StartPreTimer ()
 	{
-		
-		app.controller.cameraWorksController.StartIntroCamera ();
+		CameraWorksController.Instance.StartIntroCamera ();
 		cachedBattleResult = battleResultText.GetComponent<Text> ();
 		timeLeft = 3;
 		stoptimer = true;
@@ -61,14 +60,14 @@ public class BattleController : EnglishRoyaleElement
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			app.view.gameTimerView.ToggleTimer (true);
+			GameTimerView.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
-				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
-			app.component.phaseManagerComponent.StartPhase1 ();
-			app.view.gameTimerView.ToggleTimer (false);
+			PhaseManagerComponent.Instance.StartPhase1 ();
+			GameTimerView.Instance.ToggleTimer (false);
 			stoptimer = false;
 			CancelInvoke ("StartTimer");
 		}
@@ -108,11 +107,11 @@ public class BattleController : EnglishRoyaleElement
 		this.playerHP = playerHP;
 		this.playerName = playerName;
 		this.playerGP = playerGP;
-		playerGPBar.maxValue = app.model.battleModel.playerMaxGP;
+		playerGPBar.maxValue = GameData.Instance.player.playerMaxGP;
 		playerGPBar.value = 0;
 		playerMaxHP = playerHP;
 		playerHPBar.maxValue = playerMaxHP;
-		playerMaxGP = app.model.battleModel.playerMaxGP;
+		playerMaxGP = GameData.Instance.player.playerMaxGP;
 	}
 
 	public void InitialEnemyState (int enemyHP, string enemyName)
@@ -123,43 +122,36 @@ public class BattleController : EnglishRoyaleElement
 		enemyHPBar.maxValue = enemyMaxHP;
 	}
 
-	public void SetAttackMode2 (Dictionary<bool, Dictionary<string, object>> currentParam)
+	public void SetAttack (Dictionary<bool, Dictionary<string, object>> currentParam)
 	{
 
-		StartCoroutine (AttackMode2 (currentParam));
+		Attack (currentParam);
+	}
+	private void ChangeUserOrder(int index0, int index1){
+		bool tempName = userHome [index0];
+		Dictionary<string, System.Object> tempParam = param [index0];
+
+		userHome.Insert (index0, userHome [index1]);
+		userHome.Insert (index1, tempName);
+		param.Insert (index0, param [index1]);
+		param.Insert (index1, tempParam);
 	}
 
-	IEnumerator AttackMode2 (Dictionary<bool, Dictionary<string, object>> currentParam)
+	private void Attack (Dictionary<bool, Dictionary<string, object>> currentParam)
 	{
-		List<bool> userHome = new List<bool> ();
-		List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
-
 		foreach (KeyValuePair<bool, Dictionary<string, System.Object>> newParam in currentParam) {
 			userHome.Add (newParam.Key);
 			param.Add (newParam.Value);
 		}
 
-
 		//change order of list if host or visitor
-		if (app.component.firebaseDatabaseComponent.isHost) {
-			if (userHome [0] != app.model.battleModel.isHost) {
-				bool tempName = userHome [1];
-				Dictionary<string, System.Object> tempParam = param [1];
-
-				userHome.Insert (1, userHome [0]);
-				userHome.Insert (0, tempName);
-				param.Insert (1, param [0]);
-				param.Insert (0, tempParam);
+		if (GameData.Instance.isHost) {
+			if (userHome [0] != GameData.Instance.isHost) {
+				ChangeUserOrder (0, 1);
 			}
 		} else {
-			if (userHome [1] != app.model.battleModel.isHost) {
-				bool tempName = userHome [0];
-				Dictionary<string, System.Object> tempParam = param [0];
-
-				userHome.Insert (0, userHome [1]);
-				userHome.Insert (1, tempName);
-				param.Insert (0, param [1]);
-				param.Insert (1, tempParam);
+			if (userHome [1] != GameData.Instance.isHost) {
+				ChangeUserOrder (1, 0);
 			}
 
 		}
@@ -168,14 +160,14 @@ public class BattleController : EnglishRoyaleElement
 
 		int attackOrder = 0;
 
-		if (app.model.battleModel.hAnswer > app.model.battleModel.vAnswer) {
+		if (GameData.Instance.hAnswer > GameData.Instance.vAnswer) {
 			attackOrder = 0;
-		} else if (app.model.battleModel.hAnswer < app.model.battleModel.vAnswer) {
+		} else if (GameData.Instance.hAnswer < GameData.Instance.vAnswer) {
 			attackOrder = 1;
 		} else {
-			if (app.model.battleModel.hTime > app.model.battleModel.vTime) {
+			if (GameData.Instance.hTime > GameData.Instance.vTime) {
 				attackOrder = 0;
-			} else if (app.model.battleModel.hTime < app.model.battleModel.vTime) {
+			} else if (GameData.Instance.hTime < GameData.Instance.vTime) {
 				attackOrder = 1;
 			} else {
 				attackOrder = 2;
@@ -187,27 +179,30 @@ public class BattleController : EnglishRoyaleElement
 		case 0:
 			Debug.Log ("player1 first attack");
 
-			AttackParameter (userHome [0], param [0]);
-			yield return new WaitForSeconds (2);
-			AttackParameter (userHome [1], param [1]);
+			StartCoroutine (AttackParameterReduce (0,1,2));
 
 			break;
 		case 1:
 			Debug.Log ("player2 first attack");
 
-			AttackParameter (userHome [1], param [1]);
-			yield return new WaitForSeconds (2);
-			AttackParameter (userHome [0], param [0]);
+			StartCoroutine (AttackParameterReduce (1,0,2));
 
 			break;
 		case 2:
 			Debug.Log ("same attack");
-
-			AttackParameter (userHome [0], param [0], true);
-			AttackParameter (userHome [1], param [1], true);
+			StartCoroutine (AttackParameterReduce (0,1,0, true));
 			StartCoroutine (StartAttackSequence (3));
 			break;
 		}
+			
+	}
+
+	private IEnumerator AttackParameterReduce(int firstIndex, int secondIndex, int yieldTime, bool isSameAttack = false){
+		AttackParameter (userHome [firstIndex], param [firstIndex], isSameAttack);
+		yield return new WaitForSeconds (yieldTime);
+		AttackParameter (userHome [secondIndex], param [secondIndex], isSameAttack);
+
+		userHome.Clear ();
 	}
 
 	public void CheckBattleStatus (bool secondCheck)
@@ -218,19 +213,18 @@ public class BattleController : EnglishRoyaleElement
 
 	private void AnimationWinLose (string param1, string param2, string param3, AudioEnum param4)
 	{
-		
-		app.controller.characterAnimationController.SetTriggerAnim (true, param1);
-		app.controller.characterAnimationController.SetTriggerAnim (false, param2);
+		CharacterAnimationController.Instance.SetTriggerAnim (true, param1);
+		CharacterAnimationController.Instance.SetTriggerAnim (false, param2);
 		cachedBattleResult.text = param3;
-		app.controller.audioController.PlayAudio (param4);
+		AudioController.Instance.PlayAudio (param4);
 	}
 
 	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
-			app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+//			app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 
-			app.controller.cameraWorksController.StartWinLoseCamera ();
+			CameraWorksController.Instance.StartWinLoseCamera ();
 			if (enemyHP > 0 && playerHP <= 0) {
 				AnimationWinLose ("lose", "win", "LOSE", AudioEnum.Lose);
 
@@ -247,16 +241,16 @@ public class BattleController : EnglishRoyaleElement
 
 		} else {
 			if (secondCheck) {
-				if (app.component.firebaseDatabaseComponent.isHost) {
-					if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
-						app.component.firebaseDatabaseComponent.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-					} else if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-						app.component.firebaseDatabaseComponent.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+				if (GameData.Instance.isHost) {
+					if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
+						FirebaseDatabaseComponent.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+					} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+						FirebaseDatabaseComponent.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 
 					}
 				}
 				yield return new WaitForSeconds (3);
-				app.component.phaseManagerComponent.StartPhase1 ();
+				PhaseManagerComponent.Instance.StartPhase1 ();
 
 			}
 		}
@@ -267,17 +261,17 @@ public class BattleController : EnglishRoyaleElement
 		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
 			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
 		
-			if (attackerBool.Equals (app.model.battleModel.isHost)) {
+			if (attackerBool.Equals (GameData.Instance.isHost)) {
 		
 				enemyHP -= damage;
-				app.controller.tweenController.TweenEnemyHPSlider (enemyHP, 1, true);
+				TweenController.TweenEnemyHPSlider (enemyHP, 1, true, enemyHPBar);
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (1));
 				}
 		
 			} else {
 				playerHP -= damage;
-				app.controller.tweenController.TweenPlayerHPSlider (playerHP, 1, true);
+				TweenController.TweenPlayerHPSlider (playerHP, 1, true, playerHPBar);
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (2));
 				}
@@ -291,52 +285,60 @@ public class BattleController : EnglishRoyaleElement
 
 		switch (sequenceType) {
 		case 1:
-			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			StartAttackSequenceReduce (AudioEnum.Attack,true,"attack");
 			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			StartAttackSequenceReduce (AudioEnum.Hit,false,"hit");
 			CheckBattleStatus (false);
 			break;
 		case 2:
-			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			StartAttackSequenceReduce (AudioEnum.Hit,true,"hit");
 			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			StartAttackSequenceReduce (AudioEnum.Attack,false,"attack");
 			CheckBattleStatus (true);
 			break;
 		case 3:
-			app.controller.characterAnimationController.SetTriggerAnim (true, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "attack");
-			app.controller.audioController.PlayAudio (AudioEnum.Attack);
+			StartAttackSequenceReduce (AudioEnum.Attack,true,"attack");
+			StartAttackSequenceReduce (AudioEnum.Attack,false,"attack");
 			yield return new WaitForSeconds (0.5f);
-			app.controller.characterAnimationController.SetTriggerAnim (false, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
-			app.controller.characterAnimationController.SetTriggerAnim (true, "hit");
-			app.controller.audioController.PlayAudio (AudioEnum.Hit);
+			StartAttackSequenceReduce (AudioEnum.Hit,true,"hit");
+			StartAttackSequenceReduce (AudioEnum.Hit,false,"hit");
+
 			CheckBattleStatus (true);
 			break;
 		
 		}
 
 		//reset effects done by skill
-		app.controller.gameController.ResetPlayerDamage ();
-		Debug.Log ("player damage reset! now damage is: " + app.model.battleModel.playerDamage);
+		GameController.Instance.ResetPlayerDamage ();
+		Debug.Log ("player damage reset! now damage is: " + GameData.Instance.player.playerDamage);
 		
 	}
 
-	public void SetSkill (ISkill skill)
+	private void StartAttackSequenceReduce(AudioEnum audioType,bool isPlayer,string animParam){
+
+		CharacterAnimationController.Instance.SetTriggerAnim (isPlayer, animParam);
+		AudioController.Instance.PlayAudio (audioType);
+	}
+
+	public void SetSkill (SkillDAO skill)
 	{
-		skill.Activate ();
+		FirebaseDatabaseComponent.Instance.SetSkillParam (skill);
+		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
+			RPCWrapperComponent.Instance.RPCWrapSkill ();
+		} 
+	}
+
+	public void SetSkillUI (int skillNumber, ParamNames skillName, int skillGp)
+	{
+		this.skillName[skillNumber-1].text = name.ToString();
+		this.skillGpCost [skillNumber - 1].text = "" + skillGp + "GP";
 	}
 		
 	//send attack to firebase
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = app.model.battleModel.playerDamage + app.model.battleModel.gpEarned;
-		app.component.rpcWrapperComponent.RPCWrapAttack (param);
+		param [ParamNames.Damage.ToString ()] = GameData.Instance.player.playerDamage + GameData.Instance.gpEarned;
+		RPCWrapperComponent.Instance.RPCWrapAttack (param);
 	}
 }

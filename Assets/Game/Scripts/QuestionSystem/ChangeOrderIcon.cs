@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
+public class ChangeOrderIcon : MonoBehaviour, IQuestion
 {
 	private int currentRound = 1;
 	private int correctAnswers;
@@ -19,15 +19,11 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 	public GameObject gpText;
 	private List<GameObject> selectionButtons = new List<GameObject>();
 	private List<GameObject> answerButtons = new List<GameObject>();
-	private QuestionController questionControl;
-	private AudioController audioControl;
 	public GameObject inputPrefab;
 	public GameObject outputPrefab;
 	private GameObject questionContainer;
 
 	void Start(){
-		questionControl = app.controller.questionController;
-		audioControl = app.controller.audioController;
 		questionContainer = gameObject;
 	}
 
@@ -93,13 +89,13 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 		TweenCallBack ();
 		justSkippedQuestion = false;
 		Clear ();
-		questionControl.Stoptimer = true;
+		QuestionController.Instance.Stoptimer = true;
 		answerindex = 1;
 		currentRound = currentRound + 1;
 
 		NextQuestion ();
-		questionControl.Returner (delegate {
-			questionControl.onFinishQuestion = true;
+		QuestionController.Instance.Returner (delegate {
+			QuestionController.Instance.onFinishQuestion = true;
 		}, currentRound, correctAnswers);
 		if (currentRound == 4) {
 			Clear ();
@@ -116,7 +112,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 
 	public void SelectionOnClick ()
 	{
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
 		} else {
@@ -152,7 +148,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 
 	public void AnswerOnClick ()
 	{
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
@@ -171,12 +167,12 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject,audioControl);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
-		questionControl.Stoptimer = false;
+		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr(param));
+		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}
 

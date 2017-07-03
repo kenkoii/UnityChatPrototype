@@ -2,102 +2,78 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
-public class AnswerController : EnglishRoyaleElement
+public class AnswerController : SingletonMonoBehaviour<AnswerController>
 {
-	private Sprite correct;
-	private Sprite wrong;
-	private Sprite empty;
-	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+	public Sprite correct;
+	public Sprite wrong;
+	public Sprite empty;
+	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+	public Image playerPlaceHolder1;
+	public Image playerPlaceHolder2;
+	public Image playerPlaceHolder3;
+
+	public Image enemyPlaceHolder1;
+	public Image enemyPlaceHolder2;
+	public Image enemyPlaceHolder3;
 
 
 	void Start ()
 	{
-//		use this to call
-//		param [ParamNames.AnswerCorrect.ToString ()] = 1;
-//		app.component.firebaseDatabaseComponent.SetParam(app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
-
-
-		correct = app.model.answerModel.correct;
-		wrong = app.model.answerModel.wrong;
-		empty = app.model.answerModel.empty;
 		ResetAnswer ();
 	}
 
 	public void ValidateAnswer (bool isCorrect, int questionNumber)
 	{
-		if (app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost)) {
+		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
 			switch (questionNumber) {
 			case 1:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.playerPlaceHolder1.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.playerPlaceHolder1.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, playerPlaceHolder1.sprite);
 				break;
 			case 2:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.playerPlaceHolder2.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.playerPlaceHolder2.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, playerPlaceHolder2.sprite);
 				break;
 			case 3:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.playerPlaceHolder3.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.playerPlaceHolder3.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, playerPlaceHolder3.sprite);
 				break;
 
 			}
 		} else {
 			switch (questionNumber) {
 			case 1:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.enemyPlaceHolder1.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.enemyPlaceHolder1.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, enemyPlaceHolder1.sprite);
 				break;
 			case 2:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.enemyPlaceHolder2.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.enemyPlaceHolder2.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, enemyPlaceHolder2.sprite);
 				break;
 			case 3:
-				SetValidateAnswer (isCorrect, delegate() {
-					app.model.answerModel.enemyPlaceHolder3.sprite = correct;
-				}, delegate() {
-					app.model.answerModel.enemyPlaceHolder3.sprite = wrong;
-				});
+				SetValidateAnswer (isCorrect, enemyPlaceHolder3.sprite);
 				break;
 
 			}
 		}
 	}
 
-	private void SetValidateAnswer (bool isCorrect, Action correct, Action wrong)
+	private void SetValidateAnswer (bool isCorrect, Sprite answerResult)
 	{
 		if (isCorrect) {
-			correct ();
+			answerResult = correct;
 		} else {
-			wrong ();
+			answerResult = wrong;
 		}
 	}
 
 	public void ResetAnswer ()
 	{
 		
-		app.model.answerModel.playerPlaceHolder1.sprite = empty;
-		app.model.answerModel.playerPlaceHolder2.sprite = empty;
-		app.model.answerModel.playerPlaceHolder3.sprite = empty;
+		playerPlaceHolder1.sprite = empty;
+		playerPlaceHolder2.sprite = empty;
+		playerPlaceHolder3.sprite = empty;
 
-		app.model.answerModel.enemyPlaceHolder1.sprite = empty;
-		app.model.answerModel.enemyPlaceHolder2.sprite = empty;
-		app.model.answerModel.enemyPlaceHolder3.sprite = empty;
+		enemyPlaceHolder1.sprite = empty;
+		enemyPlaceHolder2.sprite = empty;
+		enemyPlaceHolder3.sprite = empty;
 		Debug.Log ("reset answers");
 	}
 }

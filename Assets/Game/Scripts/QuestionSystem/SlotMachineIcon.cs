@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class SlotMachineIcon : EnglishRoyaleElement, IQuestion{
+public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	private static int round = 1;
 	private Action<int> onResult;
 	private static List<Question> questionlist = new List<Question> ();

@@ -7,29 +7,25 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
+public class SelectLetterIcon : MonoBehaviour, IQuestion
 {
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	private List<GameObject> answerIdentifier = new List<GameObject>();
+	private List<GameObject> answerIdentifier = new List<GameObject> ();
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
 	private GameObject questionContainer;
 	public GameObject gpText;
 	public GameObject[] selectionButtons = new GameObject[12];
-	private List<GameObject> answerButtons = new List<GameObject>();
-	private QuestionController questionControl;
-	private AudioController audioControl;
+	private List<GameObject> answerButtons = new List<GameObject> ();
 	public GameObject inputPrefab;
 	public GameObject answerContent;
 	public Text questionText;
 
 	void Start ()
 	{
-		questionControl = app.controller.questionController;
-		audioControl = app.controller.audioController;
 		questionContainer = gameObject;
 	}
 
@@ -38,8 +34,8 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
 		currentRound = 1;
 		correctAnswers = 0;
-		NextQuestion();
-		app.controller.questionController.OnResult = result;
+		NextQuestion ();
+		QuestionController.Instance.OnResult = result;
 	}
 
 	public void NextQuestion ()
@@ -60,7 +56,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	}
 
 
-	private void PopulateAnswerHolder()
+	private void PopulateAnswerHolder ()
 	{
 		answerButtons.Clear ();
 		for (int i = 0; i < questionAnswer.Length; i++) {
@@ -70,16 +66,16 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			answerPrefab.GetComponent<Button> ().onClick.AddListener (() => {
 				OnAnswerClick (answerPrefab.GetComponent<Button> ());
 			});
-			answerButtons.Add(answerPrefab);
+			answerButtons.Add (answerPrefab);
 			answerPrefab.transform.GetChild (0).GetComponent<Text> ().text = "";
-			answerPrefab.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
+			answerPrefab.GetComponent<Image> ().color = new Color (136f / 255, 236f / 255f, 246f / 255f);
 		}
 	}
 
 
 	public void OnAnswerClick (Button answerButton)
 	{
-		audioControl.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
 		if (string.IsNullOrEmpty (answerButton.transform.GetChild (0).GetComponent<Text> ().text)) {
 			TweenController.TweenShakePosition (answerButton.transform, 0.5f, 15.0f, 50, 90f);
@@ -103,19 +99,19 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	public void OnSelectionClick (Button letterButton)
 	{
-		audioControl.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
 			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
 		} else {
 			
 			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
 				GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
-				if (string.IsNullOrEmpty(findEmpty.GetComponent<Text> ().text)) {
+				if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
 					answerindex = j;
 					break;
 				} 
 			}
-			answerIdentifier.Add(letterButton.gameObject);
+			answerIdentifier.Add (letterButton.gameObject);
 			answerWrote = "";
 
 			answerButtons [(answerindex - 1)].transform.GetChild (0).GetComponent<Text> ().text 
@@ -138,12 +134,13 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	public void CheckAnswer (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject,audioControl);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
-		questionControl.Stoptimer = false;
+		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
+
+		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}
 
@@ -157,13 +154,13 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 	{
 		TweenCallBack ();
 		hasSkippedQuestion = false;
-		questionControl.Stoptimer = true;
+		QuestionController.Instance.Stoptimer = true;
 		ClearAnswerList ();
 		answerindex = 1;
 		currentRound += 1;
 		NextQuestion ();
-		questionControl.Returner (delegate {
-			questionControl.onFinishQuestion = true;
+		QuestionController.Instance.Returner (delegate {
+			QuestionController.Instance.onFinishQuestion = true;
 		}, currentRound, correctAnswers);
 	}
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PhaseAttackController : EnglishRoyaleElement
+public class PhaseAttackController : SingletonMonoBehaviour<PhaseAttackController>
 {
 	
 	private bool stoptimer = false;
@@ -9,13 +9,13 @@ public class PhaseAttackController : EnglishRoyaleElement
 
 	void OnEnable ()
 	{
-		app.controller.answerController.ResetAnswer ();
+		AnswerController.Instance.ResetAnswer ();
 		Debug.Log ("Starting attack phase");
-		app.view.gameTimerView.ToggleTimer (false);
+		GameTimerView.Instance.ToggleTimer (false);
 		stoptimer = true;
 		timeLeft = 20;
 		InvokeRepeating ("StartTimer", 0, 1);
-		app.controller.battleController.SendAttackToDatabase ();
+		BattleController.Instance.SendAttackToDatabase ();
 	}
 
 	void OnDisable(){
