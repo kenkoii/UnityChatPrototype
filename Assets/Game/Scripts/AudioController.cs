@@ -1,35 +1,46 @@
-﻿public class AudioController : EnglishRoyaleElement
+﻿using UnityEngine;
+public class AudioController: SingletonMonoBehaviour<AudioController>
 {
+	public AudioSource bgm;
+	public AudioSource clickButton;
+	public AudioSource attack;
+	public AudioSource lose;
+	public AudioSource skill;
+	public AudioSource win;
+	public AudioSource hit;
+	public AudioSource mistake;
+	public AudioSource correct;
+
 	//create and destroy sfx after play to avoid conflict
 	public void PlayAudio (AudioEnum audioName)
 	{
 		switch (audioName) {
 		case AudioEnum.Bgm:
-			app.model.audioModel.bgm.Play ();
+			bgm.Play ();
 			break;
 		case AudioEnum.ClickButton:
-			app.model.audioModel.clickButton.Play ();
+			clickButton.Play ();
 			break;
 		case AudioEnum.Attack:
-			app.model.audioModel.attack.Play ();
+			attack.Play ();
 			break;
 		case AudioEnum.Lose:
-			app.model.audioModel.lose.Play ();
+			lose.Play ();
 			break;
 		case AudioEnum.Skill:
-			app.model.audioModel.skill.Play ();
+			skill.Play ();
 			break;
 		case AudioEnum.Win:
-			app.model.audioModel.win.Play ();
+			win.Play ();
 			break;
 		case AudioEnum.Hit:
-			app.model.audioModel.hit.Play ();
+			hit.Play ();
 			break;
 		case AudioEnum.Correct:
-			app.model.audioModel.correct.Play ();
+			correct.Play ();
 			break;
 		case AudioEnum.Mistake:
-			app.model.audioModel.mistake.Play ();
+			mistake.Play ();
 			break;
 		}
 

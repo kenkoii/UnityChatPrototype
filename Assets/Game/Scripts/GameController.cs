@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GameController : EnglishRoyaleElement
+public class GameController : SingletonMonoBehaviour<GameController>
 {
 	[SerializeField] private int playerLife = 45;
 	[SerializeField] private int answerQuestionTime = 25;
@@ -10,21 +10,21 @@ public class GameController : EnglishRoyaleElement
 
 	void Start ()
 	{
-		app.model.battleModel.modePrototype = ModeEnum.Mode1;
+		GameData.Instance.modePrototype = ModeEnum.Mode1;
 	}
 
 	public void UpdateGame ()
 	{
-		app.model.battleModel.playerLife = playerLife;
-		app.model.battleModel.answerQuestionTime = answerQuestionTime;
-		app.model.battleModel.playerGP = playerGP;
-		app.model.battleModel.playerMaxGP = playerMaxGP;
-		app.model.battleModel.playerDamage = playerDamage;
+		GameData.Instance.player.playerLife = playerLife;
+		GameData.Instance.answerQuestionTime = answerQuestionTime;
+		GameData.Instance.player.playerGP = playerGP;
+		GameData.Instance.player.playerMaxGP = playerMaxGP;
+		GameData.Instance.player.playerDamage = playerDamage;
 	}
 
 	public void ResetPlayerDamage ()
 	{
-		app.model.battleModel.playerDamage = playerDamage;
+		GameData.Instance.player.playerDamage = playerDamage;
 	}
 
 

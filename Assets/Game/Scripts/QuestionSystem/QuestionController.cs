@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class QuestionController : EnglishRoyaleElement
+public class QuestionController : SingletonMonoBehaviour<QuestionController>
 {
 	public static int getround;
 	private static int correctAnswers;
@@ -30,17 +30,6 @@ public class QuestionController : EnglishRoyaleElement
 		}
 		set { 
 			onResult = value;
-		}
-
-	}
-
-	public int TimeLeft {
-		get { 
-			return timeLeft;
-		}
-		set { 
-			timeLeft = value;
-
 		}
 
 	}
@@ -75,14 +64,14 @@ public class QuestionController : EnglishRoyaleElement
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			app.view.gameTimerView.ToggleTimer (true);
+			GameTimerView.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
-				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 				
-			app.view.gameTimerView.ToggleTimer (false);
+			GameTimerView.Instance.ToggleTimer (false);
 			stoptimer = false;
 			ComputeScore ();
 				  

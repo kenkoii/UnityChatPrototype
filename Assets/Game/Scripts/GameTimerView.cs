@@ -1,6 +1,6 @@
 ﻿using UnityEngine.UI;
 
-public class GameTimerView : EnglishRoyaleElement {
+public class GameTimerView : SingletonMonoBehaviour<GameTimerView> {
 
 	public Text gameTimerText;
 	public Image gameTimerImage;

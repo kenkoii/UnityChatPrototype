@@ -3,15 +3,21 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 /* UI For searching matches */
-public class LobbyController : EnglishRoyaleElement
+public class LobbyController : MonoBehaviour
 {
+	public GameObject gameRoomUI;
+	public GameObject lobbyRoom;
+	public GameObject gameRoomAssets;
+	public ToggleGroup toggleGroup;
+	public InputField gameName;
+
 	public void SearchRoom ()
 	{
-		app.model.battleModel.playerName = app.view.lobbyView.gameName.text;
+		GameData.Instance.player.playerName = gameName.text;
 
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
-		app.controller.screenController.StartMatchingScreen ();
-		app.component.firebaseDatabaseComponent.SearchRoom (delegate(bool result) {
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+		ScreenController.Instance.StartMatchingScreen ();
+		FirebaseDatabaseComponent.Instance.SearchRoom (delegate(bool result) {
 
 			if (result) {
 				GoToGameRoom ();	
@@ -19,41 +25,50 @@ public class LobbyController : EnglishRoyaleElement
 				Debug.Log ("Cancelled Search");
 			}
 
-			app.controller.screenController.StopMatchingScreen ();
+			ScreenController.Instance.StopMatchingScreen ();
 		});
 
 
 	}
 
-	public void ModeOnChange (string modeName)
+	public void ModeOnChange ()
 	{
-		switch(modeName){
+		foreach (Toggle tg in toggleGroup.ActiveToggles()) {
 
-		case "Mode1":
-			app.model.battleModel.modePrototype = ModeEnum.Mode1;
-			break;
-		case "Mode2":
-			app.model.battleModel.modePrototype = ModeEnum.Mode2;
-			break;
+			ModeEnum modeChosen = ModeEnum.Mode1;
+			switch (tg.name) {
+
+			case "Mode1":
+				modeChosen = ModeEnum.Mode1;
+				break;
+			case "Mode2":
+				modeChosen = ModeEnum.Mode2;
+				break;
+			}
+
+			GameData.Instance.modePrototype = modeChosen;
+
 		}
+
+
 
 	}
 
 	public void CancelRoomSearch ()
 	{
-		app.component.firebaseDatabaseComponent.CancelRoomSearch ();
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+		FirebaseDatabaseComponent.Instance.CancelRoomSearch ();
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 	}
 
 
 	private void GoToGameRoom ()
 	{
-		app.controller.audioController.PlayAudio (AudioEnum.Bgm);
-		app.view.lobbyView.lobbyRoom.SetActive (false);
-		app.view.lobbyView.gameRoomUI.SetActive (true);
-		app.view.lobbyView.gameRoomAssets.SetActive (true);
-		app.controller.battleController.StartPreTimer ();
-		app.controller.screenController.StopLoadingScreen ();
+		AudioController.Instance.PlayAudio (AudioEnum.Bgm);
+		lobbyRoom.SetActive (false);
+		gameRoomUI.SetActive (true);
+		gameRoomAssets.SetActive (true);
+		BattleController.Instance.StartPreTimer ();
+		ScreenController.Instance.StopLoadingScreen ();
 	}
 
 

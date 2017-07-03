@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
+public class ChangeOrderIcon : MonoBehaviour, IQuestion
 {
 	private int currentRound = 1;
 	private int correctAnswers;
@@ -108,7 +108,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 
 	public void SelectionOnClick ()
 	{
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
 		} else {
@@ -144,7 +144,7 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 
 	public void AnswerOnClick ()
 	{
-		app.controller.audioController.PlayAudio (AudioEnum.ClickButton);
+		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		string answerclicked = "";
 		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
 			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
@@ -163,11 +163,11 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		if (result) {
-			app.controller.audioController.PlayAudio (AudioEnum.Correct);
+			AudioController.Instance.PlayAudio (AudioEnum.Correct);
 			correctAnswers = correctAnswers + 1;
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerCorrect.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
@@ -180,10 +180,10 @@ public class ChangeOrderIcon : EnglishRoyaleElement, IQuestion
 			Invoke ("TweenCallBack", 1f);
 
 		} else {
-			app.controller.audioController.PlayAudio (AudioEnum.Mistake);
+			AudioController.Instance.PlayAudio (AudioEnum.Mistake);
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerWrong.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString ().ToUpper ();

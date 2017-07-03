@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GestureController : EnglishRoyaleElement
+public class GestureController : SingletonMonoBehaviour<GestureController>
 {
 	private bool hasAnswered = false;
-
+	public GameObject gestureButtonContainer;
 
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	public void ShowGestureButtons ()
 	{
-		app.model.gestureModel.gestureButtonContainer.SetActive (true);
+		gestureButtonContainer.SetActive (true);
 	}
 
 	public void HideGestureButton ()
 	{
-		app.model.gestureModel.gestureButtonContainer.SetActive (false);
+		gestureButtonContainer.SetActive (false);
 	}
 		
 
@@ -66,7 +66,7 @@ public class GestureController : EnglishRoyaleElement
 	private void SendGesture (int gestureNumber)
 	{
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
-		app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 	}
 
 	//Hide gesture camera after displaying
@@ -74,16 +74,16 @@ public class GestureController : EnglishRoyaleElement
 	{
 		yield return new WaitForSeconds (1.5f);
 		if (!isPlayer) {
-			app.controller.cameraWorksController.HideGestureCamera ();
+			CameraWorksController.Instance.HideGestureCamera ();
 		}
 	}
 
 	private void ShowGesture (bool isPlayer, string param)
 	{
 		StartCoroutine (StartTimer (isPlayer));
-		app.controller.characterAnimationController.SetTriggerAnim (isPlayer, param);
+		CharacterAnimationController.Instance.SetTriggerAnim (isPlayer, param);
 		if (!isPlayer) {
-			app.controller.cameraWorksController.ShowGestureCamera ();
+			CameraWorksController.Instance.ShowGestureCamera ();
 		}
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 /* Handles receiving of RPC status */
-public class RPCReceiverComponent: EnglishRoyaleElement
+public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 {
 	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
 	int battleCount;
@@ -18,48 +18,48 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 	public void ReceiveRPC (Dictionary<string, System.Object> rpcDetails)
 	{
 		bool userHome = (bool)rpcDetails ["userHome"];
-		Dictionary<string, System.Object> param = JsonStrToDic ((string)rpcDetails ["param"]);
+		Dictionary<string, System.Object> param = JsonConverter.JsonStrToDic ((string)rpcDetails ["param"]);
 	
-		app.model.battleModel.attackerBool = userHome;
-		app.model.battleModel.attackerParam = param;
+		GameData.Instance.attackerBool = userHome;
+		GameData.Instance.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
-				thisCurrentParameter.Add (app.model.battleModel.attackerBool, app.model.battleModel.attackerParam);
+				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
-					app.controller.battleController.SetAttackMode2 (thisCurrentParameter);
+					BattleController.Instance.SetAttack (thisCurrentParameter);
 					thisCurrentParameter.Clear ();
 				} 
 
 			} 
 
 			if (newParam.Key == ParamNames.AnswerCorrect.ToString ()) {
-				app.controller.answerController.ValidateAnswer (true, int.Parse (newParam.Value.ToString ()));
+				AnswerController.Instance.ValidateAnswer (true, int.Parse (newParam.Value.ToString ()));
 			}
 
 			if (newParam.Key == ParamNames.AnswerWrong.ToString ()) {
-				app.controller.answerController.ValidateAnswer (false, int.Parse (newParam.Value.ToString ()));
+				AnswerController.Instance.ValidateAnswer (false, int.Parse (newParam.Value.ToString ()));
 			}
 
 			if (newParam.Key == ParamNames.Gesture.ToString ()) {
-				if (!(app.model.battleModel.attackerBool.Equals (app.model.battleModel.isHost))) {
-					app.controller.gestureController.SetEnemyGesture (int.Parse(newParam.Value.ToString()));
+				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
+					GestureController.Instance.SetEnemyGesture (int.Parse (newParam.Value.ToString ()));
 				}
 			}
 
 			if (newParam.Key == ParamNames.AirRender.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill (ParamNames.AirRender,int.Parse(newParam.Value.ToString()));
+				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.AirRender, int.Parse (newParam.Value.ToString ()));
 				
 			}
 			if (newParam.Key == ParamNames.Sunder.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill (ParamNames.Sunder,int.Parse(newParam.Value.ToString()));
+				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.Sunder, int.Parse (newParam.Value.ToString ()));
 			}
 			if (newParam.Key == ParamNames.Rejuvination.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill (ParamNames.Rejuvination,int.Parse(newParam.Value.ToString()));
+				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.Rejuvination, int.Parse (newParam.Value.ToString ()));
 			}
 
 			if (newParam.Key == ParamNames.BicPunch.ToString ()) {
-				app.component.skillActivatorComponent.ActivateSkill (ParamNames.BicPunch,int.Parse(newParam.Value.ToString()));
+				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.BicPunch, int.Parse (newParam.Value.ToString ()));
 			}
 
 		}
@@ -76,56 +76,49 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
-			app.model.battleModel.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-			app.model.battleModel.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-			app.model.battleModel.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-			app.model.battleModel.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+			GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+			GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+			GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+			GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
 
 			 
 			if (battleCount > 1) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-					app.component.phaseManagerComponent.StartPhase3 ();
+				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+					PhaseManagerComponent.Instance.StartPhase3 ();
 				} else {
-					app.component.phaseManagerComponent.StartPhase2 ();
+					PhaseManagerComponent.Instance.StartPhase2 ();
 				}
-				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 
 			
 			} else {
 				//hide skill ui 
-				app.controller.phaseSkillController.HideSkillUI ();
+				PhaseSkillController.Instance.HideSkillUI ();
 			}
 			break;
 
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-					app.component.phaseManagerComponent.StartPhase2 ();
+				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+					PhaseManagerComponent.Instance.StartPhase2 ();
 				} else {
-					app.component.phaseManagerComponent.StartPhase3 ();
+					PhaseManagerComponent.Instance.StartPhase3 ();
 				}
-				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 			}
 			break;
 
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
 			} else {
 				//hide skill ui 
-				app.controller.phaseSkillController.HideSkillUI ();
+				PhaseSkillController.Instance.HideSkillUI ();
 			}
 		
 			break;
 
-		case MyConst.BATTLE_STATUS_END:
-			app.component.phaseManagerComponent.StopAll ();
-			break;
-
 		}
-
-		app.model.battleModel.battleState = battleState;
-		app.model.battleModel.battleCount = battleCount;
 
 	}
 
@@ -160,33 +153,21 @@ public class RPCReceiverComponent: EnglishRoyaleElement
 
 
 		if (isHome) {
-			if (app.model.battleModel.isHost) {
-				app.controller.battleController.InitialPlayerState (life, gameName, gp);
+			if (GameData.Instance.isHost) {
+				BattleController.Instance.InitialPlayerState (life, gameName, gp);
 			} else {
 
-				app.controller.battleController.InitialEnemyState (life, gameName);
+				BattleController.Instance.InitialEnemyState (life, gameName);
 			}
 		} else {
-			if (app.model.battleModel.isHost) {
+			if (GameData.Instance.isHost) {
 
-				app.controller.battleController.InitialEnemyState (life, gameName);
+				BattleController.Instance.InitialEnemyState (life, gameName);
 			} else {
 
-				app.controller.battleController.InitialPlayerState (life, gameName, gp);
+				BattleController.Instance.InitialPlayerState (life, gameName, gp);
 			}
 		}
 
 	}
-
-	/// <summary>
-	/// Converts Json String to Dictionary<string, System.Object>
-	/// </summary>
-	/// <returns>The string to dic.</returns>
-	/// <param name="param">Parameter.</param>
-	private Dictionary<string, System.Object> JsonStrToDic (string param)
-	{
-		Dictionary<string, System.Object> Dic = (Dictionary<string, System.Object>)MiniJSON.Json.Deserialize (param);
-		return Dic;
-	}
-	
 }

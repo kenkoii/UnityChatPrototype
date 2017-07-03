@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class PhaseAnswerController : EnglishRoyaleElement
+public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerController>
 {
 
 	public GameObject questionSelect;
@@ -39,7 +39,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 		hasAnswered = true;
 		questionSelect.SetActive (false);
 		//call question callback here
-		app.component.questionManagerComponent.SetQuestionEntry (questionNumber, app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+		QuestionManagerComponent.Instance.SetQuestionEntry (questionNumber, GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 			QuestionStart (gp, qtimeLeft);
 		});
 
@@ -49,20 +49,19 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			app.view.gameTimerView.ToggleTimer (true);
+			GameTimerView.Instance.ToggleTimer (true);
 			if (timeLeft > 0 && hasAnswered == false) {
-				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 
 			HideUI ();
-			app.component.questionManagerComponent.SetQuestionEntry (UnityEngine.Random.Range (0, 2), app.model.battleModel.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 				QuestionStart (gp, qtimeLeft);
 			});
-
-
-			app.view.gameTimerView.ToggleTimer (false);
+				
+			GameTimerView.Instance.ToggleTimer (false);
 			stoptimer = false;
 		
 		}
@@ -71,21 +70,20 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
 
-		app.model.battleModel.gpEarned = gp;
-		app.controller.battleController.SetPlayerGP (gp);
+		GameData.Instance.gpEarned = gp;
+		BattleController.Instance.SetPlayerGP (gp);
 		if (gp != 0) {
-			app.controller.tweenController.TweenPlayerGPSlider (app.controller.battleController.playerGP, 1, true);
+			TweenController.TweenPlayerGPSlider (BattleController.Instance.GetPlayerGP(), 1, true,BattleController.Instance.playerGPBar);
 		}
-		app.component.rpcWrapperComponent.RPCWrapAnswer (qtimeLeft, gp);
+		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
 
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-			if (app.model.battleModel.skillChosenCost <= app.controller.battleController.playerGP) {
-				Debug.Log ("player GP is " + app.controller.battleController.playerGP + " and skill cost is " + app.model.battleModel.skillChosenCost);
-				if(app.model.battleModel.playerSkillChosen != null){
-					app.model.battleModel.playerSkillChosen ();
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+			if (GameData.Instance.skillChosenCost <= BattleController.Instance.GetPlayerGP()) {
+				if(GameData.Instance.playerSkillChosen != null){
+					GameData.Instance.playerSkillChosen ();
 				}
 			} else {
-				Debug.Log ("skill less gp");
+				Debug.Log ("LESS GP CANNOT ACTIVATE SKILL");
 			}
 		} 
 		HideUI ();
@@ -94,7 +92,7 @@ public class PhaseAnswerController : EnglishRoyaleElement
 	private void HideUI ()
 	{
 		questionSelect.SetActive (false);
-		app.view.gameTimerView.ToggleTimer (false);
+		GameTimerView.Instance.ToggleTimer (false);
 
 	}
 

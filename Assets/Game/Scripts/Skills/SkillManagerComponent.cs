@@ -2,83 +2,59 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class SkillManagerComponent : EnglishRoyaleElement
+public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponent>
 {
 
-	private ISkill skill1;
-	private ISkill skill2;
-	private ISkill skill3;
+	private SkillDAO[] skill;
+	private List<SkillDAO> skillList = new List<SkillDAO> ();
 
-	//test only... call before battle in future where player can select which skill
+	//TESTING ONLY
 	void Start(){
-//		SetSkill1 (app.controller.skill1Controller);
-		SetSkill1(app.controller.skill4Controller);
-		SetSkill2 (app.controller.skill2Controller);
-		SetSkill3 (app.controller.skill3Controller);
+		Dictionary<string, System.Object> param1 = new Dictionary<string, System.Object> ();
+		param1 [ParamNames.Damage.ToString ()] = 10;
+		skillList.Add (new SkillDAO(ParamNames.BicPunch,3,"Deals a straight blow to opponent's guts!",JsonConverter.DicToJsonStr (param1)));
+
+		Dictionary<string, System.Object> param2 = new Dictionary<string, System.Object> ();
+		param2 [ParamNames.Damage.ToString ()] = 15;
+		param2 [ParamNames.Recover.ToString ()] = 10;
+		skillList.Add (new SkillDAO(ParamNames.Sunder,9,"Deals a considerable amount of damage while absorbing life points at the same time.",JsonConverter.DicToJsonStr (param2)));
+
+		Dictionary<string, System.Object> param3 = new Dictionary<string, System.Object> ();
+		param3 [ParamNames.Recover.ToString ()] = 10;
+		skillList.Add (new SkillDAO(ParamNames.Rejuvination,4,"Regenerates HP which is highly affected by number of correct answers",JsonConverter.DicToJsonStr (param3)));
+
+
+		SetSkill (0,skillList[0]);
+		SetSkill (1,skillList[1]);
+		SetSkill (2,skillList[2]);
 	}
 
 	/// <summary>
 	/// Activates the skills.
 	/// </summary>
-	public void ActivateSkill1 ()
+	public void ActivateSkill (int skillNumber)
 	{
-		app.controller.battleController.SetSkill (skill1);
+		Activate(skill[skillNumber + 1]);
 	}
 
-	public void ActivateSkill2 ()
-	{
-		app.controller.battleController.SetSkill (skill2);
+	private void Activate(SkillDAO skill){
+		BattleController.Instance.SetSkill (skill);
+	
 	}
-
-	public void ActivateSkill3 ()
-	{
-		app.controller.battleController.SetSkill (skill3);
-	}
-
 
 	/// <summary>
 	/// Set the skill to placeholder
 	/// </summary>
 	/// <param name="skill1">Skill1.</param>
-	public void SetSkill1 (ISkill skill1)
-	{
-		this.skill1 = skill1;
-		this.skill1.SetSkill (delegate(string skillName, string skillDescription , int gpCost) {
-			app.model.battleModel.Skill1GPCost = gpCost;
-			app.model.battleModel.Skill1Name = skillName;
-			app.model.battleModel.skill1Description = skillDescription;
 
-			app.controller.battleController.skill1Name.text = skillName;
-			app.controller.battleController.skill1GpCost.text = "" +gpCost + "GP";
-		});
+	private void SetSkill(int skillIndex,SkillDAO skill){
+		this.skill[skillIndex] = skill;
+		BattleController.Instance.SetSkillUI (skillIndex+1, skill.skillName, skill.skillGpCost);
 	}
 
-	public void SetSkill2 (ISkill skill2)
-	{
-		this.skill2 = skill2;
-		this.skill2.SetSkill (delegate(string skillName, string skillDescription, int gpCost) {
-			app.model.battleModel.Skill2GPCost = gpCost;
-			app.model.battleModel.Skill2Name = skillName;
-			app.model.battleModel.skill2Description = skillDescription;
-
-			app.controller.battleController.skill2Name.text = skillName;
-			app.controller.battleController.skill2GpCost.text = "" +gpCost + "GP";
-
-		});
+	public SkillDAO GetSkill(int skillNumber){
+		return skill[skillNumber + 1];
 	}
 
-	public void SetSkill3 (ISkill skill3)
-	{
-		this.skill3 = skill3;
-		this.skill3.SetSkill (delegate(string skillName, string skillDescription, int gpCost) {
-			app.model.battleModel.Skill3GPCost = gpCost;
-			app.model.battleModel.Skill3Name = skillName;
-			app.model.battleModel.skill3Description = skillDescription;
-
-			app.controller.battleController.skill3Name.text = skillName;
-			app.controller.battleController.skill3GpCost.text = "" +gpCost + "GP";
-
-		});
-	}
 
 }

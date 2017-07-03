@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-public class PhaseManagerComponent : EnglishRoyaleElement
+public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponent>
 {
 	public void StartPhase1 ()
 	{
 		
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			PhaseActivate (false, true, false);
 		} else {
 
@@ -16,7 +16,7 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 	public void StartPhase2 ()
 	{
 		
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			PhaseActivate (true, false, false);
 		} else {
 			PhaseActivate (false, true, false);
@@ -37,9 +37,9 @@ public class PhaseManagerComponent : EnglishRoyaleElement
 
 	private void PhaseActivate (bool answer, bool skill, bool attack)
 	{
-		app.controller.phaseAnswerController.gameObject.SetActive (answer);
-		app.controller.phaseSkillController.gameObject.SetActive (skill);
-		app.controller.phaseAttackController.gameObject.SetActive (attack);
+		PhaseAnswerController.Instance.gameObject.SetActive (answer);
+		PhaseSkillController.Instance.gameObject.SetActive (skill);
+		PhaseAttackController.Instance.gameObject.SetActive (attack);
 	}
 
 }

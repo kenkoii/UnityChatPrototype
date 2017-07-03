@@ -6,11 +6,17 @@ public enum ParamNames {
 	AnswerCorrect,
 	AnswerWrong,
 	Gesture,
+	//calculation
 	Damage,
+	Recover,
+
+	//skillname
 	Sunder,
 	AirRender,
 	Rejuvination,
 	BicPunch,
+
+
 
 
 }

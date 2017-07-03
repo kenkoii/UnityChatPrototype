@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
+public class SelectLetterIcon : MonoBehaviour, IQuestion
 {
 	private int currentRound = 1;
 	private int correctAnswers;
@@ -28,8 +28,6 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 
 	void Start ()
 	{
-		questionControl = app.controller.questionController;
-		audioControl = app.controller.audioController;
 		questionContainer = gameObject;
 	}
 
@@ -39,7 +37,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion();
-		app.controller.questionController.OnResult = result;
+		QuestionController.Instance.OnResult = result;
 	}
 
 	public void NextQuestion ()
@@ -140,7 +138,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			audioControl.PlayAudio (AudioEnum.Correct);
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerCorrect.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 
 			correctAnswers = correctAnswers + 1;
 			for (int i = 0; i < questionAnswer.Length; i++) {
@@ -158,7 +156,7 @@ public class SelectLetterIcon : EnglishRoyaleElement, IQuestion
 			audioControl.PlayAudio (AudioEnum.Mistake);
 			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 			param [ParamNames.AnswerWrong.ToString ()] = currentRound;
-			app.component.firebaseDatabaseComponent.SetParam (app.model.battleModel.isHost, app.component.rpcWrapperComponent.DicToJsonStr (param));
+			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
 
 			for (int i = 0; i < questionAnswer.Length; i++) {
 				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString ().ToUpper ();

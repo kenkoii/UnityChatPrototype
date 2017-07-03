@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PhaseSkillController : EnglishRoyaleElement
+public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 {
 	public GameObject[] battleUI;
 
@@ -10,37 +10,33 @@ public class PhaseSkillController : EnglishRoyaleElement
 	public Button skillButton2;
 	public Button skillButton3;
 	public GameObject skillDescription;
-
+	public Text skillDescriptionText;
 	private bool stoptimer = false;
 	private int timeLeft;
 	public Button attackButton;
 
+
+	private void SkillButtonInteractable (int skillNumber, Button button)
+	{
+		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > GameData.Instance.player.playerGP) {
+			button.interactable = false;
+		} else {
+			button.interactable = true;
+		}
+	}
+
 	public void OnEnable ()
 	{
 		Debug.Log ("Starting Skill Phase");
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
-			if (app.model.battleModel.Skill1GPCost > app.controller.battleController.playerGP) {
-				skillButton1.interactable = false;
-			} else {
-				skillButton1.interactable = true;
-			}
 
-			if (app.model.battleModel.Skill2GPCost > app.controller.battleController.playerGP) {
-				skillButton2.interactable = false;
-			} else {
-				skillButton2.interactable = true;
-			}
+			SkillButtonInteractable (1, skillButton1);
+			SkillButtonInteractable (2, skillButton2);
+			SkillButtonInteractable (3, skillButton3);
 
-			if (app.model.battleModel.Skill3GPCost > app.controller.battleController.playerGP) {
-				skillButton3.interactable = false;
-			} else {
-				skillButton3.interactable = true;
-			}
 		}
-
-	
 
 		attackButton.interactable = true;
 		attackButton.gameObject.SetActive (true);
@@ -49,7 +45,6 @@ public class PhaseSkillController : EnglishRoyaleElement
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (true);
 		}
-
 
 		timeLeft = 5;
 		stoptimer = true;
@@ -75,8 +70,8 @@ public class PhaseSkillController : EnglishRoyaleElement
 	public void AttackButton ()
 	{
 		ButtonEnable (false);
-		app.view.gameTimerView.ToggleTimer (false);
-		app.component.rpcWrapperComponent.RPCWrapSkill ();
+		GameTimerView.Instance.ToggleTimer (false);
+		RPCWrapperComponent.Instance.RPCWrapSkill ();
 		stoptimer = false;
 	}
 
@@ -91,53 +86,43 @@ public class PhaseSkillController : EnglishRoyaleElement
 
 	public void SelectSkill1 ()
 	{
-		SelectSkill (delegate() {
-			app.component.skillManagerComponent.ActivateSkill1 ();
-
-		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill1GPCost;
-
-		});
+		SelectSkillReduce (1);
 
 	}
 
 	public void SelectSkill2 ()
 	{
-		SelectSkill (delegate() {
-			app.component.skillManagerComponent.ActivateSkill2 ();
-		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill2GPCost;
-
-		});
+		SelectSkillReduce (2);
 	}
 
 	public void SelectSkill3 ()
 	{
-		SelectSkill (delegate() {
-			app.component.skillManagerComponent.ActivateSkill3 ();
-		}, delegate() {
-			app.model.battleModel.skillChosenCost = app.model.battleModel.Skill3GPCost;
-
-		});
+		SelectSkillReduce (3);
 	}
+
+
 
 	public void Skill1Description ()
 	{
-		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill1Description;
-		skillDescription.SetActive (true);
+		SkillDescription (SkillManagerComponent.Instance.GetSkill (1).skillDescription, true);
 
 	}
 
 	public void Skill2Description ()
 	{
-		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill2Description;
-		skillDescription.SetActive (true);
+		SkillDescription (SkillManagerComponent.Instance.GetSkill (2).skillDescription, true);
 	}
 
 	public void Skill3Description ()
 	{
-		skillDescription.transform.GetChild (0).GetComponent<Text> ().text = app.model.battleModel.skill3Description;
-		skillDescription.SetActive (true);
+		SkillDescription (SkillManagerComponent.Instance.GetSkill (3).skillDescription, true);
+	}
+
+
+	private void SkillDescription (string description, bool isShow)
+	{
+		skillDescriptionText.text = description;
+		skillDescription.SetActive (isShow);
 	}
 
 	public void CloseDescription ()
@@ -145,36 +130,48 @@ public class PhaseSkillController : EnglishRoyaleElement
 		skillDescription.SetActive (false);
 	}
 
+	private void SelectSkillReduce (int skillNumber)
+	{
+		SelectSkill (delegate() {
+			SkillManagerComponent.Instance.ActivateSkill (skillNumber);
+
+		}, delegate() {
+			GameData.Instance.skillChosenCost = SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost;
+
+		});
+	
+	}
+
 	private void SelectSkill (Action activateSkill, Action skillCost)
 	{
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
-			app.model.battleModel.playerSkillChosen = delegate() {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+			GameData.Instance.playerSkillChosen = delegate() {
 				activateSkill ();
 			};
 			skillCost ();
-			app.component.rpcWrapperComponent.RPCWrapSkill ();
+			RPCWrapperComponent.Instance.RPCWrapSkill ();
 			Debug.Log ("skilled!");
 		} else {
 			activateSkill ();
 		}
 		ButtonEnable (false);
-		app.view.gameTimerView.ToggleTimer (false);
+		GameTimerView.Instance.ToggleTimer (false);
 		stoptimer = false;
 	}
 
 	private void StartTimer ()
 	{
 		if (stoptimer) {
-			app.view.gameTimerView.ToggleTimer (true);
+			GameTimerView.Instance.ToggleTimer (true);
 			if (timeLeft > 0) {
-				app.view.gameTimerView.gameTimerText.text = "" + timeLeft;
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
 				timeLeft--;
 				return;
 			} 
 			ButtonEnable (false);
-			app.view.gameTimerView.ToggleTimer (false);
+			GameTimerView.Instance.ToggleTimer (false);
 				
-			app.component.rpcWrapperComponent.RPCWrapSkill ();
+			RPCWrapperComponent.Instance.RPCWrapSkill ();
 			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 

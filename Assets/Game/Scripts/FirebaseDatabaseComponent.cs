@@ -13,7 +13,7 @@ using Firebase.Unity.Editor;
 using System;
 
 /* Facade for Firebase Database */
-public class FirebaseDatabaseComponent : EnglishRoyaleElement
+public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabaseComponent>
 {
 
 	DatabaseReference reference = null;
@@ -56,7 +56,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	void Start ()
 	{
 		
-		app.controller.screenController.StartLoadingScreen (delegate() {
+		ScreenController.Instance.StartLoadingScreen (delegate() {
 			dependencyStatus = FirebaseApp.CheckDependencies ();
 			if (dependencyStatus != DependencyStatus.Available) {
 				FirebaseApp.FixDependenciesAsync ().ContinueWith (task => {
@@ -64,7 +64,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					if (dependencyStatus == DependencyStatus.Available) {
 						InitializeFirebase ();
 					} else {
-						app.controller.screenController.StopLoadingScreen ();
+						ScreenController.Instance.StopLoadingScreen ();
 						Debug.LogError (
 							"Could not resolve all Firebase dependencies: " + dependencyStatus);
 					}
@@ -91,7 +91,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 		reference = FirebaseDatabase.DefaultInstance.RootReference;
 
 		if (reference != null) {
-			app.controller.screenController.StopLoadingScreen ();
+			ScreenController.Instance.StopLoadingScreen ();
 		}
 
 		roomReference = reference.Child (MyConst.GAMEROOM_NAME);
@@ -206,7 +206,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// <param name="args">Arguments.</param>
 	void HandleInitialVisitorChildAdded (object sender, ChildChangedEventArgs args)
 	{
-		app.controller.screenController.StartLoadingScreen (delegate() {
+		ScreenController.Instance.StartLoadingScreen (delegate() {
 			if (args.DatabaseError != null) {
 				Debug.LogError (args.DatabaseError.Message);
 				return;
@@ -243,9 +243,9 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 				Debug.Log ("has game rooms");
 				foreach (DataSnapshot dataSnapshot in gameRoomList) {
 					//get prototype mode type from host
-					app.model.battleModel.modePrototype = (ModeEnum)int.Parse (dataSnapshot.Child (MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
+					GameData.Instance.modePrototype = (ModeEnum)int.Parse (dataSnapshot.Child (MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
 
-					app.controller.gameController.UpdateGame ();
+					GameController.Instance.UpdateGame ();
 
 					if (dataSnapshot.Child (MyConst.GAMEROOM_STATUS).Value.ToString ().Equals (MyConst.GAMEROOM_OPEN)) {
 
@@ -312,12 +312,12 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	private void CreateRoom ()
 	{
-		app.controller.gameController.UpdateGame ();
+		GameController.Instance.UpdateGame ();
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
 		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
 
 		//set prototype mode type
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE).SetValueAsync ("" + (int)app.model.battleModel.modePrototype);
+		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE).SetValueAsync ("" + (int)GameData.Instance.modePrototype);
 
 	}
 
@@ -339,9 +339,9 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus)
 	{
 		this.isHost = isHost;
-		app.model.battleModel.isHost = isHost;
+		GameData.Instance.isHost = isHost;
 		MessageListener ();
-		User user = new User (app.model.battleModel.playerName, app.model.battleModel.playerLife, app.model.battleModel.playerGP);
+		User user = new User (GameData.Instance.player.playerName,GameData.Instance.player.playerLife, GameData.Instance.player.playerGP);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/"] = entryValues;
@@ -409,19 +409,31 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void SetParam (bool userHome, string param)
+	public void SetParam (string param)
 	{
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		BattleStatus battleStatus = new BattleStatus (userHome, param);
+		BattleStatus battleStatus = new BattleStatus (GameData.Instance.isHost, param);
 		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
 
 		reference.UpdateChildrenAsync (childUpdates);
-
 	}
 
+	public void SetSkillParam (SkillDAO skill)
+	{
+		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
+
+		Dictionary<string, System.Object> entryValues = skill.ToDictionary ();
+		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
+
+		reference.UpdateChildrenAsync (childUpdates);
+	}
+
+
+		
 	/// <summary>
 	/// Checks the initial battle phase.
 	/// </summary>
@@ -431,9 +443,9 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 			//get the battlekey, create if host
 			if (mutableData.Value == null) {
-				if (app.model.battleModel.modePrototype == ModeEnum.Mode1) {
+				if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-				} else if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+				} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 				}
 			} else {
@@ -460,7 +472,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	public void AnswerPhase (int receiveTime, int receiveAnswer)
 	{
 		int modulusNum = 1;
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 2;
 		} else {
 			modulusNum = 1;
@@ -490,7 +502,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					}
 
 					if (battleCount == 2) {
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
@@ -514,7 +526,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	public void SkillPhase ()
 	{
 		int modulusNum = 2;
-		if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 1;
 		} else {
 			modulusNum = 2;
@@ -535,7 +547,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				
 					if (battleCount == 2) {
-						if (app.model.battleModel.modePrototype == ModeEnum.Mode2) {
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 						} else {
 							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
@@ -556,7 +568,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void AttackPhase (bool userHome, string param)
+	public void AttackPhase (string param)
 	{
 		GetLatestKey (3, delegate(string resultString) {
 			
@@ -569,7 +581,7 @@ public class FirebaseDatabaseComponent : EnglishRoyaleElement
 
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
-					SetParam (userHome, param);
+					SetParam (param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				} 
