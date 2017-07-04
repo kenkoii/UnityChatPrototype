@@ -430,7 +430,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
 		result ["userHome"] = GameData.Instance.isHost;
-		result ["Skill"] = JsonConverter.DicToJsonStr(skill.ToDictionary ());
+		result ["param"] = skill.ToDictionary ();
 		Dictionary<string, System.Object> entryValues = result;
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;

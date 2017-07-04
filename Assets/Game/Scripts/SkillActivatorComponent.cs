@@ -10,7 +10,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	/// </summary>
 	/// <param name="paramName">Parameter name.</param>
 	/// <param name="gpEarned">Gp earned.</param>
-	public void AnimateSkill (ParamNames paramName, int gpEarned = 0)
+	public void AnimateSkill (ParamNames paramName)
 	{
 		switch (paramName) {
 		case ParamNames.AirRender:
@@ -35,19 +35,30 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	/// Sets the player skill parameter.
 	/// </summary>
 	/// <param name="skillParameter">Skill parameter.</param>
-	public void SetPlayerSkillParameter (Dictionary<string,System.Object> skillParameter)
+	public void SetPlayerSkillParameter (string skillParameter)
 	{
+		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList>(skillParameter);
 
-		foreach (KeyValuePair<string, System.Object> newParam in skillParameter) {
-			if (newParam.Key == ParamNames.Damage.ToString ()) {
-				GameData.Instance.player.playerDamage += int.Parse (newParam.Value.ToString ());
+		foreach (SkillParameter skill in skillResult.skillList) {
+
+			if (skill.skillKey == ParamNames.Damage.ToString ()) {
+				GameData.Instance.player.playerDamage += skill.skillValue;
 			}
 
-			if (newParam.Key == ParamNames.Recover.ToString ()) {
-				BattleController.Instance.playerHP += int.Parse (newParam.Value.ToString ());
+			if (skill.skillKey == ParamNames.Recover.ToString ()) {
+				BattleController.Instance.playerHP += skill.skillValue;
 			}
-			CheckSkillName (newParam);
-		
+		}
+	}
+
+	public void SetEnemySkillParameter (string skillParameter)
+	{
+		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList>(skillParameter);
+
+		foreach (SkillParameter skill in skillResult.skillList) {
+			if (skill.skillKey == ParamNames.Recover.ToString ()) {
+				BattleController.Instance.enemyHP += skill.skillValue;
+			}
 		}
 	}
 
@@ -55,37 +66,28 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	/// Sets the enemy skill parameter.
 	/// </summary>
 	/// <param name="skillParameter">Skill parameter.</param>
-	public void SetEnemySkillParameter (Dictionary<string,System.Object> skillParameter)
-	{
-		foreach (KeyValuePair<string, System.Object> newParam in skillParameter) {
-			if (newParam.Key == ParamNames.Recover.ToString ()) {
-				BattleController.Instance.enemyHP += int.Parse (newParam.Value.ToString ());
-			}
 
-			CheckSkillName (newParam);
-		}
-	}
 
 	/// <summary>
 	/// Checks the name of the skill and set animation
 	/// </summary>
 	/// <param name="newParam">New parameter.</param>
-	private void CheckSkillName (KeyValuePair<string, System.Object> newParam)
+	public void CheckSkillName (string skillName)
 	{
-		if(newParam.Key == ParamNames.AirRender.ToString()){
-			AnimateSkill (ParamNames.AirRender, int.Parse (newParam.Value.ToString ()));
+		if(skillName == ParamNames.AirRender.ToString()){
+			AnimateSkill (ParamNames.AirRender);
 		}
 
-		else if(newParam.Key == ParamNames.Sunder.ToString()){
-			AnimateSkill (ParamNames.Sunder, int.Parse (newParam.Value.ToString ()));
+		else if(skillName == ParamNames.Sunder.ToString()){
+			AnimateSkill (ParamNames.Sunder);
 		}
 
-		else if(newParam.Key == ParamNames.Rejuvination.ToString()){
-			AnimateSkill (ParamNames.Rejuvination, int.Parse (newParam.Value.ToString ()));
+		else if(skillName == ParamNames.Rejuvination.ToString()){
+			AnimateSkill (ParamNames.Rejuvination);
 		}
 
-		else if(newParam.Key == ParamNames.BicPunch.ToString()){
-			AnimateSkill (ParamNames.BicPunch, int.Parse (newParam.Value.ToString ()));
+		else if(skillName == ParamNames.BicPunch.ToString()){
+			AnimateSkill (ParamNames.BicPunch);
 		}
 			
 	}
