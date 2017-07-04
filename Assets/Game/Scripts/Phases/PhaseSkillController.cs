@@ -58,12 +58,12 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 		CancelInvoke ("StartTimer");
 	}
 
-	public void HideSkillUI ()
+	public void ShowSkillUI (bool toggle)
 	{
-		attackButton.gameObject.SetActive (false);
-		skillDescription.SetActive (false);
+		attackButton.gameObject.SetActive (toggle);
+		skillDescription.SetActive (toggle);
 		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI [i].SetActive (false);
+			battleUI [i].SetActive (toggle);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 		stoptimer = false;
 	}
 
-	private void ButtonEnable (bool buttonEnable)
+	public void ButtonEnable (bool buttonEnable)
 	{
 		skillButton1.interactable = buttonEnable;
 		skillButton2.interactable = buttonEnable;

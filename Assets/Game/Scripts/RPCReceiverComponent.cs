@@ -27,7 +27,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			//NORMAL ATTACK
 			if (newParam.Key == "Attack") {
 
-				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic(newParam.Value.ToString());
+				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
 				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					BattleController.Instance.SetAttack (thisCurrentParameter);
@@ -39,7 +39,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			//ANSWER INDICATORS
 
 			if (newParam.Key == "AnswerIndicator") {
-				AnswerController.Instance.SetPlayerAnswerParameter (newParam.Value.ToString ());
+				AnswerController.Instance.SetAnswerParameter (newParam.Value.ToString ());
 			}
 				
 
@@ -47,10 +47,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			if (newParam.Key == "Gesture") {
 				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
-					Dictionary<string, System.Object> gestureParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
-					foreach (KeyValuePair<string, System.Object> gesture in gestureParam) {
-						GestureController.Instance.SetEnemyGesture (int.Parse (gesture.Value.ToString ()));
-					}
+					GestureController.Instance.SetEnemyGesture (newParam.Value.ToString ());
 				}
 			}
 
@@ -79,8 +76,6 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-		Debug.Log ("receive battle status:" + battleState + "battle count:" + battleCount);
-
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
 
@@ -97,18 +92,18 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 					PhaseManagerComponent.Instance.StartPhase2 ();
 				}
 				ScreenController.Instance.StopWaitOpponentScreen ();
-
 			
 			} else {
 				//hide skill ui 
 				if (PhaseManagerComponent.Instance.PhaseSkill.activeInHierarchy) {
-					PhaseSkillController.Instance.HideSkillUI ();
+					PhaseSkillController.Instance.ShowSkillUI (false);
 				}
 			}
 			break;
 
 		case MyConst.BATTLE_STATUS_SKILL:
 			if (battleCount > 1) {
+				
 				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 					PhaseManagerComponent.Instance.StartPhase2 ();
 				} else {
@@ -123,7 +118,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 				ScreenController.Instance.StopWaitOpponentScreen ();
 			} else {
 				//hide skill ui 
-				PhaseSkillController.Instance.HideSkillUI ();
+				PhaseSkillController.Instance.ShowSkillUI (false);
 			}
 		
 			break;
@@ -136,18 +131,18 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	/// Receives the initial state of the home.
 	/// </summary>
 	/// <param name="ititialState">Ititial state.</param>
-	public void ReceiveInitialHomeState (Dictionary<string, System.Object> ititialState)
+	public void ReceiveInitialHomeState (Dictionary<string, System.Object> initialState)
 	{
-		ReceivInitialState (ititialState, true);
+		ReceivInitialState (initialState, true);
 	}
 
 	/// <summary>
 	/// Receives the initial state of the visitor.
 	/// </summary>
 	/// <param name="ititialState">Ititial state.</param>
-	public void ReceiveInitialVisitorState (Dictionary<string, System.Object> ititialState)
+	public void ReceiveInitialVisitorState (Dictionary<string, System.Object> initialState)
 	{
-		ReceivInitialState (ititialState, false);
+		ReceivInitialState (initialState, false);
 	}
 
 	/// <summary>
@@ -155,29 +150,36 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	/// </summary>
 	/// <param name="ititialState">Ititial state.</param>
 	/// <param name="isHome">If set to <c>true</c> is home.</param>
-	private void ReceivInitialState (Dictionary<string, System.Object> ititialState, bool isHome)
+	private void ReceivInitialState (Dictionary<string, System.Object> initialState, bool isHome)
 	{
-		string gameName = (string)ititialState ["gameName"];
-		int life = int.Parse (ititialState ["life"].ToString ());
-		int gp = int.Parse (ititialState ["gp"].ToString ());
+		string gameName = (string)initialState ["gameName"];
+		int life = int.Parse (initialState ["life"].ToString ());
+		int gp = int.Parse (initialState ["gp"].ToString ());
 
 
 		if (isHome) {
-			if (GameData.Instance.isHost) {
-				BattleController.Instance.InitialPlayerState (life, gameName, gp);
-			} else {
-
-				BattleController.Instance.InitialEnemyState (life, gameName);
-			}
+			SetPlayerInitialState (gameName, life, gp);
 		} else {
-			if (GameData.Instance.isHost) {
-
-				BattleController.Instance.InitialEnemyState (life, gameName);
-			} else {
-
-				BattleController.Instance.InitialPlayerState (life, gameName, gp);
-			}
+			SetEnemyInitialState (gameName, life, gp);
 		}
 
+	}
+
+	private void SetPlayerInitialState (string gameName, int life, int gp)
+	{
+		if (GameData.Instance.isHost) {
+			BattleController.Instance.InitialPlayerState (life, gameName, gp);
+		} else {
+			BattleController.Instance.InitialEnemyState (life, gameName);
+		}
+	}
+
+	private void SetEnemyInitialState (string gameName, int life, int gp)
+	{
+		if (GameData.Instance.isHost) {
+			BattleController.Instance.InitialPlayerState (life, gameName, gp);
+		} else {
+			BattleController.Instance.InitialEnemyState (life, gameName);
+		}
 	}
 }
