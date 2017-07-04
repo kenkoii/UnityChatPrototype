@@ -18,10 +18,12 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	public void ReceiveRPC (Dictionary<string, System.Object> rpcDetails)
 	{
 		bool userHome = (bool)rpcDetails ["userHome"];
-		Dictionary<string, System.Object> param = JsonConverter.JsonStrToDic ((string)rpcDetails ["param"]);
-	
+		Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcDetails ["param"];
+
 		GameData.Instance.attackerBool = userHome;
 		GameData.Instance.attackerParam = param;
+
+
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 
@@ -54,11 +56,17 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//SKILL PARAMETERS
 
-			if (newParam.Key == "Skill") {
-				if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
-					SkillActivatorComponent.Instance.SetPlayerSkillParameter ((Dictionary<string,System.Object>)newParam.Value);
+			if (newParam.Key == "SkillName") {
+
+
+				SkillActivatorComponent.Instance.CheckSkillName (newParam.Value.ToString());
+			}
+
+			if (newParam.Key == "SkillParam") {
+				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
+					SkillActivatorComponent.Instance.SetPlayerSkillParameter (newParam.Value.ToString ());
 				} else {
-					SkillActivatorComponent.Instance.SetEnemySkillParameter ((Dictionary<string,System.Object>)newParam.Value);
+					SkillActivatorComponent.Instance.SetEnemySkillParameter (newParam.Value.ToString ());
 				}
 			}
 

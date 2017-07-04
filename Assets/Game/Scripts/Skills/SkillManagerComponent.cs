@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+
 public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponent>
 {
 	
@@ -12,38 +13,29 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 	//TESTING ONLY!!!!
 	void Start ()
 	{
-		List<SkillParameter> skillData1 = new List<SkillParameter> () {
-			new SkillParameter (ParamNames.Damage.ToString (),10)
-
-		};
-
-		string skillParam1 = MiniJSON.Json.Serialize (new
-			{
-				operations = skillData1
-			});
-		
+		//test skill 1
+		List<SkillParameter> skillData1 = new List<SkillParameter> ();
+		skillData1.Add (new SkillParameter (ParamNames.Damage.ToString(), 10));
+		SkillParameterList splist1 = new SkillParameterList ();
+		splist1.skillList = skillData1;
+		string skillParam1 = JsonUtility.ToJson (splist1);
 		skillList.Add (new SkillModel (ParamNames.BicPunch, 3, "Deals a straight blow to opponent's guts!", skillParam1));
 	
-		List<SkillParameter> skillData2 = new List<SkillParameter> () {
-			new SkillParameter (ParamNames.Damage.ToString (), 15) , new SkillParameter (ParamNames.Recover.ToString (), 10) 
-		};
-
-		string skillParam2 = MiniJSON.Json.Serialize (new
-			{
-				operations = skillData2
-			});
-					
+		//test skill 2
+		List<SkillParameter> skillData2 = new List<SkillParameter> ();
+		skillData2.Add (new SkillParameter (ParamNames.Damage.ToString(), 15));
+		skillData2.Add (new SkillParameter (ParamNames.Recover.ToString(), 10));
+		SkillParameterList splist2 = new SkillParameterList ();
+		splist2.skillList = skillData2;
+		string skillParam2 = JsonUtility.ToJson (splist2);
 		skillList.Add (new SkillModel (ParamNames.Sunder, 9, "Deals a considerable amount of damage while absorbing life points at the same time.", skillParam2));
 
-		List<SkillParameter> skillData3 = new List<SkillParameter> () {
-			new SkillParameter (ParamNames.Recover.ToString (), 10) 
-		};
-
-		string skillParam3 = MiniJSON.Json.Serialize (new
-			{
-				operations = skillData3
-			});
-		
+		//test skill 3
+		List<SkillParameter> skillData3 = new List<SkillParameter> ();
+		skillData3.Add (new SkillParameter (ParamNames.Recover.ToString(), 10));
+		SkillParameterList splist3 = new SkillParameterList ();
+		splist3.skillList = skillData3;
+		string skillParam3 = JsonUtility.ToJson (splist3);
 		skillList.Add (new SkillModel (ParamNames.Rejuvination, 4, "Regenerates HP which is highly affected by number of correct answers", skillParam3));
 
 	
