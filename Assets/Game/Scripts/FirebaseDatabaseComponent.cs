@@ -404,33 +404,28 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_INITITAL_STATE).Child (MyConst.GAMEROOM_VISITOR).ChildAdded += HandleInitialVisitorChildAdded;
 		}
 	}
-
-	/// <summary>
-	/// Sets the parameter to be sent to RPC table
-	/// </summary>
-	/// <param name="name">Name.</param>
-	/// <param name="param">Parameter.</param>
-	public void SetAnswerParam (AnswerModel param)
+		
+	public void SetAttackParam (AttackModel attack)
 	{
-		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
+		SetParam (attack.ToDictionary());
+	}
 
-		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
-		result ["userHome"] = GameData.Instance.isHost;
-		result ["param"] = param.ToDictionary ();
-		Dictionary<string, System.Object> entryValues = result;
-		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
-		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
-
-		reference.UpdateChildrenAsync (childUpdates);
+	public void SetAnswerParam (AnswerModel answer)
+	{
+		SetParam (answer.ToDictionary());
 	}
 
 	public void SetSkillParam (SkillModel skill)
 	{
+		SetParam (skill.ToDictionary());
+	}
+
+	private void SetParam(Dictionary<string, System.Object> toDictionary){
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
 		result ["userHome"] = GameData.Instance.isHost;
-		result ["param"] = skill.ToDictionary ();
+		result ["param"] = toDictionary;
 		Dictionary<string, System.Object> entryValues = result;
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
@@ -587,6 +582,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
+					SetAttackParam (param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				} 

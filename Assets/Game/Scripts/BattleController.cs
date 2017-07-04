@@ -224,7 +224,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
 		if (enemyHP <= 0 || playerHP <= 0) {
-//			app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+			ScreenController.Instance.StopWaitOpponentScreen ();
 
 			CameraWorksController.Instance.StartWinLoseCamera ();
 			if (enemyHP > 0 && playerHP <= 0) {
@@ -341,7 +341,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	public void SendAttackToDatabase ()
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		param [ParamNames.Damage.ToString ()] = GameData.Instance.player.playerDamage + GameData.Instance.gpEarned;
+		param [ParamNames.Attack.ToString ()] = GameData.Instance.player.playerDamage + GameData.Instance.gpEarned;
 		RPCWrapperComponent.Instance.RPCWrapAttack (param);
 	}
 }

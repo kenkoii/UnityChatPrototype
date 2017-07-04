@@ -15,20 +15,20 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 	/// <param name="param">Parameter.</param>
 	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
-//		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		FirebaseDatabaseComponent.Instance.AttackPhase (new AttackModel(JsonConverter.DicToJsonStr (param).ToString()));
 	}
 
 	public void RPCWrapSkill ()
 	{
-//		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		FirebaseDatabaseComponent.Instance.SkillPhase ();
 	
 	}
 		
 	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
 	{
-//		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		FirebaseDatabaseComponent.Instance.AnswerPhase (receiveTime, receiveAnswer);
 
 	}
