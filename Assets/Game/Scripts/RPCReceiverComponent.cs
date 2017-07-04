@@ -101,7 +101,9 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			
 			} else {
 				//hide skill ui 
-				PhaseSkillController.Instance.HideSkillUI ();
+				if (PhaseManagerComponent.Instance.PhaseSkill.activeInHierarchy) {
+					PhaseSkillController.Instance.HideSkillUI ();
+				}
 			}
 			break;
 
