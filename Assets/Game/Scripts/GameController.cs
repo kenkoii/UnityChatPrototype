@@ -12,12 +12,14 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 	void Start ()
 	{
-
+		gameName.text = PlayerPrefs.GetString ("GameName", "");
 		GameData.Instance.modePrototype = ModeEnum.Mode1;
 	}
 
 	public void UpdateGame ()
 	{
+		PlayerPrefs.SetString ("GameName", gameName.text);
+
 		PlayerModel player = new PlayerModel (gameName.text, playerLife, playerGP, playerMaxGP, playerDamage);
 		GameData.Instance.player = player;
 

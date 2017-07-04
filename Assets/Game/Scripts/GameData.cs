@@ -11,6 +11,8 @@ public class GameData: SingletonMonoBehaviour<GameData>
 
 	public ModeEnum modePrototype { get; set; }
 
+	public string battleState{ get; set; }
+
 	public Dictionary<string, System.Object> attackerParam{ get; set; }
 
 	public Action playerSkillChosen{ get; set; }

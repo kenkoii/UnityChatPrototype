@@ -320,14 +320,18 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE).SetValueAsync ("" + (int)GameData.Instance.modePrototype);
 
 	}
-
-	/// <summary>
-	/// Joins the room.
-	/// </summary>
-	private void JoinRoom ()
+	public void JoinRoom ()
 	{
-		RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR, MyConst.GAMEROOM_FULL);
-
+		
+		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).RunTransaction (mutableData => {
+			//get the battlekey, create if host
+			if (mutableData.Value.ToString() == MyConst.GAMEROOM_OPEN) {
+				mutableData.Value = MyConst.GAMEROOM_FULL;
+				Debug.Log ("hello");
+				RoomCreateJoin(false,MyConst.GAMEROOM_VISITOR);
+			} 
+			return TransactionResult.Success (mutableData);
+		});
 	}
 
 	/// <summary>
@@ -336,7 +340,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// <param name="isHost">If set to <c>true</c> is host.</param>
 	/// <param name="userPlace">User place.</param>
 	/// <param name="roomStatus">Room status.</param>
-	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus)
+	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus = "")
 	{
 		this.isHost = isHost;
 		GameData.Instance.isHost = isHost;
@@ -349,8 +353,9 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 		reference.UpdateChildrenAsync (childUpdates);
 
 		//set room status to open when create room
-		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).SetValueAsync ("" + roomStatus);
-
+		if (isHost) {
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).SetValueAsync ("" + roomStatus);
+		}
 		//set battle status to answer when start of game
 		CheckInitialPhase ();
 

@@ -18,7 +18,7 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 		ResetAnswer ();
 	}
 
-	public void SetPlayerAnswerParameter (string answerParameter)
+	public void SetAnswerParameter (string answerParameter)
 	{
 
 		Dictionary<string, System.Object> answerResult = JsonConverter.JsonStrToDic (answerParameter);
@@ -61,8 +61,8 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 	public void ResetAnswer ()
 	{
 		for (int i = 0; i < playerPlaceHolder.Length; i++) {
-			playerPlaceHolder[i].sprite = empty;
-			enemyPlaceHolder[i].sprite = empty;
+			playerPlaceHolder [i].sprite = empty;
+			enemyPlaceHolder [i].sprite = empty;
 		}
 		Debug.Log ("reset answers");
 	}

@@ -45,28 +45,33 @@ public class GestureController : SingletonMonoBehaviour<GestureController>
 	}
 
 
-	public void SetEnemyGesture (int gestureNumber)
+	public void SetEnemyGesture (string enemyGesture)
 	{
-		switch (gestureNumber) {
-		case 1:
-			ShowGesture (false, "Gesture1");
-			break;
-		case 2:
-			ShowGesture (false, "Gesture2");
-			break;
-		case 3:
-			ShowGesture (false, "Gesture3");
-			break;
-		case 4:
-			ShowGesture (false, "Gesture4");
-			break;
+		Dictionary<string, System.Object> gestureParam = JsonConverter.JsonStrToDic (enemyGesture);
+		foreach (KeyValuePair<string, System.Object> gesture in gestureParam) {
+
+			switch (int.Parse (gesture.Value.ToString ())) {
+			case 1:
+				ShowGesture (false, "Gesture1");
+				break;
+			case 2:
+				ShowGesture (false, "Gesture2");
+				break;
+			case 3:
+				ShowGesture (false, "Gesture3");
+				break;
+			case 4:
+				ShowGesture (false, "Gesture4");
+				break;
+			}
+
 		}
 	}
 
 	private void SendGesture (int gestureNumber)
 	{
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
-		FirebaseDatabaseComponent.Instance.SetGestureParam (new GestureModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FirebaseDatabaseComponent.Instance.SetGestureParam (new GestureModel (JsonConverter.DicToJsonStr (param).ToString ()));
 	}
 
 	//Hide gesture camera after displaying
