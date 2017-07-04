@@ -10,19 +10,49 @@ public static class QuestionBuilder {
 	private static string questionString;
 	private static List<string> questionsDone = new List<string> ();
 	private static List<Question> questionList = new List<Question>();
-	private static Dictionary<string, string> answerQuestion = new Dictionary<string, string> ();
+	private static List<string> wrongChoices = new List<string> ();
+	private static List<int> wrongChoicesDone = new List<int> ();
 
 	public static void PopulateQuestion(string questionName){
+		List<string> databundle = new List<string>();
 		questionList.Clear ();
-		//SelectChangeTyping
-		List<string> databundle = CSVParser (questionName);
-		int i = 0;
-		foreach(string questions in databundle ){
-			string[] splitter = databundle[i].Split (']');	
-			string questionData = splitter [0];
-			string answerData = splitter [1];
-			i+=1;
-			questionList.Add (new Question (questionData, answerData, 0));
+
+		switch(questionName){
+		case "SelectChangeTyping":
+			databundle = CSVParser (questionName);
+			int i = 0;
+			foreach (string questions in databundle) {
+				string[] splitter = databundle [i].Split (']');	
+				string questionData = splitter [0];
+				string answerData = splitter [1];
+				i += 1;
+				questionList.Add (new Question (questionData, answerData, 0));
+			}
+			break;
+		case "wordchoice":
+			databundle = CSVParser ("wordchoice");
+			int j = 0;
+			int randomnum = UnityEngine.Random.Range (1, 3);
+			foreach (string questions in databundle) {
+				string[] splitQuestion = databundle [j].Split (']');	
+
+				questionData = splitQuestion [0];	
+				string synonymData = splitQuestion [1];
+				string antonymData = splitQuestion [2];
+				wrongChoices.Add (splitQuestion [3]);
+				if (questionData.Length > 1) {
+					switch (randomnum) {
+					case 1:
+						questionList.Add (new Question (questionData, synonymData, 3));
+						break;
+					case 2:
+						questionList.Add (new Question (questionData, antonymData, 3));
+						break;
+					}
+				}
+				j += 1;
+			}
+			break;
 		}
 	}
 
@@ -44,15 +74,29 @@ public static class QuestionBuilder {
 		questionsDone.Add (questionString);
 	}
 
+	public static string GetRandomChoices(){
+		int randomnum = UnityEngine.Random.Range (0,wrongChoices.Count);
+		//int whileindex = 0;
+		while (wrongChoicesDone.Contains (randomnum)) {
+			randomnum = UnityEngine.Random.Range (0, wrongChoices.Count);
+			/*
+			if (whileindex > 100) {
+				break;
+			}
+			whileindex += 1;
+			*/
+		}
+		string wrongChoice = wrongChoices [randomnum];
+		return wrongChoice;
+	}
+
 	private static void QuestionRandomizer(){
 		int randomize = UnityEngine.Random.Range (0, questionList.Count);
 		questionAnswer = questionList [randomize].answer.ToUpper ().ToString ();
 		questionString = questionList [randomize].question;
 		QuestionChecker (false);
-
 	}
-
-
+		
 	public static List<string> CSVParser(string resource){
 		char lineSeperater = '\n'; // It defines line seperate character
 		char fieldSeperator = ',';

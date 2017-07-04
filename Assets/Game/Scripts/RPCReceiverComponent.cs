@@ -39,13 +39,14 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//ANSWER INDICATORS
 
-			if (newParam.Key == ParamNames.AnswerCorrect.ToString ()) {
-				AnswerController.Instance.ValidateAnswer (true, int.Parse (newParam.Value.ToString ()));
+			if(newParam.Key == "AnswerIndicator"){
+				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
+					
+				} else {
+					SkillActivatorComponent.Instance.SetEnemySkillParameter (newParam.Value.ToString ());
+				}
 			}
-
-			if (newParam.Key == ParamNames.AnswerWrong.ToString ()) {
-				AnswerController.Instance.ValidateAnswer (false, int.Parse (newParam.Value.ToString ()));
-			}
+				
 
 			// GESTURES
 			if (newParam.Key == ParamNames.Gesture.ToString ()) {

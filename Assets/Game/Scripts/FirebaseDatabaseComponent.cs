@@ -410,16 +410,16 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void SetParam (string param)
+	public void SetParam (BattleStatus param)
 	{
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		BattleStatus battleStatus = new BattleStatus (GameData.Instance.isHost, param);
-		Dictionary<string, System.Object> entryValues = battleStatus.ToDictionary ();
+		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
+		result ["userHome"] = GameData.Instance.isHost;
+		result ["param"] = param.ToDictionary ();
+		Dictionary<string, System.Object> entryValues = result;
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_RPC + "/" + rpcKey] = entryValues;
-
-
 
 		reference.UpdateChildrenAsync (childUpdates);
 	}
@@ -574,7 +574,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void AttackPhase (string param)
+	public void AttackPhase (BattleStatus param)
 	{
 		GetLatestKey (3, delegate(string resultString) {
 			

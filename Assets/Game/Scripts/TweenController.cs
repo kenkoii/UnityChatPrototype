@@ -44,11 +44,10 @@ public static class TweenController{
 	}
 
 	public static void TweenShakePosition(Transform obj,float duration, float strength, int vibrato, float randomness){
-	//	obj.transform.DOShakePosition(1.0f, 30.0f, 50,90);
 		obj.transform.DOShakePosition(duration, strength, vibrato,randomness, true);
 	}
 
 	public static void TweenJumpTo(Transform obj, Vector3 endValue, float jumpPower,int numJumps,float duration){
-		//obj.DOJump ();
+		obj.transform.DOLocalJump (endValue,jumpPower,numJumps,1,true);
 	}
 }
