@@ -144,6 +144,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	private void SelectSkill (Action activateSkill, Action skillCost)
 	{
+		//change to mode 2
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			GameData.Instance.playerSkillChosen = delegate() {
 				activateSkill ();

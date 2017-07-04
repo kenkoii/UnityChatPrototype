@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class SkillDAO{
+public class SkillModel{
 
 	public bool userHome;
 	public ParamNames skillName;
@@ -8,10 +8,10 @@ public class SkillDAO{
 	public string skillDescription;
 	public string skillParam;
 
-	public SkillDAO(){
+	public SkillModel(){
 	}
 
-	public SkillDAO(ParamNames skillName, int skillGpCost, string skillDescription, string skillParam){
+	public SkillModel(ParamNames skillName, int skillGpCost, string skillDescription, string skillParam){
 		this.skillName = skillName;
 		this.skillGpCost = skillGpCost;
 		this.skillDescription = skillDescription;
@@ -20,8 +20,8 @@ public class SkillDAO{
 
 	public Dictionary<string, System.Object> ToDictionary() {
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
-		result ["userHome"] = GameData.Instance.isHost;
-		result ["SkillName"] = skillName;
+
+		result ["SkillName"] = skillName.ToString();
 		result ["SkillGPCost"] = skillGpCost;
 		result ["SkillDescription"] = skillDescription;
 		result ["SkillParam"] = skillParam;

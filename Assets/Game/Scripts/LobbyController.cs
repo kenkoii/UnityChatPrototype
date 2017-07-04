@@ -9,11 +9,11 @@ public class LobbyController : MonoBehaviour
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
-	public InputField gameName;
+
 
 	public void SearchRoom ()
 	{
-		GameData.Instance.player.playerName = gameName.text;
+
 
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		ScreenController.Instance.StartMatchingScreen ();
@@ -31,7 +31,7 @@ public class LobbyController : MonoBehaviour
 
 	}
 
-	public void ModeOnChange ()
+	public void OnModeChange ()
 	{
 		foreach (Toggle tg in toggleGroup.ActiveToggles()) {
 
