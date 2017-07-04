@@ -66,7 +66,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>
 	private void SendGesture (int gestureNumber)
 	{
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FirebaseDatabaseComponent.Instance.SetGestureParam (new GestureModel(JsonConverter.DicToJsonStr (param).ToString()));
 	}
 
 	//Hide gesture camera after displaying

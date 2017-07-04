@@ -74,7 +74,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 
 	public SkillModel GetSkill (int skillNumber)
 	{
-		return skill [skillNumber + 1];
+		return skill [skillNumber -1];
 	}
 
 
