@@ -66,7 +66,8 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		gpText.GetComponent<Text> ().text = " ";
 	}
 
-	public void OnEnd(){
+	public void OnFinishQuestion(){
+		TweenCallBack ();
 		justAnswered = false;
 		QuestionController qc = new QuestionController();
 		qc.Stoptimer = true;
@@ -130,6 +131,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 
 	public void SelectionInit ()
 	{
+		correctAnswers.Clear ();
 		int numberOfAnswers = 2;
 		List <int> randomList = new List<int>();
 		string[] temp = questionAnswer.Split ('/');
@@ -142,7 +144,6 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 			
 			}
 			randomList.Add (randomnum);
-
 			string wrongChoiceGot = QuestionBuilder.GetRandomChoices ();
 			selectionButtons [randomnum].transform.GetChild (0).GetComponent<Text> ().text = 
 				i < numberOfAnswers ? temp [i].ToString ().ToUpper () : 
@@ -152,12 +153,14 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 
 			}
 		}
+
 		answer1 = correctAnswers [0].GetComponentInChildren<Text> ().text.ToUpper ();
 		answer2 = correctAnswers [1].GetComponentInChildren<Text> ().text.ToUpper ();
 	}
 
 	public void Clear ()
 	{
+		answerClicked.Clear ();
 		foreach (GameObject g in selectionButtons) {
 			g.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
 		}

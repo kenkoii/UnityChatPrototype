@@ -38,7 +38,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 
 	private void CorrectAnswerEffect(string questionAnswer, List<GameObject> answerButtons, GameObject questionType){
 		GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
-		for (int i = 0; i < questionAnswer.Length; i++) {
+		for (int i = 0; i < answerButtons.Count; i++) {
 			Instantiate (ballInstantiated, 
 				answerButtons [i].transform.position, 
 				Quaternion.identity, questionType.transform);

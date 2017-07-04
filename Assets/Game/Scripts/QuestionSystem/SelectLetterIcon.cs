@@ -108,7 +108,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		//!letterButton.gameObject.Equals(answerGameObject [answerindex - 1])
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
 			
-			//TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
+			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
 			//ProvideHint (answerGameObject [answerindex - 1].transform);
 		} else {
 			
@@ -121,7 +121,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			for (int j = 0; j < questionAnswer.Length; j++) {
 				answerWrote += answerButtons [j].transform.GetChild (0).GetComponent<Text> ().text;
 			}
-			CheckAnswerHolder ();
+
 			if (answerWrote.Length.Equals (questionAnswer.Length)) {
 				if (answerWrote.ToUpper ().Equals (questionAnswer.ToUpper ())) {
 					CheckAnswer (true);
@@ -129,7 +129,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 					CheckAnswer (false);
 				}
 			}
-
+			CheckAnswerHolder ();
 		}
 	}
 
@@ -137,13 +137,11 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	{
 		for (int j = 1; j <= questionAnswer.Length + 1; j++) {
 			GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
-			Debug.Log (findEmpty.GetComponentInChildren<Text> ().text);
 			if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
 				answerindex = j;
 				break;
 			}
 		}
-		Debug.Log (answerindex);
 	}
 
 	public void CheckAnswer (bool result)

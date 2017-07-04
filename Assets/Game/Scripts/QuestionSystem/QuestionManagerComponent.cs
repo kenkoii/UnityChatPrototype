@@ -52,27 +52,27 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 
 			break;
 		case 1:
-			TypingIcon typingicon = new TypingIcon();
+			TypingIcon typingicon = FindObjectOfType<TypingIcon>();
 			//questionTypeModals[1].SetActive (true);
 			QuestionController.Instance.SetQuestion (typingicon, questionTime, onResult);
 		
 			break;
 		case 2:
 			//questionTypeModals[2].SetActive (true);
-			ChangeOrderIcon changeOrderIcon = new ChangeOrderIcon();
+			ChangeOrderIcon changeOrderIcon = FindObjectOfType<ChangeOrderIcon>();
 			QuestionController.Instance.SetQuestion (changeOrderIcon, questionTime, onResult);
 		
 			break;
 		case 3:
 			//questionTypeModals[2].SetActive (true);
-			WordChoiceIcon wordchoiceIcon = new WordChoiceIcon();
+			WordChoiceIcon wordchoiceIcon = FindObjectOfType<WordChoiceIcon>();
 			QuestionController.Instance.SetQuestion (wordchoiceIcon, questionTime, onResult);
 
 			break;
 		case 4:
 			//questionTypeModals[2].SetActive (true);
-			SlotMachineIcon slotMachineIcon = new SlotMachineIcon();
-
+			SlotMachineIcon slotMachineIcon = FindObjectOfType<SlotMachineIcon>();
+			QuestionController.Instance.SetQuestion (slotMachineIcon, questionTime, onResult);
 			break;
 		}
 

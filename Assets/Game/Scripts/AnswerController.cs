@@ -20,6 +20,7 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 
 	public void SetPlayerAnswerParameter (string answerParameter)
 	{
+
 		Dictionary<string, System.Object> answerResult = JsonConverter.JsonStrToDic (answerParameter);
 
 		foreach (KeyValuePair<string, System.Object> answer in answerResult) {
@@ -28,6 +29,7 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 				ValidateAnswer (true, int.Parse (answer.Value.ToString ()));
 			} else {
 				ValidateAnswer (false, int.Parse (answer.Value.ToString ()));
+
 			}
 		}
 	}

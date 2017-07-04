@@ -260,8 +260,8 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 	private void AttackParameter (bool attackerBool, Dictionary<string, System.Object> attackerParam, bool sameAttack = false)
 	{
-		if (attackerParam [ParamNames.Damage.ToString ()] != null) {
-			int damage = int.Parse (attackerParam [ParamNames.Damage.ToString ()].ToString ());
+		if (attackerParam [ParamNames.Attack.ToString ()] != null) {
+			int damage = int.Parse (attackerParam [ParamNames.Attack.ToString ()].ToString ());
 		
 			if (attackerBool.Equals (GameData.Instance.isHost)) {
 		

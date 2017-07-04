@@ -51,7 +51,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 	/// </summary>
 	public void ActivateSkill (int skillNumber)
 	{
-		Activate (skill [skillNumber + 1]);
+		Activate (skill [skillNumber - 1]);
 	}
 
 	private void Activate (SkillModel skill)
@@ -74,7 +74,10 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 
 	public SkillModel GetSkill (int skillNumber)
 	{
+
 		return skill [skillNumber -1];
+
+
 	}
 
 
