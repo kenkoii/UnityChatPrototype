@@ -6,6 +6,8 @@ public enum ParamNames {
 	AnswerCorrect,
 	AnswerWrong,
 	Gesture,
+	Attack,
+
 	//calculation
 	Damage,
 	Recover,

@@ -21,14 +21,15 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 		Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcDetails ["param"];
 
 		GameData.Instance.attackerBool = userHome;
-		GameData.Instance.attackerParam = param;
+
 
 
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 
 			//NORMAL ATTACK
-			if (newParam.Key == ParamNames.Damage.ToString ()) {
+			if (newParam.Key == "Attack") {
+				GameData.Instance.attackerParam = (Dictionary<string, System.Object>)newParam.Value;
 				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					BattleController.Instance.SetAttack (thisCurrentParameter);
@@ -93,7 +94,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 				} else {
 					PhaseManagerComponent.Instance.StartPhase2 ();
 				}
-//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+				ScreenController.Instance.StopWaitOpponentScreen ();
 
 			
 			} else {
@@ -111,13 +112,13 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 				} else {
 					PhaseManagerComponent.Instance.StartPhase3 ();
 				}
-//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+				ScreenController.Instance.StopWaitOpponentScreen ();
 			}
 			break;
 
 		case MyConst.BATTLE_STATUS_ATTACK:
 			if (battleCount > 1) {
-//				app.controller.tweenController.TweenStopWaitOpponent (0.2f);
+				ScreenController.Instance.StopWaitOpponentScreen ();
 			} else {
 				//hide skill ui 
 				PhaseSkillController.Instance.HideSkillUI ();
