@@ -24,6 +24,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 		GameData.Instance.attackerParam = param;
 
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
+
+			//NORMAL ATTACK
 			if (newParam.Key == ParamNames.Damage.ToString ()) {
 				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
@@ -33,6 +35,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			} 
 
+			//ANSWER INDICATORS
+
 			if (newParam.Key == ParamNames.AnswerCorrect.ToString ()) {
 				AnswerController.Instance.ValidateAnswer (true, int.Parse (newParam.Value.ToString ()));
 			}
@@ -41,25 +45,21 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 				AnswerController.Instance.ValidateAnswer (false, int.Parse (newParam.Value.ToString ()));
 			}
 
+			// GESTURES
 			if (newParam.Key == ParamNames.Gesture.ToString ()) {
 				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
 					GestureController.Instance.SetEnemyGesture (int.Parse (newParam.Value.ToString ()));
 				}
 			}
 
-			if (newParam.Key == ParamNames.AirRender.ToString ()) {
-				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.AirRender, int.Parse (newParam.Value.ToString ()));
-				
-			}
-			if (newParam.Key == ParamNames.Sunder.ToString ()) {
-				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.Sunder, int.Parse (newParam.Value.ToString ()));
-			}
-			if (newParam.Key == ParamNames.Rejuvination.ToString ()) {
-				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.Rejuvination, int.Parse (newParam.Value.ToString ()));
-			}
+			//SKILL PARAMETERS
 
-			if (newParam.Key == ParamNames.BicPunch.ToString ()) {
-				SkillActivatorComponent.Instance.ActivateSkill (ParamNames.BicPunch, int.Parse (newParam.Value.ToString ()));
+			if (newParam.Key == "Skill") {
+				if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
+					SkillActivatorComponent.Instance.SetPlayerSkillParameter ((Dictionary<string,System.Object>)newParam.Value);
+				} else {
+					SkillActivatorComponent.Instance.SetEnemySkillParameter ((Dictionary<string,System.Object>)newParam.Value);
+				}
 			}
 
 		}

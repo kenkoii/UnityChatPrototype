@@ -18,7 +18,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>
 	{
 		gestureButtonContainer.SetActive (false);
 	}
-		
+
 
 	public void ShowPlayerGesture1 ()
 	{

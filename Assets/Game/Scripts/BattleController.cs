@@ -10,8 +10,10 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	public Text[] skillName;
 	public Text[] skillGpCost;
 
-	private int playerHP = 10;
-	private int enemyHP = 10;
+	public int playerHP{ get; set; }
+
+	public int enemyHP { get; set; }
+
 	private int prepareTime = 3;
 
 	private int playerMaxHP = 10;
@@ -20,7 +22,8 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	public Slider playerHPBar;
 	public Slider enemyHPBar;
 
-	private int playerGP = 10;
+	public int playerGP{ get; set; }
+
 	private int playerMaxGP = 10;
 	public Slider playerGPBar;
 
@@ -41,10 +44,6 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	List<bool> userHome = new List<bool> ();
 	List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
 
-
-	public int GetPlayerGP(){
-		return playerGP;
-	}
 	/// <summary>
 	/// Delay before start of battle
 	/// </summary>
@@ -127,7 +126,9 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 		Attack (currentParam);
 	}
-	private void ChangeUserOrder(int index0, int index1){
+
+	private void ChangeUserOrder (int index0, int index1)
+	{
 		bool tempName = userHome [index0];
 		Dictionary<string, System.Object> tempParam = param [index0];
 
@@ -179,25 +180,26 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 		case 0:
 			Debug.Log ("player1 first attack");
 
-			StartCoroutine (AttackParameterReduce (0,1,2));
+			StartCoroutine (AttackParameterReduce (0, 1, 2));
 
 			break;
 		case 1:
 			Debug.Log ("player2 first attack");
 
-			StartCoroutine (AttackParameterReduce (1,0,2));
+			StartCoroutine (AttackParameterReduce (1, 0, 2));
 
 			break;
 		case 2:
 			Debug.Log ("same attack");
-			StartCoroutine (AttackParameterReduce (0,1,0, true));
+			StartCoroutine (AttackParameterReduce (0, 1, 0, true));
 			StartCoroutine (StartAttackSequence (3));
 			break;
 		}
 			
 	}
 
-	private IEnumerator AttackParameterReduce(int firstIndex, int secondIndex, int yieldTime, bool isSameAttack = false){
+	private IEnumerator AttackParameterReduce (int firstIndex, int secondIndex, int yieldTime, bool isSameAttack = false)
+	{
 		AttackParameter (userHome [firstIndex], param [firstIndex], isSameAttack);
 		yield return new WaitForSeconds (yieldTime);
 		AttackParameter (userHome [secondIndex], param [secondIndex], isSameAttack);
@@ -285,23 +287,23 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 		switch (sequenceType) {
 		case 1:
-			StartAttackSequenceReduce (AudioEnum.Attack,true,"attack");
+			StartAttackSequenceReduce (AudioEnum.Attack, true, "attack");
 			yield return new WaitForSeconds (0.5f);
-			StartAttackSequenceReduce (AudioEnum.Hit,false,"hit");
+			StartAttackSequenceReduce (AudioEnum.Hit, false, "hit");
 			CheckBattleStatus (false);
 			break;
 		case 2:
-			StartAttackSequenceReduce (AudioEnum.Hit,true,"hit");
+			StartAttackSequenceReduce (AudioEnum.Hit, true, "hit");
 			yield return new WaitForSeconds (0.5f);
-			StartAttackSequenceReduce (AudioEnum.Attack,false,"attack");
+			StartAttackSequenceReduce (AudioEnum.Attack, false, "attack");
 			CheckBattleStatus (true);
 			break;
 		case 3:
-			StartAttackSequenceReduce (AudioEnum.Attack,true,"attack");
-			StartAttackSequenceReduce (AudioEnum.Attack,false,"attack");
+			StartAttackSequenceReduce (AudioEnum.Attack, true, "attack");
+			StartAttackSequenceReduce (AudioEnum.Attack, false, "attack");
 			yield return new WaitForSeconds (0.5f);
-			StartAttackSequenceReduce (AudioEnum.Hit,true,"hit");
-			StartAttackSequenceReduce (AudioEnum.Hit,false,"hit");
+			StartAttackSequenceReduce (AudioEnum.Hit, true, "hit");
+			StartAttackSequenceReduce (AudioEnum.Hit, false, "hit");
 
 			CheckBattleStatus (true);
 			break;
@@ -314,13 +316,14 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 		
 	}
 
-	private void StartAttackSequenceReduce(AudioEnum audioType,bool isPlayer,string animParam){
+	private void StartAttackSequenceReduce (AudioEnum audioType, bool isPlayer, string animParam)
+	{
 
 		CharacterAnimationController.Instance.SetTriggerAnim (isPlayer, animParam);
 		AudioController.Instance.PlayAudio (audioType);
 	}
 
-	public void SetSkill (SkillDAO skill)
+	public void SetSkill (SkillModel skill)
 	{
 		FirebaseDatabaseComponent.Instance.SetSkillParam (skill);
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
@@ -330,7 +333,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 	public void SetSkillUI (int skillNumber, ParamNames skillName, int skillGp)
 	{
-		this.skillName[skillNumber-1].text = name.ToString();
+		this.skillName [skillNumber - 1].text = name.ToString ();
 		this.skillGpCost [skillNumber - 1].text = "" + skillGp + "GP";
 	}
 		
