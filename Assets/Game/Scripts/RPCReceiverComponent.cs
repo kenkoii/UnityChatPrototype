@@ -22,14 +22,11 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 		GameData.Instance.attackerBool = userHome;
 
-
-
-
 		foreach (KeyValuePair<string, System.Object> newParam in param) {
 
 			//NORMAL ATTACK
 			if (newParam.Key == "Attack") {
-				GameData.Instance.attackerParam = (Dictionary<string, System.Object>)newParam.Value;
+				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
 				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					BattleController.Instance.SetAttack (thisCurrentParameter);
@@ -40,15 +37,19 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//ANSWER INDICATORS
 
-			if(newParam.Key == "AnswerIndicator"){
+			if (newParam.Key == "AnswerIndicator") {
 				AnswerController.Instance.SetPlayerAnswerParameter (newParam.Value.ToString ());
 			}
 				
 
-			// GESTURES
-			if (newParam.Key == ParamNames.Gesture.ToString ()) {
+			// GESTURE
+
+			if (newParam.Key == "Gesture") {
 				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
-					GestureController.Instance.SetEnemyGesture (int.Parse (newParam.Value.ToString ()));
+					Dictionary<string, System.Object> gestureParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
+					foreach (KeyValuePair<string, System.Object> gesture in gestureParam) {
+						GestureController.Instance.SetEnemyGesture (int.Parse (gesture.Value.ToString ()));
+					}
 				}
 			}
 
@@ -57,7 +58,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			if (newParam.Key == "SkillName") {
 
 
-				SkillActivatorComponent.Instance.CheckSkillName (newParam.Value.ToString());
+				SkillActivatorComponent.Instance.CheckSkillName (newParam.Value.ToString ());
 			}
 
 			if (newParam.Key == "SkillParam") {

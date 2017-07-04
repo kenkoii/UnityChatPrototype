@@ -415,6 +415,11 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 		SetParam (answer.ToDictionary());
 	}
 
+	public void SetGestureParam (GestureModel gesture)
+	{
+		SetParam (gesture.ToDictionary());
+	}
+
 	public void SetSkillParam (SkillModel skill)
 	{
 		SetParam (skill.ToDictionary());
