@@ -57,7 +57,7 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 			} 
 
 			HideUI ();
-			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2),  GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 				QuestionStart (gp, qtimeLeft);
 			});
 				
@@ -73,13 +73,13 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 		GameData.Instance.gpEarned = gp;
 		BattleController.Instance.SetPlayerGP (gp);
 		if (gp != 0) {
-			TweenController.TweenPlayerGPSlider (BattleController.Instance.playerGP, 1, true,BattleController.Instance.playerGPBar);
+			TweenController.TweenPlayerGPSlider (BattleController.Instance.playerGP, 1, true, BattleController.Instance.playerGPBar);
 		}
 		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			if (GameData.Instance.skillChosenCost <= BattleController.Instance.playerGP) {
-				if(GameData.Instance.playerSkillChosen != null){
+				if (GameData.Instance.playerSkillChosen != null) {
 					GameData.Instance.playerSkillChosen ();
 				}
 			} else {
