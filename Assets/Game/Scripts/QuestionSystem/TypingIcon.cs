@@ -11,7 +11,7 @@ public class TypingIcon : MonoBehaviour, IQuestion
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	public List<GameObject> answerIdentifier;
+	public List<GameObject> answerIdentifier = new List<GameObject>();
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
@@ -121,7 +121,7 @@ public class TypingIcon : MonoBehaviour, IQuestion
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
+		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 

@@ -8,154 +8,57 @@ using DG.Tweening;
 
 public class WordChoiceIcon : MonoBehaviour, IQuestion
 {
-	private static List<Question> questionlist = new List<Question> ();
-	private static string questionAnswer;
-	private string questionString;
-	private string questionData = "";
-	private int letterno;
-	private string answertemp;
-	private int roundlimit = 3;
-	public static int currentround = 1;
-	public static int correctAnswers;
-	private string synonymData = "";
-	private string antonymData = "";
-	private static string answer1 = "";
-	private static string answer2 = "";
-	private static GameObject questionModal;
-	private static List<GameObject> inputlist = new List<GameObject> ();
-	private static List<string> questionsDone = new List<string> ();
-	private List<string> wrongChoices = new List<string> ();
-	private List<GameObject> answerClicked = new List<GameObject> ();
-	private bool isSynonym = false;
-	private bool justSkipped = false;
-	private bool justAnswered = false;
-	private string wrongChoiceGot = "";
+	private int currentRound = 1;
+	private int noCorrectAnswers;
+	private string answerWrote;
+	private bool hasSkippedQuestion = false;
+	private string questionAnswer = "";
+	private GameObject questionContainer;
 	public GameObject gpText;
+	public GameObject[] selectionButtons = new GameObject[4];
+	public Text questionText;
+	private bool justAnswered = false;
+	private List<GameObject> answerClicked = new List<GameObject>();
+	private string answer1 = "";
+	private string answer2 = "";
+	private List<GameObject> correctAnswers = new List<GameObject> ();
 
 	public void Activate (Action<int,int> Result)
 	{
-		currentround = 1;
-		correctAnswers = 0;
-		NextRound (currentround);
+		
+		QuestionBuilder.PopulateQuestion ("wordchoice");
+		currentRound = 1;
+		noCorrectAnswers = 0;
+		NextQuestion ();
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
 	}
-
-	public void NextRound (int round)
+		
+	public void NextQuestion ()
 	{
-		PopulateQuestionList ();
-		int randomize;
-		randomize = UnityEngine.Random.Range (0, questionlist.Count);
-		questionAnswer = questionlist [randomize].answer.ToUpper ().ToString ();
-
-		questionString = questionlist [randomize].question;
-		int whileIndex = 0 ;
-		while (questionsDone.Contains (questionString)) {
-			randomize = UnityEngine.Random.Range (0, questionlist.Count);
-			questionAnswer = questionlist [randomize].answer.ToUpper ().ToString ();
-			questionString = questionlist [randomize].question;
-			if (!questionsDone.Contains (questionString )|| whileIndex>0) {
-				break;
-			}
-			whileIndex += 1;
-		} 
-		inputlist.Clear ();
-		for (int i = 1; i < 5; i++) {
-			inputlist.Add (GameObject.Find ("Word" + i));
-		}
-		questionsDone.Add (questionString);
-		questionModal = GameObject.Find ("WordChoiceModal");
-		ShuffleAlgo ();
-		if (isSynonym) {
-			questionModal.transform.GetChild (0).GetComponent<Text> ().text = "Synonym: " + questionString.ToUpper ();
-		} else {
-			questionModal.transform.GetChild (0).GetComponent<Text> ().text = "Antonym: " + questionString.ToUpper ();
-		}
+		LoadQuestion ();
+		SelectionInit ();
 	}
 
-	public void InputOnClick ()
+
+
+	private void LoadQuestion ()
 	{
-		if (!justAnswered) {
-			AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
-			GameObject answerclick = EventSystem.current.currentSelectedGameObject;
-
-			if (answerclick.GetComponent<Image> ().color == Color.gray) {
-				answerclick.GetComponent<Image> ().color = new Color (94f / 255, 255f / 255f, 148f / 255f);
-			} else {
-				answerclick.GetComponent<Image> ().color = Color.gray;
-			}
-			int colorindex = 0;
-			for (int i = 0; i < 4; i++) {
-				if (inputlist [i].GetComponent<Image> ().color == Color.gray) {
-					colorindex += 1;
-					answerClicked.Add (inputlist [i]);
-					if (colorindex >= 2) {
-						answertemp = answerClicked [0].transform.GetChild (0).GetComponent<Text> ().text;
-						int answerclickindex = 0;
-						foreach (GameObject c in answerClicked) {
-							answerclickindex += 1;
-							string answertemp = c.transform.GetChild (0).GetComponent<Text> ().text;
-							if (answerclickindex == 2) {
-								justAnswered = true;
-								if (answertemp == answer1 || answertemp == answer2) {
-									QuestionDoneCallback (true);
-									answerClicked[0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
-									answerClicked[1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
-								} else {
-									QuestionDoneCallback (false);
-
-								}
-							}
-						}
-
-					}
-
-				}
-			}
-			answerClicked.Clear ();
-		}
-
+		Question questionLoaded = QuestionBuilder.GetQuestion ();
+		questionAnswer = questionLoaded.answer;
+		questionText.text = questionLoaded.question;
 	}
 
-	public void QuestionDoneCallback (bool result)
+	public void QuestionCallback (bool result)
 	{
-		if (result) {
-			AudioController.Instance.PlayAudio (AudioEnum.Correct);
-			correctAnswers = correctAnswers + 1;
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerCorrect.ToString ()] = currentround;
-			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
-			for (int i = 0; i < answerClicked.Count; i++) {
-				GameObject ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
-				Instantiate (ballInstantiated, 
-					answerClicked[i].transform.position, 
-					Quaternion.identity);
-			}
-			gpText.GetComponent<Text> ().text = "1 GP";
-			gpText.transform.DOScale (new Vector3 (5, 5, 5), 1.0f);
-			Invoke("TweenCallBack", 1f);
-		} else {
-			AudioController.Instance.PlayAudio (AudioEnum.Mistake);
-			Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-			param [ParamNames.AnswerWrong.ToString ()] = currentround;
-			FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
-
-			for (int i = 0; i < inputlist.Count; i++) {
-
-				if (answer1 == inputlist [i].transform.GetChild (0).GetComponent<Text> ().text ||
-				    answer2 == inputlist [i].transform.GetChild (0).GetComponent<Text> ().text) {
-					inputlist [i].GetComponent<Image> ().color = Color.red;
-
-				} else {
-					inputlist [i].GetComponent<Image> ().color = new Color (94f / 255, 255f / 255f, 148f / 255f);
-				}
-			}
-		}
-		questionModal.transform.DOShakePosition(1.0f, 30.0f, 50,90, true);
-		QuestionController qc = new QuestionController();
-		qc.Stoptimer = false;
-		Invoke("OnEnd", 1f);
-	
+		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
+		spe.DeployEffect (result, correctAnswers, questionAnswer, gpText, gameObject);
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		param [isCorrectParam] = currentRound;
+		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
+		QuestionController.Instance.Stoptimer = false;
+		Invoke ("OnFinishQuestion", 1f);
 	}
 
 	public void TweenCallBack(){
@@ -167,118 +70,95 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		justAnswered = false;
 		QuestionController qc = new QuestionController();
 		qc.Stoptimer = true;
-		justSkipped = false;
+		hasSkippedQuestion = false;
 		Clear ();
-		currentround = currentround + 1;
-		NextRound (currentround);
+		currentRound = currentRound + 1;
+		NextQuestion ();
 		qc.Returner (delegate {
 			qc.onFinishQuestion = true;
-		}, currentround, correctAnswers);
-		if (currentround == 4) {
+		}, currentRound, noCorrectAnswers);
+		if (currentRound == 4) {
 			Clear ();
 		}
 	}
 
-	public void PopulateQuestionList ()
-	{
-		/*
-		questionlist.Clear ();
-		List<string> databundle = CSVParser.GetQuestions ("wordchoice");
-		int i = 0;
-		int randomnum = UnityEngine.Random.Range (1, 3);
-		foreach (string questions in databundle) {
-			string[] splitQuestion = databundle [i].Split (']');	
-			questionData = splitQuestion [0];	
-			synonymData = splitQuestion [1];
-			antonymData = splitQuestion [2];
-			wrongChoices.Add (splitQuestion [3]);
-			if (questionData.Length > 1) {
-				switch (randomnum) {
-				case 1:
-					questionlist.Add (new Question (questionData, synonymData, 3));
-					isSynonym = true;
-					break;
-				case 2:
-					questionlist.Add (new Question (questionData, antonymData, 3));
-					isSynonym = false;
-					break;
-				}
-			}
-			i += 1;
-		}*/
-	}
-
 	public void OnSkipClick(){
-		if (!justSkipped) {
-			QuestionDoneCallback (false);
-			justSkipped = true;
+		if (!hasSkippedQuestion) {
+			QuestionCallback (false);
+			hasSkippedQuestion = true;
 		}
 	}
 
-	public void ShuffleAlgo ()
+	public void OnClickSelection ()
 	{
-		List<int> RandomExist = new List<int> ();
+		if (!justAnswered) {
+			AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+			GameObject wordClicked = EventSystem.current.currentSelectedGameObject;
+			String wordClickedString = wordClicked.transform.GetChild (0).GetComponent<Text> ().text;
+			if (wordClicked.GetComponent<Image> ().color == Color.gray) {
+				wordClicked.GetComponent<Image> ().color = new Color (94f / 255, 255f / 255f, 148f / 255f);
+				answerClicked.Remove (wordClicked);
+			} else {
+				wordClicked.GetComponent<Image> ().color = Color.gray;
+				answerClicked.Add (wordClicked);
+				if (answerClicked.Count == 2){
+					string answerClicked1 = answerClicked [0].transform.GetChild(0).GetComponent<Text>().text.ToUpper();
+					string answerClicked2 = answerClicked [1].transform.GetChild(0).GetComponent<Text>().text.ToUpper();
+					//Debug.Log (answerClicked1 + "/" + answerClicked2);
+					CheckAnswer(answerClicked1,answerClicked2);
+					}		
+				}
+			}
+	}
+
+
+	private void CheckAnswer(string answerClicked1, string answerClicked2){
+		if ((answerClicked1.Equals (answer1) || answerClicked1.Equals (answer2)) &&
+		   (answerClicked2.Equals (answer1) || answerClicked2.Equals (answer2))) {
+			Debug.Log ("hey");
+			answerClicked [0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			answerClicked [1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			QuestionCallback (true);
+		} else {
+			Debug.Log (answerClicked1 + "/" + answerClicked2);
+			Debug.Log (answer1 + "/" + answer2);
+			QuestionCallback (false);
+		}
+	}
+
+
+
+	public void SelectionInit ()
+	{
+		int numberOfAnswers = 2;
+		List <int> randomList = new List<int>();
 		string[] temp = questionAnswer.Split ('/');
-		letterno = 0;
-		int randomnum = UnityEngine.Random.Range (0, 5); 
 		int whileindex = 0;
-		for (int i = 0; i < 4; i++) {
-			
-			while (true) {
-				if (whileindex > 100) {
-					break;
-				}
-				randomnum = UnityEngine.Random.Range (0, 4);
-				bool index = RandomExist.Contains (randomnum);
-				if (index) {
-					randomnum = UnityEngine.Random.Range (0, 4);
-				} else {
-					RandomExist.Add (randomnum);
-					letterno = letterno + 1;
-					switch (letterno) {
-					case 1:
-						inputlist [randomnum].transform.GetChild (0).GetComponent<Text> ().text = 
-						temp [0].ToString ().ToUpper ();
-						answer1 = temp [0].ToString ().ToUpper ();
-
-						break;
-					case 2:
-						inputlist [randomnum].transform.GetChild (0).GetComponent<Text> ().text = 
-						temp [1].ToString ().ToUpper ();
-						answer2 = temp [1].ToString ().ToUpper ();
-
-						break;
-					case 3:
-						inputlist [randomnum].transform.GetChild (0).GetComponent<Text> ().text = 
-							wrongChoices [UnityEngine.Random.Range (0, wrongChoices.Count)].ToUpper ();
-						wrongChoiceGot = inputlist [randomnum].transform.GetChild (0).GetComponent<Text> ().text;
-						break;
-					case 4:
-						while(true){
-							string secondWrongChoice = wrongChoices [UnityEngine.Random.Range (0, wrongChoices.Count)].ToUpper ();
-							if (secondWrongChoice != wrongChoiceGot) {
-								inputlist [randomnum].transform.GetChild (0).GetComponent<Text> ().text = secondWrongChoice; 
-								break;
-							}
-
-						}
-						break;
-					}
-
-					break;
-
-				}
+		for (int i = 0; i < selectionButtons.Length; i++) {
+			int randomnum = UnityEngine.Random.Range (0, 4); 
+			while (randomList.Contains (randomnum)) {
+				randomnum = UnityEngine.Random.Range (0, selectionButtons.Length);
 				whileindex++;
+			
+			}
+			randomList.Add (randomnum);
+
+			string wrongChoiceGot = QuestionBuilder.GetRandomChoices ();
+			selectionButtons [randomnum].transform.GetChild (0).GetComponent<Text> ().text = 
+				i < numberOfAnswers ? temp [i].ToString ().ToUpper () : 
+				wrongChoiceGot;
+			if (i < numberOfAnswers) {
+				correctAnswers.Add (selectionButtons[randomnum]);
+
 			}
 		}
-			
-			
-
+		answer1 = correctAnswers [0].GetComponentInChildren<Text> ().text.ToUpper ();
+		answer2 = correctAnswers [1].GetComponentInChildren<Text> ().text.ToUpper ();
 	}
 
 	public void Clear ()
 	{
-		foreach (GameObject g in inputlist) {
+		foreach (GameObject g in selectionButtons) {
 			g.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
 		}
 	}

@@ -16,18 +16,13 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
-	private GameObject questionContainer;
 	public GameObject gpText;
 	public GameObject[] selectionButtons = new GameObject[12];
 	private List<GameObject> answerButtons = new List<GameObject> ();
 	public GameObject inputPrefab;
 	public GameObject answerContent;
 	public Text questionText;
-
-	void Start ()
-	{
-		questionContainer = gameObject;
-	}
+	private List<GameObject> answerGameObject = new List<GameObject>();
 
 	public void Activate (Action<int,int> result)
 	{
@@ -38,23 +33,33 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		QuestionController.Instance.OnResult = result;
 	}
 
+	void Start()
+	{
+		InvokeRepeating ("ProvideHint", 3, 3);
+	}
+
 	public void NextQuestion ()
 	{
 		ClearAnswerList ();
-		answerIdentifier.Clear ();
 		LoadQuestion ();
 		PopulateAnswerHolder ();
 		SelectionInit ();
 
 	}
 
+	private void ProvideHint(){
+		Transform selectionObj = answerGameObject [answerindex - 1].transform;
+		TweenController.TweenJumpTo (selectionObj,selectionObj.transform.localPosition,20f,1,0.5f);
+		selectionObj.gameObject.GetComponent<Image> ().color = new Color (255f / 255, 249f / 255f, 149f / 255f);
+	}
+
 	private void LoadQuestion ()
 	{
 		Question questionLoaded = QuestionBuilder.GetQuestion ();
 		questionAnswer = questionLoaded.answer;
-		questionText.text = questionLoaded.question;
+		string question = questionLoaded.question;
+		gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
 	}
-
 
 	private void PopulateAnswerHolder ()
 	{
@@ -71,7 +76,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			answerPrefab.GetComponent<Image> ().color = new Color (136f / 255, 236f / 255f, 246f / 255f);
 		}
 	}
-
 
 	public void OnAnswerClick (Button answerButton)
 	{
@@ -100,26 +104,24 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	public void OnSelectionClick (Button letterButton)
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+		//string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text) ||
+		//!letterButton.gameObject.Equals(answerGameObject [answerindex - 1])
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
-			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
+			
+			//TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
+			//ProvideHint (answerGameObject [answerindex - 1].transform);
 		} else {
 			
-			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
-				GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
-				if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
-					answerindex = j;
-					break;
-				} 
-			}
 			answerIdentifier.Add (letterButton.gameObject);
 			answerWrote = "";
 
-			answerButtons [(answerindex - 1)].transform.GetChild (0).GetComponent<Text> ().text 
-			= letterButton.transform.GetChild (0).GetComponent<Text> ().text;
-			letterButton.transform.GetChild (0).GetComponent<Text> ().text = "";
+			answerButtons [(answerindex - 1)].GetComponentInChildren<Text>().text 
+			= letterButton.GetComponentInChildren<Text>().text;
+			letterButton.GetComponentInChildren<Text>().text = "";
 			for (int j = 0; j < questionAnswer.Length; j++) {
 				answerWrote += answerButtons [j].transform.GetChild (0).GetComponent<Text> ().text;
 			}
+			CheckAnswerHolder ();
 			if (answerWrote.Length.Equals (questionAnswer.Length)) {
 				if (answerWrote.ToUpper ().Equals (questionAnswer.ToUpper ())) {
 					CheckAnswer (true);
@@ -131,6 +133,19 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		}
 	}
 
+	private void CheckAnswerHolder ()
+	{
+		for (int j = 1; j <= questionAnswer.Length + 1; j++) {
+			GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
+			Debug.Log (findEmpty.GetComponentInChildren<Text> ().text);
+			if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
+				answerindex = j;
+				break;
+			}
+		}
+		Debug.Log (answerindex);
+	}
+
 	public void CheckAnswer (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
@@ -138,8 +153,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr (param));
-
+		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}
@@ -167,6 +181,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void SelectionInit ()
 	{
+		answerGameObject.Clear ();
 		int[] RandomExist = new int[questionAnswer.Length];
 		string temp = questionAnswer;
 		for (int f = 1; f < 13; f++) {
@@ -196,7 +211,8 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			for (int i = 0; i < selectionButtons.Length; i++) {
 				if (randomnum == i) {
 					selectionButtons [i].GetComponent<Image> ().
-					transform.GetChild (0).GetComponent<Text> ().text = temp [letterno].ToString ().ToUpper ();    
+					transform.GetChild (0).GetComponent<Text> ().text = temp [letterno].ToString ().ToUpper (); 
+					answerGameObject.Add (selectionButtons [i]);
 				}			
 			}
 			RandomExist [letterno] = randomnum;
@@ -215,7 +231,8 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void ClearAnswerList ()
 	{
-		
+
+		answerIdentifier.Clear ();
 		if (answerButtons.Count > 0) {
 			answerindex = 1;
 			foreach (GameObject o in answerButtons) {

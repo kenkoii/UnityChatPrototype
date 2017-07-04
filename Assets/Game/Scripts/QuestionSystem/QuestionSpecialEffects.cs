@@ -7,10 +7,12 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 	private GameObject questionTypeComponent;
 	private string questionAnswer;
 	private bool answerResult;
+
 	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject gpText, GameObject questionType){
 
 		answerResult = result;
 		questionAnswer = answer;
+		questionTypeComponent = questionType;
 		ShowAnswer (answerButtons);
 
 		if (result) {
@@ -44,9 +46,24 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 	}
 
 	private void ShowAnswer(List<GameObject> answerButtons){
-		for (int i = 0; i < questionAnswer.Length; i++) {
-			answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = questionAnswer [i].ToString ().ToUpper ();
+		for (int i = 0; i < answerButtons.Count; i++) {
+			if (questionTypeComponent.name == "WordChoiceModal") {
+				
+				string[] answerSplit = questionAnswer.Split ('/');
+			
+				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = 
+					answerSplit [i].ToString ().ToUpper ();
 
+				Debug.Log (i);
+				if (i >= answerSplit.Length) {
+					break;
+				}
+
+			} else {
+				Debug.Log ("Not word Choice");
+			answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = 
+				questionAnswer [i].ToString ().ToUpper ();
+			}
 			answerButtons [i].GetComponent<Image> ().color = answerResult ?
 				new Color (255f / 255, 249f / 255f, 149f / 255f) :
 				new Color (229f / 255, 114f / 255f, 114f / 255f);

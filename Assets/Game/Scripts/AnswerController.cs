@@ -24,8 +24,27 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 		ResetAnswer ();
 	}
 
+	public void SetPlayerAnswerParameter (string answerParameter)
+	{
+
+
+		BattleStatus answerResult = JsonConverter.JsonStrToDic(answerParameter);
+
+		foreach (SkillParameter skill in skillResult.skillList) {
+
+			if (skill.skillKey == ParamNames.Damage.ToString ()) {
+				GameData.Instance.player.playerDamage += skill.skillValue;
+			}
+
+			if (skill.skillKey == ParamNames.Recover.ToString ()) {
+				BattleController.Instance.playerHP += skill.skillValue;
+			}
+		}
+	}
+
 	public void ValidateAnswer (bool isCorrect, int questionNumber)
 	{
+		Debug.Log ("Question No : "+questionNumber);
 		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
 			switch (questionNumber) {
 			case 1:

@@ -45,7 +45,7 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 
 		switch (questionType) {
 		case 0:
-			SelectLetterIcon selectletterIcon = new SelectLetterIcon();
+			SelectLetterIcon selectletterIcon = FindObjectOfType<SelectLetterIcon>();
 			//questionTypeModals[0].SetActive (true);
 			QuestionController.Instance.SetQuestion (selectletterIcon, questionTime, onResult);
 

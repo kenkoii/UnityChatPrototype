@@ -40,7 +40,6 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 
 	public void NextQuestion ()
 	{
-		answerIdentifier.Clear();
 		LoadQuestion ();
 		PopulateInputHolders ();
 		ShuffleAlgo ();
@@ -52,7 +51,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 		Question questionLoaded = QuestionBuilder.GetQuestion ();
 		questionAnswer = questionLoaded.answer;
 		question = questionLoaded.question;
-		gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
+			gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
 	}
 
 	private void PopulateInputHolders ()
@@ -168,10 +167,11 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetParam (JsonConverter.DicToJsonStr(param));
+		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}

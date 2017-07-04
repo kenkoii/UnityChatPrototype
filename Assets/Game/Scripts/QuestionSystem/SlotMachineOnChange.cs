@@ -151,26 +151,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 			roullete6Answer = g.transform.GetChild(0).GetComponent<Text>().text;
 			break;
 		}
-		/*
-		string ans = "";
-		switch (deductedPosition.ToString()) {
-		case "0":
-			ans = items [4].transform.GetChild (0).GetComponent<Text> ().text;
-			break;
-		case "1":
-			ans = items [3].transform.GetChild (0).GetComponent<Text> ().text;
-			break;
-		case "2":
-			ans = items [2].transform.GetChild (0).GetComponent<Text> ().text;
-			break;
-		case "3":
-			ans = items [1].transform.GetChild (0).GetComponent<Text> ().text;
-			break;
-		case "4":
-			ans = items [0].transform.GetChild (0).GetComponent<Text> ().text;
-			break;
-		}
-		return ans;*/
+
 		writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
 		Debug.Log (writtenAnswer);
 		SlotMachineIcon smi = new SlotMachineIcon ();
@@ -300,9 +281,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 		//Debug.Log (Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f);
 		Debug.Log((positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0"));
 		string distanceDiff = (positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0");
-		if (distanceDiff=="-180") {
-			Debug.Log (distanceDiff);
-			//myScrollRect.verticalNormalizedPosition = positionCounter;
+		if (distanceDiff=="-180" || distanceDiff=="-40") {
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
