@@ -410,7 +410,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void SetParam (BattleStatus param)
+	public void SetAnswerParam (AnswerModel param)
 	{
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
@@ -574,7 +574,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// </summary>
 	/// <param name="name">Name.</param>
 	/// <param name="param">Parameter.</param>
-	public void AttackPhase (BattleStatus param)
+	public void AttackPhase (AttackModel param)
 	{
 		GetLatestKey (3, delegate(string resultString) {
 			
@@ -587,7 +587,6 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 
 
 				if (battleState.Equals (MyConst.BATTLE_STATUS_ATTACK) && battleCount < 2) {
-					SetParam (param);
 					battleCount++;
 					battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 				} 

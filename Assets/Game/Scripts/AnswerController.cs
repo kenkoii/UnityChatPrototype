@@ -10,14 +10,8 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 	public Sprite wrong;
 	public Sprite empty;
 	public Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-	public Image playerPlaceHolder1;
-	public Image playerPlaceHolder2;
-	public Image playerPlaceHolder3;
-
-	public Image enemyPlaceHolder1;
-	public Image enemyPlaceHolder2;
-	public Image enemyPlaceHolder3;
-
+	public Image[] playerPlaceHolder;
+	public Image[] enemyPlaceHolder;
 
 	void Start ()
 	{
@@ -26,73 +20,48 @@ public class AnswerController : SingletonMonoBehaviour<AnswerController>
 
 	public void SetPlayerAnswerParameter (string answerParameter)
 	{
+		Dictionary<string, System.Object> answerResult = JsonConverter.JsonStrToDic (answerParameter);
 
+		foreach (KeyValuePair<string, System.Object> answer in answerResult) {
 
-		BattleStatus answerResult = JsonConverter.JsonStrToDic(answerParameter);
-
-		foreach (SkillParameter skill in skillResult.skillList) {
-
-			if (skill.skillKey == ParamNames.Damage.ToString ()) {
-				GameData.Instance.player.playerDamage += skill.skillValue;
-			}
-
-			if (skill.skillKey == ParamNames.Recover.ToString ()) {
-				BattleController.Instance.playerHP += skill.skillValue;
+			if (answer.Key == ParamNames.AnswerCorrect.ToString ()) {
+				ValidateAnswer (true, int.Parse (answer.Value.ToString ()));
+			} else {
+				ValidateAnswer (false, int.Parse (answer.Value.ToString ()));
 			}
 		}
 	}
 
 	public void ValidateAnswer (bool isCorrect, int questionNumber)
 	{
-		Debug.Log ("Question No : "+questionNumber);
+		Debug.Log ("AnswerCorrect: " + isCorrect);
+		Debug.Log ("Question No : " + questionNumber);
 		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
-			switch (questionNumber) {
-			case 1:
-				SetValidateAnswer (isCorrect, playerPlaceHolder1.sprite);
-				break;
-			case 2:
-				SetValidateAnswer (isCorrect, playerPlaceHolder2.sprite);
-				break;
-			case 3:
-				SetValidateAnswer (isCorrect, playerPlaceHolder3.sprite);
-				break;
-
-			}
+			SetValidateAnswer (isCorrect, delegate(Sprite result) {
+				playerPlaceHolder [questionNumber - 1].sprite = result;
+			});
 		} else {
-			switch (questionNumber) {
-			case 1:
-				SetValidateAnswer (isCorrect, enemyPlaceHolder1.sprite);
-				break;
-			case 2:
-				SetValidateAnswer (isCorrect, enemyPlaceHolder2.sprite);
-				break;
-			case 3:
-				SetValidateAnswer (isCorrect, enemyPlaceHolder3.sprite);
-				break;
-
-			}
+			SetValidateAnswer (isCorrect, delegate(Sprite result) {
+				enemyPlaceHolder [questionNumber - 1].sprite = result;
+			});
 		}
 	}
 
-	private void SetValidateAnswer (bool isCorrect, Sprite answerResult)
+	private void SetValidateAnswer (bool isCorrect, Action<Sprite> action)
 	{
 		if (isCorrect) {
-			answerResult = correct;
+			action (correct);
 		} else {
-			answerResult = wrong;
+			action (wrong);
 		}
 	}
 
 	public void ResetAnswer ()
 	{
-		
-		playerPlaceHolder1.sprite = empty;
-		playerPlaceHolder2.sprite = empty;
-		playerPlaceHolder3.sprite = empty;
-
-		enemyPlaceHolder1.sprite = empty;
-		enemyPlaceHolder2.sprite = empty;
-		enemyPlaceHolder3.sprite = empty;
+		for (int i = 0; i < playerPlaceHolder.Length; i++) {
+			playerPlaceHolder[i].sprite = empty;
+			enemyPlaceHolder[i].sprite = empty;
+		}
 		Debug.Log ("reset answers");
 	}
 }
