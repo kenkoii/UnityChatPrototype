@@ -177,9 +177,9 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	private void SetEnemyInitialState (string gameName, int life, int gp)
 	{
 		if (GameData.Instance.isHost) {
-			BattleController.Instance.InitialPlayerState (life, gameName, gp);
-		} else {
 			BattleController.Instance.InitialEnemyState (life, gameName);
+		} else {
+			BattleController.Instance.InitialPlayerState (life, gameName, gp);
 		}
 	}
 }

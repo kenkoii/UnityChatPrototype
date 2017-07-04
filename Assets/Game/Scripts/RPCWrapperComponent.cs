@@ -32,10 +32,10 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 		FirebaseDatabaseComponent.Instance.AnswerPhase (receiveTime, receiveAnswer);
 
 		//show skill ui after answer only in mode 1
-		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
-			PhaseSkillController.Instance.ShowSkillUI (true);
-			PhaseSkillController.Instance.ButtonEnable (false);
-		}
+//		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
+//			PhaseSkillController.Instance.ShowSkillUI (true);
+//			PhaseSkillController.Instance.ButtonEnable (false);
+//		}
 
 	}
 		
