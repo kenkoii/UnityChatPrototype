@@ -325,6 +325,8 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 	public void SetSkill (SkillModel skill)
 	{
+		playerGP -= skill.skillGpCost;
+		TweenController.TweenPlayerGPSlider (playerGP, 2, true, playerGPBar);
 		FirebaseDatabaseComponent.Instance.SetSkillParam (skill);
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 			RPCWrapperComponent.Instance.RPCWrapSkill ();
