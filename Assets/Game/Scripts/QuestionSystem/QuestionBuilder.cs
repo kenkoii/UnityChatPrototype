@@ -53,6 +53,29 @@ public static class QuestionBuilder {
 				j += 1;
 			}
 			break;
+		case "slotmachine":
+			 databundle = CSVParser ("slotmachine");
+			 i = 0;
+			 randomnum = UnityEngine.Random.Range (1, 3);
+			foreach(string questions in databundle ){
+				string[] splitter = databundle [i].Split (']');
+				questionData = splitter [0];
+				string synonymData = splitter [1];
+				string antonymData = splitter [2];
+				antonymData.Remove (antonymData.Length - 1);
+				if (questionData.Length > 1) {
+					switch (randomnum) {
+					case 1:
+						questionList.Add (new Question (questionData, synonymData, 3));
+						break;
+					case 2:
+						questionList.Add (new Question (questionData, antonymData, 3));
+						break;
+					}
+				}
+				i+=1;
+			}
+			break;
 		}
 	}
 
@@ -76,15 +99,8 @@ public static class QuestionBuilder {
 
 	public static string GetRandomChoices(){
 		int randomnum = UnityEngine.Random.Range (0,wrongChoices.Count);
-		//int whileindex = 0;
 		while (wrongChoicesDone.Contains (randomnum)) {
 			randomnum = UnityEngine.Random.Range (0, wrongChoices.Count);
-			/*
-			if (whileindex > 100) {
-				break;
-			}
-			whileindex += 1;
-			*/
 		}
 		string wrongChoice = wrongChoices [randomnum];
 		return wrongChoice;

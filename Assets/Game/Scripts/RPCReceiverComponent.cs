@@ -26,7 +26,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//NORMAL ATTACK
 			if (newParam.Key == "Attack") {
-				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
+
+				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic(newParam.Value.ToString());
 				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					BattleController.Instance.SetAttack (thisCurrentParameter);

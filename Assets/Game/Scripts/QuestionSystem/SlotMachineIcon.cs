@@ -4,31 +4,23 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using DG.Tweening;
 
 public class SlotMachineIcon : MonoBehaviour, IQuestion{
-	private static int round = 1;
-	private Action<int> onResult;
-	private static List<Question> questionlist = new List<Question> ();
-	private static string questionAnswer;
-	private string questionString;
-	private string questionData = "";
-	private int letterno;
-	private int roundlimit = 3;
-	private bool isSynonym = true;
-	public static int currentround = 1;
-	private string synonymData = "";
-	private string antonymData = "";
-	public GameObject[] indicators = new GameObject[3];
-	public static int correctAnswers;
-	private int numberOfRoulletes = 6;
-	private static GameObject questionModal;
-	private static List<GameObject> roulletes = new List<GameObject>();
-	private static int randomnum = 0;
-	private static List<string> questionsDone = new List<string>();
-	private List<GameObject> roulleteText = new List<GameObject>();
-	private static bool instantiateDone = false;
-	private static GameObject ballInstantiated;
+	private int currentRound = 1;
+	private int correctAnswers;
+	private int answerindex = 1;
+	private List<GameObject> answerIdentifier = new List<GameObject> ();
+	private string answerWrote;
+	private bool hasSkippedQuestion = false;
+	private string questionAnswer = "";
+	public GameObject gpText;
+	public GameObject[] selectionButtons = new GameObject[12];
+	private List<GameObject> answerButtons = new List<GameObject> ();
+	public GameObject inputPrefab;
+	public GameObject answerContent;
+	public Text questionText;
+	private List<GameObject> answerGameObject = new List<GameObject>();
 
 	public string answerwrote {
 		get;
@@ -36,113 +28,66 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void Activate(Action<int,int> Result){
-		round = 1;
 		correctAnswers = 0;
-		instantiateDone = false;
-		currentround = 1;
-		NextRound (round);
+		currentRound = 1;
+		NextRound ();
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
 	}
 
-	public void NextRound(int round){
-		for (int i = 0; i < numberOfRoulletes; i++) {
-			if (!instantiateDone) {
-				roulletes.Add(GameObject.Find ("Roullete" + (i + 1)));
-
-				if (i == numberOfRoulletes - 1) {
-					instantiateDone = true;
-
-				}
-			} else {
-				roulletes [i].SetActive (true);
-				//roulletes [i].transform.GetChild(0).GetChild(0).GetComponent<ScrollRect> ().verticalNormalizedPosition = 0f;
-			}
-		}
-		PopulateQuestionList ();
-		int randomize = UnityEngine.Random.Range (0, questionlist.Count);
-		questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
-		questionString = questionlist [randomize].question;
-		while (questionsDone.Contains (questionString)) {
-			randomize = UnityEngine.Random.Range (0, questionlist.Count);
-			questionAnswer = questionlist [randomize].answer.ToUpper().ToString();
-			questionString = questionlist [randomize].question;
-			if (!questionsDone.Contains (questionString)) {
-				break;
-			}
-		} 
-
-		questionsDone.Add (questionString);
-		findSlotMachines ();
-		questionModal = GameObject.Find("SlotMachineModal");
-		for(int i = 6 ; i > questionAnswer.Length ;i--){
-			roulletes[i-1].SetActive(false);
-		}
-
+	public void NextRound(){
+		
+		LoadQuestion ();
 		ShuffleAlgo ();
-		if (isSynonym) {
-			questionModal.transform.GetChild (0).GetComponent<Text> ().text = "Synonym: "+questionString.ToUpper();
-		} else {
-			questionModal.transform.GetChild (0).GetComponent<Text> ().text = "Antonym: "+questionString.ToUpper();
-		}
-
 	}
 
-	public void findSlotMachines(){
-
-		roulleteText.Clear ();
-		GameObject content;
-		Debug.Log (questionAnswer + "/" + questionAnswer.Length);
-		for (int i = 1; i <= questionAnswer.Length; i++) {
-			content = GameObject.Find ("RoulleteContent"+i);
-			for (int j = 0; j < 3; j++) {
-				roulleteText.Add (content.transform.GetChild(j).gameObject);
-			}
-		}
+	private void LoadQuestion ()
+	{
+		Question questionLoaded = QuestionBuilder.GetQuestion ();
+		questionAnswer = questionLoaded.answer;
+		questionText.text = questionLoaded.question;
 	}
-
-	public void QuestionDoneCallback(bool result){
-		QuestionController qc = new QuestionController ();
-		qc.Returner (
-			delegate {
-				qc.onFinishQuestion =true;
-				if (result) {
-
-					if(currentround>roundlimit){
-						for(int i = 1;i<=3;i++){
-							GameObject.Find ("Indicator" + i).GetComponent<Image> ().color = Color.white;
-						}
-						questionModal.SetActive(false);
-					}
-					else{
-						NextRound (currentround);
-					}
-				}
-			},currentround,correctAnswers
-		);
+		
+	public void CheckAnswer(bool result){
+		/*
+		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		param [isCorrectParam] = currentRound;
+		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
+		QuestionController.Instance.Stoptimer = false;
+		Invoke ("OnFinishQuestion", 1f);
+		*/
 	}
 
 	public void getAnswer(string ans){
 		if (questionAnswer == ans) {
-			correctAnswerGot ();
+			//correctAnswerGot ();
 			SlotMachineOnChange smoc = new SlotMachineOnChange ();
 			smoc.ClearAnswers ();
 		}
 
 	}
-	public void correctAnswerGot(){
+		
+	public void TweenCallBack ()
+	{
+		TweenController.TweenTextScale (gpText.transform, Vector3.one, 1.0f);
+		gpText.GetComponent<Text> ().text = " ";
+	}
 
-		correctAnswers = correctAnswers + 1;
-		for (int i = 0; i < questionAnswer.Length; i++) {
-			ballInstantiated = Resources.Load ("Prefabs/scoreBall") as GameObject;
-			Instantiate (ballInstantiated, 
-				roulletes [i].transform.position, 
-				Quaternion.identity);
-		}
-		GameObject.Find ("Indicator"+currentround).GetComponent<Image> ().color = Color.blue;
-		correctAnswers = correctAnswers + 1;
-		currentround += 1;
-		QuestionDoneCallback (true);
+	public void OnFinishQuestion ()
+	{
+		TweenCallBack ();
+		hasSkippedQuestion = false;
+		QuestionController.Instance.Stoptimer = true;
+		//ClearAnswerList ();
+		answerindex = 1;
+		currentRound += 1;
+		//NextQuestion ();
+		QuestionController.Instance.Returner (delegate {
+			QuestionController.Instance.onFinishQuestion = true;
+		}, currentRound, correctAnswers);
 	}
 
 	public void PopulateQuestionList(){
@@ -179,9 +124,9 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		int letterIndex = 0;
 		int letterStartIndex = 0;
 		int letterEndIndex = 3;
-		randomnum = UnityEngine.Random.Range (letterStartIndex+1, letterEndIndex);
-		for (int i = 0; i < roulleteText.Count; i++) {
-			roulleteText [i].transform.GetChild (0).GetComponent<Text> ().text = (i%randomnum)==0 ?
+		int randomnum = UnityEngine.Random.Range (letterStartIndex+1, letterEndIndex);
+		for (int i = 0; i < selectionButtons.Length; i++) {
+			selectionButtons [i].transform.GetChild (0).GetComponent<Text> ().text = (i%randomnum)==0 ?
 				questionAnswer [letterIndex].ToString ().ToUpper ():
 				Letters [UnityEngine.Random.Range (0, Letters.Length)].ToString ().ToUpper ();
 			if ((i % randomnum) == 0) {

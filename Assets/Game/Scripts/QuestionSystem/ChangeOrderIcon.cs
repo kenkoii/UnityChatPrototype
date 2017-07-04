@@ -11,7 +11,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	public List<GameObject> answerIdentifier;
+	private List<GameObject> answerIdentifier = new List<GameObject>();
 	private string answerWrote;
 	private bool justSkippedQuestion = false;
 	private string questionAnswer = "";
@@ -204,11 +204,17 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 				}
 				whileindex++;
 			}
-			Debug.Log (letterno);
 			selectionButtons [letterno].transform.GetChild (0).GetComponent<Text> ().text = 
 				temp [randomnum].ToString ().ToUpper ();
 			RandomExist.Add (randomnum);
 			letterno = letterno + 1;
+		}
+		string answerGot = "";
+		foreach(GameObject g in selectionButtons){
+			answerGot += g.GetComponentInChildren<Text> ().text;
+		}
+		if (answerGot == questionAnswer) {
+			ShuffleAlgo ();
 		}
 
 	}
