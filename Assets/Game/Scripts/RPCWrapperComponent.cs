@@ -16,7 +16,7 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
 //		app.controller.tweenController.TweenStartWaitOpponent (0.2f);
-		FirebaseDatabaseComponent.Instance.AttackPhase (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
+		FirebaseDatabaseComponent.Instance.AttackPhase (new AttackModel(JsonConverter.DicToJsonStr (param).ToString()));
 	}
 
 	public void RPCWrapSkill ()

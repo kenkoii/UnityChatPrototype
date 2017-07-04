@@ -153,7 +153,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetParam (new BattleStatus(JsonConverter.DicToJsonStr (param).ToString()));
+		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}

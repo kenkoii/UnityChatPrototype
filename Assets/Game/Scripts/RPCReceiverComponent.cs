@@ -40,11 +40,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			//ANSWER INDICATORS
 
 			if(newParam.Key == "AnswerIndicator"){
-				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
-					
-				} else {
-					SkillActivatorComponent.Instance.SetEnemySkillParameter (newParam.Value.ToString ());
-				}
+				AnswerController.Instance.SetPlayerAnswerParameter (newParam.Value.ToString ());
 			}
 				
 

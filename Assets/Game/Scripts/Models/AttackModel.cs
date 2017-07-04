@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* Battle Status Model */
-public class BattleStatus
+public class AttackModel
 {
 	public string param;
 
-	public BattleStatus ()
+	public AttackModel ()
 	{
 	}
 
-	public BattleStatus (string param)
+	public AttackModel (string param)
 	{
 		this.param = param;
 	}
@@ -19,7 +19,7 @@ public class BattleStatus
 	public Dictionary<string, System.Object> ToDictionary ()
 	{
 		Dictionary<string, System.Object> result = new Dictionary<string, System.Object> ();
-		result ["AnswerIndicator"] = param;
+		result ["Attack"] = param;
 
 		return result;
 	}
