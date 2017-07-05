@@ -45,7 +45,7 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 
 		switch (questionType) {
 		case 0:
-			SelectLetterIcon selectletterIcon = FindObjectOfType<SelectLetterIcon>();
+			SelectLetterIcon selectletterIcon = questionTypeModals[0].GetComponent<SelectLetterIcon>();
 			//questionTypeModals[0].SetActive (true);
 			QuestionController.Instance.SetQuestion (selectletterIcon, questionTime, onResult);
 
@@ -71,7 +71,7 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 			break;
 		case 4:
 			//questionTypeModals[2].SetActive (true);
-			SlotMachineIcon slotMachineIcon = FindObjectOfType<SlotMachineIcon>();
+			SlotMachineIcon slotMachineIcon = questionTypeModals[4].GetComponent<SlotMachineIcon>();
 			QuestionController.Instance.SetQuestion (slotMachineIcon, questionTime, onResult);
 			break;
 		}

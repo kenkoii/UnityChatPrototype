@@ -21,7 +21,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	private List<GameObject> answerButtons = new List<GameObject> ();
 	public GameObject inputPrefab;
 	public GameObject answerContent;
-	public Text questionText;
 	private List<GameObject> answerGameObject = new List<GameObject>();
 
 	public void Activate (Action<int,int> result)
@@ -224,6 +223,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		if (!hasSkippedQuestion) {
 			CheckAnswer (false);
 			hasSkippedQuestion = true;
+
 		}
 	}
 
