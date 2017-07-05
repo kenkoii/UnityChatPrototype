@@ -11,7 +11,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	private List<GameObject> answerIdentifier = new List<GameObject>();
+	private GameObject[] answerIdentifier = new GameObject[10];
 	private string answerWrote;
 	private bool justSkippedQuestion = false;
 	private string questionAnswer = "";
@@ -134,7 +134,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 			foreach (GameObject readWrittenAnswer in answerButtons) {
 				answerWrote = answerWrote + (readWrittenAnswer.transform.GetChild (0).GetComponent<Text> ().text);
 			}
-			answerIdentifier.Add(EventSystem.current.currentSelectedGameObject);
+			answerIdentifier[answerindex-1] = EventSystem.current.currentSelectedGameObject;
 			if (answerWrote.Length == questionAnswer.Length) {
 				if (answerWrote.ToUpper () == questionAnswer.ToUpper ()) {
 					QuestionDoneCallback (true);

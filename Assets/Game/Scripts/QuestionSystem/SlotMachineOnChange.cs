@@ -40,7 +40,9 @@ public class SlotMachineOnChange : MonoBehaviour {
 	private bool _hasDisabledGridComponents = false; 
 	private static float deductedPosition = 1.0f;
 	private List <RectTransform> items = new List<RectTransform>();
-
+	public string WrittenAnswer{
+		get{ return writtenAnswer;}
+	}
 	//private bool stopScrolling = false;
 
 	public void getContentPosition(){
@@ -99,8 +101,8 @@ public class SlotMachineOnChange : MonoBehaviour {
 					break;
 				}
 				writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
-				SlotMachineIcon smi = new SlotMachineIcon ();
-				smi.getAnswer (writtenAnswer);
+				//SlotMachineIcon smi = new SlotMachineIcon ();
+				//smi.getAnswer (writtenAnswer);
 
 			}
 		}
@@ -153,8 +155,8 @@ public class SlotMachineOnChange : MonoBehaviour {
 		}
 
 		writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
-		Debug.Log (writtenAnswer);
 		SlotMachineIcon smi = new SlotMachineIcon ();
+
 		smi.getAnswer (writtenAnswer);
 
 	}
@@ -272,16 +274,12 @@ public class SlotMachineOnChange : MonoBehaviour {
 		
 		positionCounter = Mathf.Round (slotContent.transform.localPosition.y * 100f) / 100f;
 		Canvas.ForceUpdateCanvases();
-		/*
-		slotContent.anchoredPosition.y =
-			myScrollRect.transform.InverseTransformPoint(slotContent.position.y)
-			- myScrollRect.transform.InverseTransformPoint(itemGot.transform.position.y);
-			*/
-		//.Log(positionCounter);
-		//Debug.Log (Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f);
-		Debug.Log((positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0"));
 		string distanceDiff = (positionCounter + Mathf.Round (itemGot.transform.localPosition.y * 100f) / 100f).ToString("f0");
-		if (distanceDiff=="-180" || distanceDiff=="-40") {
+		if (distanceDiff=="-180" || distanceDiff=="-40" || distanceDiff=="-41" || distanceDiff=="-39" || distanceDiff=="-42"
+			|| distanceDiff=="-43" || distanceDiff=="-38" || distanceDiff=="-37" || distanceDiff=="-181" || distanceDiff=="-182"
+			|| distanceDiff=="-179" || distanceDiff=="-178"
+		
+		) {
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
