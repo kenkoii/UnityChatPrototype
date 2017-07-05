@@ -9,7 +9,7 @@ using DG.Tweening;
 public class WordChoiceIcon : MonoBehaviour, IQuestion
 {
 	private int currentRound = 1;
-	private int noCorrectAnswers;
+	private int score;
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
@@ -28,7 +28,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		
 		QuestionBuilder.PopulateQuestion ("wordchoice");
 		currentRound = 1;
-		noCorrectAnswers = 0;
+		score = 0;
 		NextQuestion ();
 		QuestionController qc = new QuestionController ();
 		qc.OnResult = Result;
@@ -54,6 +54,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
+		score = result ? score += 1 : score;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
@@ -75,7 +76,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		NextQuestion ();
 		qc.Returner (delegate {
 			qc.onFinishQuestion = true;
-		}, currentRound, noCorrectAnswers);
+		}, currentRound, score);
 		if (currentRound == 4) {
 			Clear ();
 		}

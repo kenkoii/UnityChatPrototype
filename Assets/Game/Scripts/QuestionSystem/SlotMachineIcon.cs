@@ -20,7 +20,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	public Text questionText;
 	private List<GameObject> answerGameObject = new List<GameObject>();
 	private List<GameObject> roulleteText = new List<GameObject> ();
-	private bool gotAnswer = false;
+	private bool gotAnswer = true;
 	private SlotMachineOnChange smoc;
 
 	public void Activate(Action<int,int> result){
@@ -65,6 +65,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		correctAnswers = result ? correctAnswers += 1 : correctAnswers;
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
@@ -75,9 +76,9 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	}
 
 	public void getAnswer(string ans){
-		if (questionAnswer == ans && !gotAnswer) {
-			Debug.Log ("hey");
-			gotAnswer = true;
+		if (questionAnswer == ans && gotAnswer) {
+			Debug.Log (gotAnswer);
+			gotAnswer = false;
 			CheckAnswer (true);
 			SlotMachineOnChange smoc = new SlotMachineOnChange ();
 			smoc.ClearAnswers ();
@@ -108,6 +109,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 
 	public void OnFinishQuestion ()
 	{
+		answerButtons.Clear ();
 		gotAnswer = true;
 		TweenCallBack ();
 		hasSkippedQuestion = false;
