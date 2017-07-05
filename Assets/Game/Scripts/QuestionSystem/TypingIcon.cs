@@ -118,8 +118,16 @@ public class TypingIcon : MonoBehaviour, IQuestion
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		string isCorrectParam;
+		if (result) {
+			correctAnswers += 1;
+			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
+		} else {
+			isCorrectParam = ParamNames.AnswerWrong.ToString ();
+		}
+		hasSkippedQuestion = true;
 		param [isCorrectParam] = currentRound;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
