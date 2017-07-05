@@ -167,9 +167,15 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
-		correctAnswers = result ? correctAnswers += 1 : correctAnswers;
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		string isCorrectParam;
+		if (result) {
+			correctAnswers += 1;
+			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
+		} else {
+			isCorrectParam = ParamNames.AnswerWrong.ToString ();
+		}
+		justSkippedQuestion = true;
 		param [isCorrectParam] = currentRound;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;

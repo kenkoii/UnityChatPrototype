@@ -52,9 +52,15 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, correctAnswers, questionAnswer, gpText, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		string isCorrectParam;
+		if (result) {
+			score += 1;
+			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
+		} else {
+			isCorrectParam = ParamNames.AnswerWrong.ToString ();
+		}
+		justAnswered = true;
 		param [isCorrectParam] = currentRound;
-		score = result ? score += 1 : score;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
