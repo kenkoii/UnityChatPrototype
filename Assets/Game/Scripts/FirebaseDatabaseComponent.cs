@@ -204,6 +204,8 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// </summary>
 	/// <param name="sender">Sender.</param>
 	/// <param name="args">Arguments.</param>
+
+
 	void HandleInitialVisitorChildAdded (object sender, ChildChangedEventArgs args)
 	{
 		ScreenController.Instance.StartLoadingScreen (delegate() {
@@ -218,7 +220,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 			onSuccessMatchMake (true);
 			Debug.Log ("matching success: " + isMatchMakeSuccess);
 		});
-	
+
 	}
 
 	/// <summary>
@@ -247,15 +249,13 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 
 					GameController.Instance.UpdateGame ();
 
-					if (dataSnapshot.Child (MyConst.GAMEROOM_STATUS).Value.ToString ().Equals (MyConst.GAMEROOM_OPEN)) {
+					if (dataSnapshot.Child (MyConst.GAMEROOM_STATUS).Value.ToString ().Equals ("0")) {
 
 						gameRoomKey = dataSnapshot.Key.ToString ();
 						JoinRoom ();
 						searchingRoom = false;
 						return;
-
 					}
-
 				}
 
 				CreateRoom ();
@@ -276,7 +276,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	public void SearchRoom (Action<bool> onResult)
 	{
 		//Order first to search fast
-		roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo (MyConst.GAMEROOM_OPEN).ValueChanged += HandleGameRoomValueChanged;
+		roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo ("0").ValueChanged += HandleGameRoomValueChanged;
 		searchingRoom = true;
 		onSuccessMatchMake = onResult;
 	}
@@ -314,25 +314,51 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	{
 		GameController.Instance.UpdateGame ();
 		gameRoomKey = reference.Child (MyConst.GAMEROOM_NAME).Push ().Key;
-		RoomCreateJoin (true, MyConst.GAMEROOM_HOME, MyConst.GAMEROOM_OPEN);
+		RoomCreateJoin (true, MyConst.GAMEROOM_HOME);
 
 		//set prototype mode type
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE).SetValueAsync ("" + (int)GameData.Instance.modePrototype);
 
 	}
+
+	/// <summary>
+	/// Joins the room.
+	/// </summary>
+
+	private int joinCounter = 0;
+
 	public void JoinRoom ()
 	{
-		
 		reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).RunTransaction (mutableData => {
-			//get the battlekey, create if host
-			if (mutableData.Value.ToString() == MyConst.GAMEROOM_OPEN) {
-				mutableData.Value = MyConst.GAMEROOM_FULL;
-				Debug.Log ("hello");
-				RoomCreateJoin(false,MyConst.GAMEROOM_VISITOR);
-			} 
+			
+			int playerCount = int.Parse (mutableData.Value.ToString ());
+
+			playerCount++;
+			joinCounter++;
+
+			mutableData.Value = playerCount.ToString ();
+
 			return TransactionResult.Success (mutableData);
 		});
+
+		StartCoroutine (StartJoinDelay ());
+
+	
 	}
+
+	IEnumerator StartJoinDelay ()
+	{
+		yield return new WaitForSeconds (5);
+		Debug.Log ("JoinCounter " + joinCounter);
+		if (joinCounter < 2) {
+			RoomCreateJoin (false, MyConst.GAMEROOM_VISITOR);
+		} else {
+			LobbyController.Instance.SearchRoom ();
+		}
+
+		joinCounter = 0;
+	}
+
 
 	/// <summary>
 	/// Rooms the create join.
@@ -340,21 +366,25 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 	/// <param name="isHost">If set to <c>true</c> is host.</param>
 	/// <param name="userPlace">User place.</param>
 	/// <param name="roomStatus">Room status.</param>
-	private void RoomCreateJoin (bool isHost, string userPlace, string roomStatus = "")
+	private void RoomCreateJoin (bool isHost, string userPlace)
 	{
 		this.isHost = isHost;
 		GameData.Instance.isHost = isHost;
 		MessageListener ();
 
-		User user = new User (GameData.Instance.player.playerName,GameData.Instance.player.playerLife, GameData.Instance.player.playerGP);
+		User user = new User (GameData.Instance.player.playerName, GameData.Instance.player.playerLife, GameData.Instance.player.playerGP);
 		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
+
+
 		childUpdates ["/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/"] = entryValues;
+
+
 		reference.UpdateChildrenAsync (childUpdates);
 
 		//set room status to open when create room
 		if (isHost) {
-			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).SetValueAsync ("" + roomStatus);
+			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS).SetValueAsync ("0");
 		}
 		//set battle status to answer when start of game
 		CheckInitialPhase ();
@@ -409,31 +439,32 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 			reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_INITITAL_STATE).Child (MyConst.GAMEROOM_VISITOR).ChildAdded += HandleInitialVisitorChildAdded;
 		}
 	}
-		
+
 	public void SetAttackParam (AttackModel attack)
 	{
-		SetParam (attack.ToDictionary());
+		SetParam (attack.ToDictionary ());
 	}
 
 	public void SetAnswerParam (AnswerModel answer)
 	{
-		SetParam (answer.ToDictionary());
+		SetParam (answer.ToDictionary ());
 	}
 
 	public void SetGestureParam (GestureModel gesture)
 	{
-		SetParam (gesture.ToDictionary());
+		SetParam (gesture.ToDictionary ());
 	}
 
 	public void SetSkillParam (SkillModel skill)
 	{
-		SetParam (skill.ToDictionary());
+		SetParam (skill.ToDictionary ());
 	}
 
-	private void SetParam(Dictionary<string, System.Object> toDictionary){
+	private void SetParam (Dictionary<string, System.Object> toDictionary)
+	{
 		string	rpcKey = reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_RPC).Push ().Key;
 
-		Dictionary<string, System.Object> result = new Dictionary<string, System.Object>();
+		Dictionary<string, System.Object> result = new Dictionary<string, System.Object> ();
 		result ["userHome"] = GameData.Instance.isHost;
 		result ["param"] = toDictionary;
 		Dictionary<string, System.Object> entryValues = result;
