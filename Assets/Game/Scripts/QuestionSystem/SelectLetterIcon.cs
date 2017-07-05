@@ -103,8 +103,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	public void OnSelectionClick (Button letterButton)
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
-		//string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text) ||
-		//!letterButton.gameObject.Equals(answerGameObject [answerindex - 1])
+
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
 			
 			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
@@ -148,10 +147,19 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
+		string isCorrectParam;
+		if (result) {
+			correctAnswers += 1;
+			 isCorrectParam = ParamNames.AnswerCorrect.ToString ();
+		} else {
+			isCorrectParam = ParamNames.AnswerWrong.ToString ();
+		}
+		hasSkippedQuestion = true;
+		//correctAnswers = result ? correctAnswers += 1 : correctAnswers;
 		param [isCorrectParam] = currentRound;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
+
 		Invoke ("OnFinishQuestion", 1f);
 	}
 
