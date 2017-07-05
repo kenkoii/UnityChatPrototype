@@ -34,7 +34,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	void Start()
 	{
-		InvokeRepeating ("ProvideHint", 3, 3);
+		//InvokeRepeating ("ProvideHint", 3, 3);
 	}
 
 	public void NextQuestion ()
