@@ -2,5 +2,7 @@
 
 public interface IPhase {
 
-	void StartPhase ();
+	void OnStartPhase ();
+
+	void OnEndPhase();
 }
