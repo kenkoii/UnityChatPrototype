@@ -37,6 +37,13 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 			PhaseSkillController.Instance.ButtonEnable (false);
 		}
 
+		/*
+		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
+			PhaseSkillController.Instance.ShowSkillUI (true);
+			PhaseSkillController.Instance.ButtonEnable (false);
+		}*/
+
+
 	}
 		
 

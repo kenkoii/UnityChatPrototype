@@ -40,8 +40,6 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		SelectionInit ();
 	}
 
-
-
 	private void LoadQuestion ()
 	{
 		Question questionLoaded = QuestionBuilder.GetQuestion ();
