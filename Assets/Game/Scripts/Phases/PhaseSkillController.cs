@@ -18,7 +18,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
-		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > GameData.Instance.player.playerGP) {
+		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleController.Instance.playerGP) {
 			button.interactable = false;
 		} else {
 			button.interactable = true;
@@ -27,6 +27,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	public void OnStartPhase ()
 	{
+		
 		Debug.Log ("Starting Skill Phase");
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
