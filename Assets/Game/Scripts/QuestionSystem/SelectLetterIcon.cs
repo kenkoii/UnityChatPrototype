@@ -107,7 +107,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
 			
 			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
-			//ProvideHint (answerGameObject [answerindex - 1].transform);
 		} else {
 			
 			answerIdentifier.Add (letterButton.gameObject);
@@ -155,7 +154,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			isCorrectParam = ParamNames.AnswerWrong.ToString ();
 		}
 		hasSkippedQuestion = true;
-		//correctAnswers = result ? correctAnswers += 1 : correctAnswers;
 		param [isCorrectParam] = currentRound;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
