@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 /* UI For searching matches */
-public class LobbyController : MonoBehaviour
+public class LobbyController : SingletonMonoBehaviour<LobbyController>
 {
 	public GameObject gameRoomUI;
 	public GameObject lobbyRoom;
