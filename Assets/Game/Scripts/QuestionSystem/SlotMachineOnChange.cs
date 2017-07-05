@@ -224,7 +224,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 					items[i].anchoredPosition = _newAnchoredPosition;
 					_scrollRect.content.GetChild(_itemCount-1).transform.SetAsFirstSibling();
 				}
-				else if (_scrollRect.transform.InverseTransformPoint(items[i].gameObject.transform.position).y < -_disableMarginY)
+				else if (_scrollRect.transform.InverseTransformPoint(items[i].gameObject.transform.position).y <= -_disableMarginY)
 				{
 					_newAnchoredPosition = items[i].anchoredPosition;
 					_newAnchoredPosition.y += _itemCount * _recordOffsetY;
