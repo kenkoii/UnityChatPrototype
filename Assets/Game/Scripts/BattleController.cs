@@ -325,12 +325,17 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 	public void SetSkill (SkillModel skill)
 	{
-		playerGP -= skill.skillGpCost;
-		TweenController.TweenPlayerGPSlider (playerGP, 2, true, playerGPBar);
+		StartCoroutine (StartSkillDeductDelay(skill));
 		FirebaseDatabaseComponent.Instance.SetSkillParam (skill);
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 			RPCWrapperComponent.Instance.RPCWrapSkill ();
 		} 
+	}
+
+	IEnumerator StartSkillDeductDelay(SkillModel skill){
+		yield return new WaitForSeconds (0.5f);
+		playerGP -= skill.skillGpCost;
+		TweenController.TweenPlayerGPSlider (playerGP, 1, true, playerGPBar);
 	}
 
 	public void SetSkillUI (int skillNumber, ParamNames skillName, int skillGp)
