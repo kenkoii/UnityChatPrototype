@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class PhaseAttackController : SingletonMonoBehaviour<PhaseAttackController>
+public class PhaseAttackController : SingletonMonoBehaviour<PhaseAttackController>, IPhase
 {
 	
 	private bool stoptimer = false;
 	private int timeLeft;
 
-	void OnEnable ()
+	public void OnStartPhase ()
 	{
 		AnswerController.Instance.ResetAnswer ();
 		Debug.Log ("Starting attack phase");
@@ -18,7 +18,7 @@ public class PhaseAttackController : SingletonMonoBehaviour<PhaseAttackControlle
 		BattleController.Instance.SendAttackToDatabase ();
 	}
 
-	void OnDisable(){
+	public void OnEndPhase(){
 		CancelInvoke ("StartTimer");
 
 	}

@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
+public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>, IPhase
 {
 	public GameObject[] battleUI;
 
@@ -25,7 +25,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 		}
 	}
 
-	public void OnEnable ()
+	public void OnStartPhase ()
 	{
 		Debug.Log ("Starting Skill Phase");
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
@@ -53,15 +53,19 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	
 	}
 
-	void OnDisable ()
+	public void OnEndPhase ()
 	{
+		ShowSkillUI (false);
 		CancelInvoke ("StartTimer");
+
 	}
 
-	public void ShowSkillUI (bool toggle)
+	public void ShowSkillUI (bool toggle, bool isIncludeDescription = true)
 	{
 		attackButton.gameObject.SetActive (toggle);
-		skillDescription.SetActive (toggle);
+		if (isIncludeDescription) {
+			skillDescription.SetActive (toggle);
+		}
 		for (int i = 0; i < battleUI.Length; i++) {
 			battleUI [i].SetActive (toggle);
 		}

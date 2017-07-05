@@ -93,12 +93,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 				}
 				ScreenController.Instance.StopWaitOpponentScreen ();
 			
-			} else {
-				//hide skill ui 
-				if (PhaseManagerComponent.Instance.PhaseSkill.activeInHierarchy) {
-					PhaseSkillController.Instance.ShowSkillUI (false);
-				}
-			}
+			} 
+
 			break;
 
 		case MyConst.BATTLE_STATUS_SKILL:

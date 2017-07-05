@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerController>
+public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerController>, IPhase
 {
 
 	public GameObject questionSelect;
@@ -11,7 +11,7 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 	private bool stoptimer = false;
 	private int timeLeft;
 
-	void OnEnable ()
+	public void OnStartPhase ()
 	{
 		Debug.Log ("Starting Answer Phase");
 		hasAnswered = false;
@@ -23,7 +23,7 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 
 	}
 
-	void OnDisable ()
+	public void OnEndPhase ()
 	{
 		if (questionSelect.activeInHierarchy) {
 			questionSelect.SetActive (false);

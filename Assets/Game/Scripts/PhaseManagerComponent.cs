@@ -2,9 +2,7 @@
 
 public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponent>
 {
-	public GameObject PhaseAnswer;
-	public GameObject PhaseSkill;
-	public GameObject PhaseAttack;
+	
 
 	public void StartPhase1 ()
 	{
@@ -41,9 +39,23 @@ public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponen
 
 	private void PhaseActivate (bool answer, bool skill, bool attack)
 	{
-		PhaseAnswer.SetActive (answer);
-		PhaseSkill.SetActive (skill);
-		PhaseAttack.SetActive (attack);
+		if (answer) {
+			PhaseAnswerController.Instance.OnStartPhase ();
+		} else {
+			PhaseAnswerController.Instance.OnEndPhase ();
+		}
+
+		if (skill) {
+			PhaseSkillController.Instance.OnStartPhase ();
+		} else {
+			PhaseSkillController.Instance.OnEndPhase ();
+		}
+
+		if (attack) {
+			PhaseAttackController.Instance.OnStartPhase ();
+		} else {
+			PhaseAttackController.Instance.OnEndPhase ();
+		}
 	}
 
 }
