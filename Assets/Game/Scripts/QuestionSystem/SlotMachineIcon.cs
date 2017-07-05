@@ -48,7 +48,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		ShuffleAlgo ();
 	}
 	void Update(){
-		
+
 		getAnswer(smoc.WrittenAnswer);
 
 	}
@@ -64,7 +64,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 	public void CheckAnswer(bool result){
 		
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-//		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = result ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
@@ -76,11 +76,11 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 
 	public void getAnswer(string ans){
 		if (questionAnswer == ans && !gotAnswer) {
+			Debug.Log ("hey");
 			gotAnswer = true;
 			CheckAnswer (true);
 			SlotMachineOnChange smoc = new SlotMachineOnChange ();
 			smoc.ClearAnswers ();
-		//	smoc.WrittenAnswer
 		}
 
 	}
@@ -95,7 +95,6 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 
 		roulleteText.Clear ();
 		GameObject content;
-		Debug.Log (questionAnswer + "/" + questionAnswer.Length);
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			content = roulletes [i];
 			for (int j = 0; j < 3; j++) {
