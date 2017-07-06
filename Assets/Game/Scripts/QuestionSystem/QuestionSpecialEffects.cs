@@ -58,6 +58,10 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 				if (i >= answerSplit.Length) {
 					break;
 				}
+				answerButtons [i].GetComponent<Image> ().color = answerResult ?
+					new Color (255f / 255, 249f / 255f, 149f / 255f) :
+					new Color (229f / 255, 114f / 255f, 114f / 255f);
+				
 
 			} else {
 

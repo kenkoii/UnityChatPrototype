@@ -119,11 +119,14 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 
 
 	private void CheckAnswer(string answerClicked1, string answerClicked2){
+		foreach (GameObject g in selectionButtons) {
+			g.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
+		}
 		if ((answerClicked1.Equals (answer1) || answerClicked1.Equals (answer2)) &&
 		   (answerClicked2.Equals (answer1) || answerClicked2.Equals (answer2))) {
 			Debug.Log ("hey");
-			answerClicked [0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
-			answerClicked [1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			//answerClicked [0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			//answerClicked [1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
 			QuestionCallback (true);
 		} else {
 			Debug.Log (answerClicked1 + "/" + answerClicked2);

@@ -12,6 +12,7 @@ public static class QuestionBuilder {
 	private static List<Question> questionList = new List<Question>();
 	private static List<string> wrongChoices = new List<string> ();
 	private static List<int> wrongChoicesDone = new List<int> ();
+	private static bool isSynonym = false;
 
 	public static void PopulateQuestion(string questionName){
 		List<string> databundle = new List<string>();
@@ -43,10 +44,12 @@ public static class QuestionBuilder {
 				if (questionData.Length > 1) {
 					switch (randomnum) {
 					case 1:
-						questionList.Add (new Question (questionData, synonymData, 3));
+						questionList.Add (new Question ("Synonym: "+questionData, synonymData, 3));
+						isSynonym = true;
 						break;
 					case 2:
-						questionList.Add (new Question (questionData, antonymData, 3));
+						questionList.Add (new Question ("Antonym: "+questionData, antonymData, 3));
+						isSynonym = false;
 						break;
 					}
 				}

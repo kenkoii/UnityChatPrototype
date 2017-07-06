@@ -12,7 +12,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	private int currentRound = 1;
 	private int correctAnswers;
 	private int answerindex = 1;
-	private List<GameObject> answerIdentifier = new List<GameObject> ();
+	private GameObject[] answerIdentifier = new GameObject[12];
 	private string answerWrote;
 	private bool hasSkippedQuestion = false;
 	private string questionAnswer = "";
@@ -87,13 +87,13 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 				if (answerButton.name.Equals ("input" + i)) {
 					answerclicked = answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
 					answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
-					answerIdentifier [i - 1].transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
+					answerIdentifier [i].transform.GetChild (0).GetComponent<Text> ().text = answerclicked;
 				}
 			}
 			for (int j = 1; j <= questionAnswer.Length + 1; j++) {
 				GameObject findEmpty = answerButtons [j].transform.GetChild (0).gameObject;
 				if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
-					answerindex = j;
+					answerindex = j-1;
 					break;
 				} 
 			}
@@ -108,7 +108,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
 		} else {
 			
-			answerIdentifier.Add (letterButton.gameObject);
+			answerIdentifier[answerindex] = letterButton.gameObject;
 			answerWrote = "";
 
 			answerButtons [(answerindex - 1)].GetComponentInChildren<Text>().text 
@@ -131,6 +131,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	private void CheckAnswerHolder ()
 	{
+		
 		for (int j = 1; j <= questionAnswer.Length + 1; j++) {
 			GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
 			if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
@@ -138,6 +139,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 				break;
 			}
 		}
+
 	}
 
 	public void CheckAnswer (bool result)
@@ -212,7 +214,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void ClearAnswerList ()
 	{
-		answerIdentifier.Clear ();
+		
 		if (answerButtons.Count > 0) {
 			answerindex = 1;
 			foreach (GameObject o in answerButtons) {

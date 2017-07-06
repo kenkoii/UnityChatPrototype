@@ -13,8 +13,9 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	void Start(){
 		List<string> list = new List<string> ();
 		list = CSVParser.ParseCSV ("selectTyping");
-		Debug.Log (list [50] [0]);
+		Debug.Log (list [0]);
 		}
+
 	public void SearchRoom ()
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
