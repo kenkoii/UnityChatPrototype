@@ -340,7 +340,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 
 	public void SetSkillUI (int skillNumber, ParamNames skillName, int skillGp)
 	{
-		this.skillName [skillNumber - 1].text = name.ToString ();
+		this.skillName [skillNumber - 1].text = skillName.ToString ();
 		this.skillGpCost [skillNumber - 1].text = "" + skillGp + "GP";
 	}
 		
