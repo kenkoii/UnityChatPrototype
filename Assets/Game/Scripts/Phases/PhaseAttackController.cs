@@ -20,9 +20,7 @@ public class PhaseAttackController : SingletonMonoBehaviour<PhaseAttackControlle
 
 	public void OnEndPhase(){
 		CancelInvoke ("StartTimer");
-		//reset effects done by skill
-		GameController.Instance.ResetPlayerDamage ();
-		Debug.Log ("player damage reset! now damage is: " + GameData.Instance.player.playerDamage);
+
 	}
 
 	private void StartTimer ()

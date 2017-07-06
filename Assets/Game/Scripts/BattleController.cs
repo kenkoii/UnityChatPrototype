@@ -253,7 +253,10 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 				}
 				yield return new WaitForSeconds (3);
 				PhaseManagerComponent.Instance.StartPhase1 ();
-
+				//reset effects done by skill and battle data
+				GameController.Instance.ResetPlayerDamage ();
+				param.Clear ();
+				Debug.Log ("player damage reset! now damage is: " + GameData.Instance.player.playerDamage);
 			}
 		}
 	}
