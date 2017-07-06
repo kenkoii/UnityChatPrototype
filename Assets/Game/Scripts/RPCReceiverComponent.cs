@@ -7,9 +7,6 @@ using UnityEngine;
 public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 {
 	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
-	int battleCount;
-	string battleState;
-
 
 	/// <summary>
 	/// Receives the RPC status.
@@ -26,9 +23,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//NORMAL ATTACK
 			if (newParam.Key == "Attack") {
-
-				GameData.Instance.attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
-				thisCurrentParameter.Add (GameData.Instance.attackerBool, GameData.Instance.attackerParam);
+				Dictionary<string, System.Object> attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
+				thisCurrentParameter.Add (GameData.Instance.attackerBool, attackerParam);
 				if (thisCurrentParameter.Count == 2) {
 					BattleController.Instance.SetAttack (thisCurrentParameter);
 					thisCurrentParameter.Clear ();
@@ -73,8 +69,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
-		battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
+		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
+		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 		switch (battleState) {
 		case MyConst.BATTLE_STATUS_ANSWER:
