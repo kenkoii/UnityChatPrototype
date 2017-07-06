@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using System.Collections.Generic;
 /* UI For searching matches */
 public class LobbyController : SingletonMonoBehaviour<LobbyController>
 {
@@ -10,25 +10,23 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
 
-
+	void Start(){
+		List<string> list = new List<string> ();
+		list = CSVParser.ParseCSV ("selectTyping");
+		Debug.Log (list [50] [0]);
+		}
 	public void SearchRoom ()
 	{
-
-
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		ScreenController.Instance.StartMatchingScreen ();
 		FirebaseDatabaseComponent.Instance.SearchRoom (delegate(bool result) {
-
 			if (result) {
 				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
 			}
-
 			ScreenController.Instance.StopMatchingScreen ();
 		});
-
-
 	}
 
 	public void OnModeChange ()
