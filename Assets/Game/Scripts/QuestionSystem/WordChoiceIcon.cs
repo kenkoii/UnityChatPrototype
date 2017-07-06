@@ -155,10 +155,8 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 				wrongChoiceGot;
 			if (i < numberOfAnswers) {
 				correctAnswers.Add (selectionButtons[randomnum]);
-
 			}
 		}
-
 		answer1 = correctAnswers [0].GetComponentInChildren<Text> ().text.ToUpper ();
 		answer2 = correctAnswers [1].GetComponentInChildren<Text> ().text.ToUpper ();
 	}

@@ -60,7 +60,6 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 				}
 
 			} else {
-				Debug.Log ("Not word Choice");
 
 			answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = 
 				questionAnswer [i].ToString ().ToUpper ();

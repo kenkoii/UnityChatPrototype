@@ -132,7 +132,6 @@ public static class QuestionBuilder {
 				index += 1;
 				if (index > 5) {
 					string replacee = "";
-					//char[] charhelper = new char[record.Length];
 					int numberOfComma = 0;
 					foreach (char c in record) {
 						if (c == ',') {

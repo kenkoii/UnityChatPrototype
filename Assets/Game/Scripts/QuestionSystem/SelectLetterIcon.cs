@@ -105,7 +105,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 
 		if (string.IsNullOrEmpty (letterButton.transform.GetChild (0).GetComponent<Text> ().text)) {
-			
 			TweenController.TweenShakePosition (letterButton.transform, 1.0f, 30.0f, 50, 90f);
 		} else {
 			
@@ -157,7 +156,6 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		param [isCorrectParam] = currentRound;
 		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
-
 		Invoke ("OnFinishQuestion", 1f);
 	}
 
@@ -185,42 +183,22 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 	public void SelectionInit ()
 	{
 		answerGameObject.Clear ();
-		int[] RandomExist = new int[questionAnswer.Length];
-		string temp = questionAnswer;
-		for (int f = 1; f < 13; f++) {
-			string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			int randomnum2 = UnityEngine.Random.Range (1, 26);
-			int index = Array.IndexOf (RandomExist, f);
-			if (index > -1) {
-
-			} else {
-				selectionButtons [f - 1].GetComponent<Image> ().transform.GetChild (0).GetComponent<Text> ().text = 
-					alphabet [randomnum2].ToString ().ToUpper ();
-			}
-		}
-		int letterno = 0;
-		int randomnum = 0;      
-		for (int z = 0; z < temp.Length; z++) {
-			randomnum = UnityEngine.Random.Range (1, selectionButtons.Length);        
-			RandomExist [letterno] = randomnum;
-			while (true) {
-				int index = Array.IndexOf (RandomExist, randomnum);
-				if (index > -1) {
-					randomnum = UnityEngine.Random.Range (1, selectionButtons.Length);
-				} else {
+		int numberOfLetters = questionAnswer.Length;
+		string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		List <int> randomList = new List<int>();
+		int whileindex = 0;
+		for (int i = 0; i < selectionButtons.Length; i++) {
+			int randomnum = UnityEngine.Random.Range (0, selectionButtons.Length); 
+			while (randomList.Contains (randomnum)) {
+				randomnum = UnityEngine.Random.Range (0, selectionButtons.Length);
+				whileindex++;
+				if (whileindex > 100) {
 					break;
 				}
 			}
-			for (int i = 0; i < selectionButtons.Length; i++) {
-				if (randomnum == i) {
-					selectionButtons [i].GetComponent<Image> ().
-					transform.GetChild (0).GetComponent<Text> ().text = temp [letterno].ToString ().ToUpper (); 
-					answerGameObject.Add (selectionButtons [i]);
-				}			
-			}
-			RandomExist [letterno] = randomnum;
-			letterno += 1;
-
+			randomList.Add (randomnum);
+			selectionButtons [randomnum].GetComponentInChildren<Text>().text = i < questionAnswer.Length ?
+				""+questionAnswer [i] : ""+alphabet [UnityEngine.Random.Range (1, 26)];
 		}
 	}
 
@@ -229,13 +207,11 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		if (!hasSkippedQuestion) {
 			CheckAnswer (false);
 			hasSkippedQuestion = true;
-
 		}
 	}
 
 	public void ClearAnswerList ()
 	{
-
 		answerIdentifier.Clear ();
 		if (answerButtons.Count > 0) {
 			answerindex = 1;
