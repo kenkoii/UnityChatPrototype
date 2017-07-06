@@ -69,7 +69,6 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
-
 		GameData.Instance.gpEarned = gp;
 		BattleController.Instance.SetPlayerGP (gp);
 		if (gp != 0) {
