@@ -264,7 +264,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 			int damage = int.Parse (attackerParam [ParamNames.Attack.ToString ()].ToString ());
 		
 			if (attackerBool.Equals (GameData.Instance.isHost)) {
-		
+				Debug.Log ("PLAYER DAMAGE: " + damage);
 				enemyHP -= damage;
 				TweenController.TweenEnemyHPSlider (enemyHP, 1, true, enemyHPBar);
 				if (sameAttack == false) {
@@ -272,6 +272,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 				}
 		
 			} else {
+				Debug.Log ("ENEMY DAMAGE: " + damage);
 				playerHP -= damage;
 				TweenController.TweenPlayerHPSlider (playerHP, 1, true, playerHPBar);
 				if (sameAttack == false) {
@@ -309,10 +310,6 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 			break;
 		
 		}
-
-		//reset effects done by skill
-		GameController.Instance.ResetPlayerDamage ();
-		Debug.Log ("player damage reset! now damage is: " + GameData.Instance.player.playerDamage);
 		
 	}
 
