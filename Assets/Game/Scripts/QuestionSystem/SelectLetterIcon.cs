@@ -31,12 +31,7 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 		NextQuestion ();
 		QuestionController.Instance.OnResult = result;
 	}
-
-	void Start()
-	{
-		//InvokeRepeating ("ProvideHint", 3, 3);
-	}
-
+		
 	public void NextQuestion ()
 	{
 		ClearAnswerList ();

@@ -21,11 +21,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	private List<GameObject> answerButtons = new List<GameObject>();
 	public GameObject inputPrefab;
 	public GameObject outputPrefab;
-	private GameObject questionContainer;
 
-	void Start(){
-		questionContainer = gameObject;
-	}
 
 	public void Activate (Action<int,int> Result)
 	{

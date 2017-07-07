@@ -89,42 +89,22 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	}
 
-	public void SelectSkill1 ()
+	public void SelectSkill (int skillNumber)
 	{
-		SelectSkillReduce (1);
+		SelectSkillReduce (skillNumber);
 
 	}
+		
 
-	public void SelectSkill2 ()
+	public void SkillDescription (int skillNumber)
 	{
-		SelectSkillReduce (2);
-	}
+		SkillDescriptionReduce (SkillManagerComponent.Instance.GetSkill (skillNumber).skillDescription, true);
 
-	public void SelectSkill3 ()
-	{
-		SelectSkillReduce (3);
 	}
 
 
 
-	public void Skill1Description ()
-	{
-		SkillDescription (SkillManagerComponent.Instance.GetSkill (1).skillDescription, true);
-
-	}
-
-	public void Skill2Description ()
-	{
-		SkillDescription (SkillManagerComponent.Instance.GetSkill (2).skillDescription, true);
-	}
-
-	public void Skill3Description ()
-	{
-		SkillDescription (SkillManagerComponent.Instance.GetSkill (3).skillDescription, true);
-	}
-
-
-	private void SkillDescription (string description, bool isShow)
+	private void SkillDescriptionReduce (string description, bool isShow)
 	{
 		skillDescriptionText.text = description;
 		skillDescription.SetActive (isShow);
@@ -137,7 +117,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	private void SelectSkillReduce (int skillNumber)
 	{
-		SelectSkill (delegate() {
+		SelectSkillActivate (delegate() {
 			SkillManagerComponent.Instance.ActivateSkill (skillNumber);
 
 		}, delegate() {
@@ -147,7 +127,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	
 	}
 
-	private void SelectSkill (Action activateSkill, Action skillCost)
+	private void SelectSkillActivate (Action activateSkill, Action skillCost)
 	{
 		//change to mode 2
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {

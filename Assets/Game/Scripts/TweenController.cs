@@ -50,4 +50,7 @@ public static class TweenController{
 	public static void TweenJumpTo(Transform obj, Vector3 endValue, float jumpPower,int numJumps,float duration){
 		obj.transform.DOLocalJump (endValue,jumpPower,numJumps,1,true);
 	}
+	public static void TweenMoveTo(Transform obj, Vector3 endValue,float duration){
+		obj.transform.DOLocalMove (endValue,duration,true);
+	}
 }
