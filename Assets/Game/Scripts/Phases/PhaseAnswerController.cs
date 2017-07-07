@@ -12,6 +12,7 @@ public class PhaseAnswerController : AbstractPhase
 	public override void OnStartPhase ()
 	{
 		Debug.Log ("Starting Answer Phase");
+		RPCDicObserver.AddObserver(AnswerIndicatorController.Instance);
 		hasAnswered = false;
 
 		timeLeft = 5;
@@ -23,6 +24,7 @@ public class PhaseAnswerController : AbstractPhase
 
 	public override void OnEndPhase ()
 	{
+		RPCDicObserver.RemoveObserver(AnswerIndicatorController.Instance);
 		if (questionSelect.activeInHierarchy) {
 			questionSelect.SetActive (false);
 		}
@@ -56,6 +58,7 @@ public class PhaseAnswerController : AbstractPhase
 
 			HideUI ();
 			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+				
 				QuestionStart (gp, qtimeLeft);
 			});
 				

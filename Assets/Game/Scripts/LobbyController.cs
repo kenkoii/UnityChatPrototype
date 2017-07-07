@@ -71,6 +71,9 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		ScreenController.Instance.StopLoadingScreen ();
 		StartPreTimer ();
 		CameraWorksController.Instance.StartIntroCamera ();
+		RPCDicObserver.AddObserver (GestureController.Instance);
+		RPCDicObserver.AddObserver (BattleStatusManager.Instance);
+		RPCDicObserver.AddObserver(BattleView.Instance);
 	}
 
 	/// <summary>

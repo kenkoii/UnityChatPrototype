@@ -6,8 +6,9 @@ public class PhaseAttackController : AbstractPhase
 {
 	public override void OnStartPhase ()
 	{
-		AnswerIndicatorController.Instance.ResetAnswer ();
 		Debug.Log ("Starting attack phase");
+		AnswerIndicatorController.Instance.ResetAnswer ();
+		RPCDicObserver.AddObserver (BattleLogic.Instance);
 		GameTimerView.Instance.ToggleTimer (false);
 		stoptimer = true;
 		timeLeft = 20;
@@ -23,8 +24,8 @@ public class PhaseAttackController : AbstractPhase
 	}
 
 	public override void OnEndPhase(){
+		RPCDicObserver.RemoveObserver (BattleLogic.Instance);
 		CancelInvoke ("StartTimer");
-
 	}
 
 	private void StartTimer ()

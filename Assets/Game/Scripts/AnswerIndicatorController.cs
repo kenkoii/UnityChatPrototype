@@ -20,6 +20,7 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 
 	public void OnNotify(Dictionary<string, System.Object> rpcReceive){
 //		SetAnswerParameter (string answerParameter)
+
 	}
 
 	public void SetAnswerParameter (string answerParameter)

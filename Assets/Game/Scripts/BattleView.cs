@@ -68,6 +68,7 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 	{
 //		ReceiveInitialState (RPCReceiverComponent.Instance.GetHomeState (), true);
 //		ReceiveInitialState (RPCReceiverComponent.Instance.GetVisitorState (), false);
+		RPCDicObserver.RemoveObserver(this);
 	}
 
 	private void ReceiveInitialState (Dictionary<string, System.Object> initialState, bool isHome)

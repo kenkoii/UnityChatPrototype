@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleLogic:MonoBehaviour, IRPCDicObserver
+public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 {
 
 	List<bool> userHome = new List<bool> ();

@@ -26,7 +26,7 @@ public class PhaseSkillController : AbstractPhase
 
 	public override void OnStartPhase ()
 	{
-		
+		RPCDicObserver.AddObserver(SkillActivatorComponent.Instance);
 		Debug.Log ("Starting Skill Phase");
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
@@ -55,6 +55,7 @@ public class PhaseSkillController : AbstractPhase
 
 	public override void OnEndPhase ()
 	{
+		RPCDicObserver.RemoveObserver(SkillActivatorComponent.Instance);
 		ShowSkillUI (false);
 		CancelInvoke ("StartTimer");
 
