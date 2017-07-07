@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComponent>
+public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComponent>, IRPCDicObserver
 {
 	/// <summary>
 	/// Animates the skill.
@@ -31,13 +31,23 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	
 	}
 
+	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	{
+//		CheckSkillName (RPCReceiverComponent.Instance.GetSkillNameParameter());
+//		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
+//			SetPlayerSkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
+//		} else {
+//			SetEnemySkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
+//		}
+	}
+
 	/// <summary>
 	/// Sets the player skill parameter.
 	/// </summary>
 	/// <param name="skillParameter">Skill parameter.</param>
 	public void SetPlayerSkillParameter (string skillParameter)
 	{
-		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList>(skillParameter);
+		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList> (skillParameter);
 
 		foreach (SkillParameter skill in skillResult.skillList) {
 
@@ -46,18 +56,18 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 			}
 
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
-				BattleController.Instance.playerHP += skill.skillValue;
+				BattleView.Instance.playerHP += skill.skillValue;
 			}
 		}
 	}
 
 	public void SetEnemySkillParameter (string skillParameter)
 	{
-		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList>(skillParameter);
+		SkillParameterList skillResult = JsonUtility.FromJson<SkillParameterList> (skillParameter);
 
 		foreach (SkillParameter skill in skillResult.skillList) {
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
-				BattleController.Instance.enemyHP += skill.skillValue;
+				BattleView.Instance.enemyHP += skill.skillValue;
 			}
 		}
 	}
@@ -74,19 +84,13 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	/// <param name="newParam">New parameter.</param>
 	public void CheckSkillName (string skillName)
 	{
-		if(skillName == ParamNames.AirRender.ToString()){
+		if (skillName == ParamNames.AirRender.ToString ()) {
 			AnimateSkill (ParamNames.AirRender);
-		}
-
-		else if(skillName == ParamNames.Sunder.ToString()){
+		} else if (skillName == ParamNames.Sunder.ToString ()) {
 			AnimateSkill (ParamNames.Sunder);
-		}
-
-		else if(skillName == ParamNames.Rejuvination.ToString()){
+		} else if (skillName == ParamNames.Rejuvination.ToString ()) {
 			AnimateSkill (ParamNames.Rejuvination);
-		}
-
-		else if(skillName == ParamNames.BicPunch.ToString()){
+		} else if (skillName == ParamNames.BicPunch.ToString ()) {
 			AnimateSkill (ParamNames.BicPunch);
 		}
 			

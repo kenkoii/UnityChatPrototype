@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GestureController : SingletonMonoBehaviour<GestureController>
+public class GestureController : SingletonMonoBehaviour<GestureController>, IRPCDicObserver
 {
 	private bool hasAnswered = false;
 	public GameObject gestureButtonContainer;
@@ -44,6 +44,11 @@ public class GestureController : SingletonMonoBehaviour<GestureController>
 		SendGesture (4);
 	}
 
+	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	{
+		
+//		SetEnemyGesture (RPCReceiverComponent.Instance.GetGestureParameter ());
+	}
 
 	public void SetEnemyGesture (string enemyGesture)
 	{

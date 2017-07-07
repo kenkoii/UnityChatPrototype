@@ -12,7 +12,7 @@ using Firebase.Unity.Editor;
 
 using System;
 
-/* Facade for Firebase Database */
+/* Firebase Database Component */
 public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabaseComponent>
 {
 
@@ -372,8 +372,7 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 		GameData.Instance.isHost = isHost;
 		MessageListener ();
 
-		User user = new User (GameData.Instance.player.playerName, GameData.Instance.player.playerLife, GameData.Instance.player.playerGP);
-		Dictionary<string, System.Object> entryValues = user.ToDictionary ();
+		Dictionary<string, System.Object> entryValues = GameData.Instance.player.ToDictionary();
 		Dictionary<string, System.Object> childUpdates = new Dictionary<string, System.Object> ();
 
 

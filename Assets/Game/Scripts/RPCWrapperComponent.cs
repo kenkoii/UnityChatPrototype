@@ -33,8 +33,9 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 
 		//show skill ui after answer only in mode 1
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
-			PhaseSkillController.Instance.ShowSkillUI (true,false);
-			PhaseSkillController.Instance.ButtonEnable (false);
+			PhaseSkillController phaseSkillController = FindObjectOfType<PhaseSkillController>();
+			phaseSkillController.ShowSkillUI (true,false);
+			phaseSkillController.ButtonEnable (false);
 		}
 
 		/*

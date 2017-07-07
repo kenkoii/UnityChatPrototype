@@ -72,13 +72,14 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 		case 4:
 			//questionTypeModals[2].SetActive (true);
 			SlotMachineIcon slotMachineIcon = questionTypeModals[4].GetComponent<SlotMachineIcon>();
-			QuestionController.Instance.SetQuestion (slotMachineIcon, questionTime, onResult);
+
 			break;
 		}
 
 
 			
 	}
+		
 
 
 	public void DebugOnClick(){

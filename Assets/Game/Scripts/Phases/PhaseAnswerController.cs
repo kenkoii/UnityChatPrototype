@@ -3,15 +3,13 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerController>, IPhase
+public class PhaseAnswerController : AbstractPhase
 {
-
 	public GameObject questionSelect;
 	private bool hasAnswered = false;
-	private bool stoptimer = false;
-	private int timeLeft;
 
-	public void OnStartPhase ()
+
+	public override void OnStartPhase ()
 	{
 		Debug.Log ("Starting Answer Phase");
 		hasAnswered = false;
@@ -23,7 +21,7 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 
 	}
 
-	public void OnEndPhase ()
+	public override void OnEndPhase ()
 	{
 		if (questionSelect.activeInHierarchy) {
 			questionSelect.SetActive (false);
@@ -70,14 +68,11 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
 		GameData.Instance.gpEarned = gp;
-		BattleController.Instance.SetPlayerGP (gp);
-		if (gp != 0) {
-			TweenController.TweenPlayerGPSlider (BattleController.Instance.playerGP, 1, true, BattleController.Instance.playerGPBar);
-		}
+		BattleView.Instance.playerGP += gp;
 		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-			if (GameData.Instance.skillChosenCost <= BattleController.Instance.playerGP) {
+			if (GameData.Instance.skillChosenCost <= BattleView.Instance.playerGP) {
 				if (GameData.Instance.playerSkillChosen != null) {
 					GameData.Instance.playerSkillChosen ();
 				}

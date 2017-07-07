@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>, IPhase
+public class PhaseSkillController : AbstractPhase
 {
 	public GameObject[] battleUI;
 
@@ -11,21 +11,20 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	public Button skillButton3;
 	public GameObject skillDescription;
 	public Text skillDescriptionText;
-	private bool stoptimer = false;
-	private int timeLeft;
+
 	public Button attackButton;
 
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
-		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleController.Instance.playerGP) {
+		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.playerGP) {
 			button.interactable = false;
 		} else {
 			button.interactable = true;
 		}
 	}
 
-	public void OnStartPhase ()
+	public override void OnStartPhase ()
 	{
 		
 		Debug.Log ("Starting Skill Phase");
@@ -54,7 +53,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	
 	}
 
-	public void OnEndPhase ()
+	public override void OnEndPhase ()
 	{
 		ShowSkillUI (false);
 		CancelInvoke ("StartTimer");

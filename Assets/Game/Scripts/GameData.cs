@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
+/* Global variables*/
 public class GameData: SingletonMonoBehaviour<GameData>
 {
 	public PlayerModel player{ get; set; }

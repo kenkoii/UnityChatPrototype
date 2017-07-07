@@ -6,7 +6,16 @@ using UnityEngine;
 /* Handles receiving of RPC status */
 public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 {
-	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
+	private string rpcAttackParameter;
+	private string rpcAnswerIndicatorParameter;
+	private string rpcGestureParameter;
+	private string rpcSkillNameParameter;
+	private string rpcSkillParameter;
+
+	private Dictionary<string, System.Object> rpcBattleStatusParameter;
+
+	private Dictionary<string, System.Object> rpcInitialHomeStateParameter;
+	private Dictionary<string, System.Object> rpcInitialVisitorStateParameter;
 
 	/// <summary>
 	/// Receives the RPC status.
@@ -23,100 +32,44 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 
 			//NORMAL ATTACK
 			if (newParam.Key == "Attack") {
-				Dictionary<string, System.Object> attackerParam = JsonConverter.JsonStrToDic (newParam.Value.ToString ());
-				thisCurrentParameter.Add (GameData.Instance.attackerBool, attackerParam);
-				if (thisCurrentParameter.Count == 2) {
-					BattleController.Instance.SetAttack (thisCurrentParameter);
-					thisCurrentParameter.Clear ();
-				} 
-
+				rpcAttackParameter = newParam.Value.ToString ();
 			} 
 
 			//ANSWER INDICATORS
 
 			if (newParam.Key == "AnswerIndicator") {
-				AnswerController.Instance.SetAnswerParameter (newParam.Value.ToString ());
+				rpcAnswerIndicatorParameter = newParam.Value.ToString ();
 			}
 				
 
 			// GESTURE
 
 			if (newParam.Key == "Gesture") {
-				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
-					GestureController.Instance.SetEnemyGesture (newParam.Value.ToString ());
-				}
+				rpcAnswerIndicatorParameter = newParam.Value.ToString ();
 			}
 
 			//SKILL PARAMETERS
 
 			if (newParam.Key == "SkillName") {
-
-
-				SkillActivatorComponent.Instance.CheckSkillName (newParam.Value.ToString ());
+				rpcAnswerIndicatorParameter = newParam.Value.ToString ();
 			}
 
 			if (newParam.Key == "SkillParam") {
-				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
-					SkillActivatorComponent.Instance.SetPlayerSkillParameter (newParam.Value.ToString ());
-				} else {
-					SkillActivatorComponent.Instance.SetEnemySkillParameter (newParam.Value.ToString ());
-				}
+
+				rpcAnswerIndicatorParameter = newParam.Value.ToString ();
 			}
 
 		}
 			
 	}
 
+	/// <summary>
+	/// Receives the battle status.
+	/// </summary>
+	/// <param name="battleStatusDetails">Battle status details.</param>
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
-		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
-
-		switch (battleState) {
-		case MyConst.BATTLE_STATUS_ANSWER:
-
-			GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-			GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-			GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-			GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
-
-			 
-			if (battleCount > 1) {
-				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-					PhaseManagerComponent.Instance.StartPhase3 ();
-				} else {
-					PhaseManagerComponent.Instance.StartPhase2 ();
-				}
-				ScreenController.Instance.StopWaitOpponentScreen ();
-			
-			} 
-
-			break;
-
-		case MyConst.BATTLE_STATUS_SKILL:
-			if (battleCount > 1) {
-				
-				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-					PhaseManagerComponent.Instance.StartPhase2 ();
-				} else {
-					PhaseManagerComponent.Instance.StartPhase3 ();
-				}
-				ScreenController.Instance.StopWaitOpponentScreen ();
-			}
-			break;
-
-		case MyConst.BATTLE_STATUS_ATTACK:
-			if (battleCount > 1) {
-				ScreenController.Instance.StopWaitOpponentScreen ();
-			} else {
-				//hide skill ui 
-				PhaseSkillController.Instance.ShowSkillUI (false);
-			}
-		
-			break;
-
-		}
-
+		rpcBattleStatusParameter = battleStatusDetails;
 	}
 
 	/// <summary>
@@ -125,7 +78,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	/// <param name="ititialState">Ititial state.</param>
 	public void ReceiveInitialHomeState (Dictionary<string, System.Object> initialState)
 	{
-		ReceivInitialState (initialState, true);
+		rpcInitialHomeStateParameter = initialState;
 	}
 
 	/// <summary>
@@ -134,44 +87,50 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 	/// <param name="ititialState">Ititial state.</param>
 	public void ReceiveInitialVisitorState (Dictionary<string, System.Object> initialState)
 	{
-		ReceivInitialState (initialState, false);
+		rpcInitialVisitorStateParameter = initialState;
 	}
 
-	/// <summary>
-	/// Receivs the initial state.
-	/// </summary>
-	/// <param name="ititialState">Ititial state.</param>
-	/// <param name="isHome">If set to <c>true</c> is home.</param>
-	private void ReceivInitialState (Dictionary<string, System.Object> initialState, bool isHome)
+
+	//Getters
+
+	public string GetAttackParameter ()
 	{
-		string gameName = (string)initialState ["gameName"];
-		int life = int.Parse (initialState ["life"].ToString ());
-		int gp = int.Parse (initialState ["gp"].ToString ());
-
-
-		if (isHome) {
-			SetPlayerInitialState (gameName, life, gp);
-		} else {
-			SetEnemyInitialState (gameName, life, gp);
-		}
-
+		return rpcAttackParameter;
 	}
 
-	private void SetPlayerInitialState (string gameName, int life, int gp)
+	public string GetAnswerIndicatorParameter ()
 	{
-		if (GameData.Instance.isHost) {
-			BattleController.Instance.InitialPlayerState (life, gameName, gp);
-		} else {
-			BattleController.Instance.InitialEnemyState (life, gameName);
-		}
+		return rpcAnswerIndicatorParameter;
 	}
 
-	private void SetEnemyInitialState (string gameName, int life, int gp)
+	public string GetGestureParameter ()
 	{
-		if (GameData.Instance.isHost) {
-			BattleController.Instance.InitialEnemyState (life, gameName);
-		} else {
-			BattleController.Instance.InitialPlayerState (life, gameName, gp);
-		}
+		return rpcGestureParameter;
 	}
+
+	public string GetSkillNameParameter ()
+	{
+		return rpcSkillNameParameter;
+	}
+
+	public string GetSkillParameter ()
+	{
+		return rpcSkillNameParameter;
+	}
+
+	public Dictionary<string, System.Object> GetBattleStatus ()
+	{
+		return rpcBattleStatusParameter;
+	}
+
+	public Dictionary<string, System.Object> GetHomeState ()
+	{
+		return rpcInitialHomeStateParameter;
+	}
+
+	public Dictionary<string, System.Object> GetVisitorState ()
+	{
+		return rpcInitialVisitorStateParameter;
+	}
+
 }

@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
+/* Manages phases */
 public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponent>
 {
-	
+	public AbstractPhase phaseAnswerController;
+	public AbstractPhase phaseSkillController;
+	public AbstractPhase phaseAttackController;
+
 
 	public void StartPhase1 ()
 	{
-		
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			PhaseActivate (false, true, false);
 		} else {
@@ -40,21 +43,21 @@ public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponen
 	private void PhaseActivate (bool answer, bool skill, bool attack)
 	{
 		if (answer) {
-			PhaseAnswerController.Instance.OnStartPhase ();
+			phaseAnswerController.OnStartPhase ();
 		} else {
-			PhaseAnswerController.Instance.OnEndPhase ();
+			phaseAnswerController.OnEndPhase ();
 		}
 
 		if (skill) {
-			PhaseSkillController.Instance.OnStartPhase ();
+			phaseSkillController.OnStartPhase ();
 		} else {
-			PhaseSkillController.Instance.OnEndPhase ();
+			phaseSkillController.OnEndPhase ();
 		}
 
 		if (attack) {
-			PhaseAttackController.Instance.OnStartPhase ();
+			phaseAttackController.OnStartPhase ();
 		} else {
-			PhaseAttackController.Instance.OnEndPhase ();
+			phaseAttackController.OnEndPhase ();
 		}
 	}
 

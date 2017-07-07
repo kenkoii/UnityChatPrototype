@@ -9,8 +9,11 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
+	private int timeLeft = 3;
+	private bool stoptimer = true;
 
 	void Start(){
+
 		List<string> list = new List<string> ();
 		list = CSVParser.ParseCSV ("selectTyping");
 		Debug.Log (list [50] [0]);
@@ -65,9 +68,35 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		lobbyRoom.SetActive (false);
 		gameRoomUI.SetActive (true);
 		gameRoomAssets.SetActive (true);
-		BattleController.Instance.StartPreTimer ();
 		ScreenController.Instance.StopLoadingScreen ();
+		StartPreTimer ();
+		CameraWorksController.Instance.StartIntroCamera ();
 	}
 
+	/// <summary>
+	/// Delay before start of battle
+	/// </summary>
+	public void StartPreTimer ()
+	{
+		timeLeft = 3;
+		stoptimer = true;
+		InvokeRepeating ("StartTimer", 0, 1);
+	}
+
+	private void StartTimer ()
+	{
+		if (stoptimer) {
+			GameTimerView.Instance.ToggleTimer (true);
+			if (timeLeft > 0) {
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
+				return;
+			} 
+			PhaseManagerComponent.Instance.StartPhase1 ();
+			GameTimerView.Instance.ToggleTimer (false);
+			stoptimer = false;
+			CancelInvoke ("StartTimer");
+		}
+	}
 
 }
