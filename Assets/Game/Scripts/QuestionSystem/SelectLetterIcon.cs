@@ -126,11 +126,10 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	private void CheckAnswerHolder ()
 	{
-		
-		for (int j = 1; j <= questionAnswer.Length + 1; j++) {
-			GameObject findEmpty = answerButtons [j - 1].transform.GetChild (0).gameObject;
+		for (int j = 0; j < questionAnswer.Length; j++) {
+			GameObject findEmpty = answerButtons [j].transform.GetChild (0).gameObject;
 			if (string.IsNullOrEmpty (findEmpty.GetComponent<Text> ().text)) {
-				answerindex = j;
+				answerindex = j +1;
 				break;
 			}
 		}
@@ -209,13 +208,11 @@ public class SelectLetterIcon : MonoBehaviour, IQuestion
 
 	public void ClearAnswerList ()
 	{
-		
 		if (answerButtons.Count > 0) {
 			answerindex = 1;
 			foreach (GameObject o in answerButtons) {
 				Destroy (o);
 			}
 		}
-
 	}
 }

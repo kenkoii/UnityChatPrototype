@@ -18,7 +18,7 @@ public static class TweenController{
 	}
 
 	private static void TweenSlider(Slider slider,float endValue, float duration, bool snapping){
-		slider.DOValue (endValue, duration, snapping);
+		slider.DOValue (endValue, duration, snapping).SetEase(Ease.InOutCirc);
 	}
 		
 
@@ -34,13 +34,17 @@ public static class TweenController{
 	}
 
 	public static void TweenRotateForever(RectTransform rotateObject){
-		
 		Sequence mySequence = DOTween.Sequence();
 		mySequence.Append(rotateObject.DOLocalRotate(new Vector3(0, 0, -360), 5, RotateMode.FastBeyond360).SetEase(Ease.Linear)).SetLoops(-1);
 	}
 
 	public static void TweenTextScale(Transform text, Vector3 endValue, float duration){
 		text.transform.DOScale (endValue,duration);
+	}
+
+	public static void TweenScaleToLarge(Transform text, Vector3 endValue, float duration){
+		text.transform.DOScale (new Vector3(0.1f,0.1f,0.1f),0.05f);
+		text.transform.DOScale (endValue,duration).SetEase(Ease.OutElastic,10,1);
 	}
 
 	public static void TweenShakePosition(Transform obj,float duration, float strength, int vibrato, float randomness){
@@ -50,7 +54,9 @@ public static class TweenController{
 	public static void TweenJumpTo(Transform obj, Vector3 endValue, float jumpPower,int numJumps,float duration){
 		obj.transform.DOLocalJump (endValue,jumpPower,numJumps,1,true);
 	}
+
 	public static void TweenMoveTo(Transform obj, Vector3 endValue,float duration){
 		obj.transform.DOLocalMove (endValue,duration,true);
 	}
+
 }

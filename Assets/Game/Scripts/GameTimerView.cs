@@ -8,7 +8,7 @@ public class GameTimerView : SingletonMonoBehaviour<GameTimerView> {
 
 	public void ToggleTimer(bool toggleFlag){
 		gameTimerText.enabled = toggleFlag;
-		gameTimerImage.enabled = toggleFlag;
+	//	gameTimerImage.enabled = toggleFlag;
 	}
 		
 

@@ -9,6 +9,5 @@ public static class CSVParser {
 		List<List<string>> rows = parsed.data;
 		return rows;
 		}
-
 	}
 

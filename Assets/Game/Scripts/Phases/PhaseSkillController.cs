@@ -56,9 +56,8 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 
 	public void OnEndPhase ()
 	{
-		ShowSkillUI (false);
+		ShowSkillUI (true);
 		CancelInvoke ("StartTimer");
-
 	}
 
 	public void ShowSkillUI (bool toggle, bool isIncludeDescription = true)

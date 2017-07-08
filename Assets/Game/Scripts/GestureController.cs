@@ -1,22 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class GestureController : SingletonMonoBehaviour<GestureController>
 {
 	private bool hasAnswered = false;
 	public GameObject gestureButtonContainer;
+	public Sprite closeImage;
+	public Sprite gestureImage;
 
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
-	public void ShowGestureButtons ()
+	public void ShowGestureButtons (Transform button)
 	{
-		gestureButtonContainer.SetActive (true);
+		//gestureButtonContainer.SetActive (true);
+		if(gestureButtonContainer.transform.localPosition.x!=0){
+			TweenController.TweenMoveTo(gestureButtonContainer.transform,new Vector2(0,gestureButtonContainer.transform.localPosition.y),0.3f);
+			button.gameObject.GetComponent<Image> ().sprite = closeImage;
+		}
+		else{
+			HideGestureButton ();
+			button.gameObject.GetComponent<Image> ().sprite = gestureImage;
+		}
 	}
 
 	public void HideGestureButton ()
 	{
-		gestureButtonContainer.SetActive (false);
+		TweenController.TweenMoveTo(gestureButtonContainer.transform,new Vector2(718f,gestureButtonContainer.transform.localPosition.y),0.3f);
+		//gestureButtonContainer.SetActive (false);
 	}
 
 
@@ -91,4 +102,6 @@ public class GestureController : SingletonMonoBehaviour<GestureController>
 			CameraWorksController.Instance.ShowGestureCamera ();
 		}
 	}
+
+
 }

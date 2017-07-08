@@ -17,9 +17,7 @@ public static class QuestionBuilder
 	public static void PopulateQuestion (string questionName)
 	{
 		questionList.Clear ();
-		//parsedData = CSVParser.ParseCSV (questionName);
 		parsedData = getParsedCSV (questionName);
-
 		if (questionName == "wordchoice" || questionName == "slotmachine") {
 			for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
 				questionList.Add (new Question (parsedData [listIndex] ["Definition"].ToString (),
@@ -28,8 +26,6 @@ public static class QuestionBuilder
 			}
 		} else {
 			for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
-				Debug.Log (parsedData [listIndex] ["Definition"].ToString () + "/" +
-				parsedData [listIndex] ["Answer"].ToString ());
 				questionList.Add (new Question (parsedData [listIndex] ["Definition"].ToString (),
 					parsedData [listIndex] ["Answer"].ToString (), 0));
 			}

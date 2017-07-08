@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 public class SkillViewController : MonoBehaviour {
 	public GameObject skillView;
 	public GameObject skillOverViewScreen;
@@ -21,7 +22,8 @@ public class SkillViewController : MonoBehaviour {
 
 	public void OnClickSkillItem(){
 		skillOverViewScreen.SetActive (true);
-		TweenController.TweenTextScale (skillOverViewScreen.transform,new Vector3(8,8,8),0.5f);
+		TweenController.TweenScaleToLarge (skillOverViewScreen.transform,new Vector3(1,1,1),0.2f);
+		skillOverViewScreen.transform.GetChild(1).GetChild(0).GetComponentInChildren<Image>().sprite = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<Image> ().sprite;
 	}
 	public void OnCloseSkillOverView(){
 		TweenController.TweenTextScale (skillOverViewScreen.transform,new Vector3(1,1,1),0.5f);
