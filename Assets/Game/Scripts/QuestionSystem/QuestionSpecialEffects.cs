@@ -8,7 +8,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 	private string questionAnswer;
 	private bool answerResult;
 
-	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject gpText, GameObject questionType){
+	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject questionType){
 
 		answerResult = result;
 		questionAnswer = answer;
@@ -16,7 +16,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 		ShowAnswer (answerButtons);
 
 		if (result) {
-			GpGotEffect (gpText);
+		//	GpGotEffect (gpText);
 			CorrectAnswerEffect (questionAnswer , answerButtons, questionType);
 			AudioEffect (AudioEnum.Correct);
 		} else {
@@ -33,7 +33,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 
 	private void GpGotEffect(GameObject gpText){
 		gpText.GetComponent<Text> ().text = "1 GP";
-		TweenController.TweenTextScale (gpText.transform, new Vector3 (5, 5, 5), 1.0f);
+		TweenController.TweenTextScale (gpText.transform, new Vector3 (3, 3, 3), 1.0f);
 	}
 
 	private void CorrectAnswerEffect(string questionAnswer, List<GameObject> answerButtons, GameObject questionType){

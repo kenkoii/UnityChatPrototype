@@ -39,12 +39,12 @@ public static class TweenController{
 	}
 
 	public static void TweenTextScale(Transform text, Vector3 endValue, float duration){
-		text.transform.DOScale (endValue,duration);
+		text.transform.DOScale (endValue,duration).SetEase(Ease.InElastic,30,1);
 	}
 
 	public static void TweenScaleToLarge(Transform text, Vector3 endValue, float duration){
 		text.transform.DOScale (new Vector3(0.1f,0.1f,0.1f),0.05f);
-		text.transform.DOScale (endValue,duration).SetEase(Ease.OutElastic,10,1);
+		text.transform.DOScale (endValue, duration).SetEase (Ease.OutElastic, 10, 1);
 	}
 
 	public static void TweenShakePosition(Transform obj,float duration, float strength, int vibrato, float randomness){

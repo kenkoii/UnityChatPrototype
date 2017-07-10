@@ -162,7 +162,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam;
 		if (result) {

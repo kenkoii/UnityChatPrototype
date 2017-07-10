@@ -50,7 +50,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 	public void QuestionCallback (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, correctAnswers, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, correctAnswers, questionAnswer, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam;
 		if (result) {
