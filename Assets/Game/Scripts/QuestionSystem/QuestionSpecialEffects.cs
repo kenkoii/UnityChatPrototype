@@ -8,7 +8,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 	private string questionAnswer;
 	private bool answerResult;
 
-	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject gpText, GameObject questionType){
+	public void DeployEffect(bool result , List<GameObject> answerButtons, string answer, GameObject questionType){
 
 		answerResult = result;
 		questionAnswer = answer;
@@ -16,7 +16,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 		ShowAnswer (answerButtons);
 
 		if (result) {
-			GpGotEffect (gpText);
+		//	GpGotEffect (gpText);
 			CorrectAnswerEffect (questionAnswer , answerButtons, questionType);
 			AudioEffect (AudioEnum.Correct);
 		} else {
@@ -33,7 +33,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 
 	private void GpGotEffect(GameObject gpText){
 		gpText.GetComponent<Text> ().text = "1 GP";
-		TweenController.TweenTextScale (gpText.transform, new Vector3 (5, 5, 5), 1.0f);
+		TweenController.TweenTextScale (gpText.transform, new Vector3 (3, 3, 3), 1.0f);
 	}
 
 	private void CorrectAnswerEffect(string questionAnswer, List<GameObject> answerButtons, GameObject questionType){
@@ -58,6 +58,10 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 				if (i >= answerSplit.Length) {
 					break;
 				}
+				answerButtons [i].GetComponent<Image> ().color = answerResult ?
+					new Color (255f / 255, 249f / 255f, 149f / 255f) :
+					new Color (229f / 255, 114f / 255f, 114f / 255f);
+				
 
 			} else {
 

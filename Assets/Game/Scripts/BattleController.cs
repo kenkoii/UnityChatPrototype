@@ -341,7 +341,7 @@ public class BattleController : SingletonMonoBehaviour<BattleController>
 	public void SetSkillUI (int skillNumber, ParamNames skillName, int skillGp)
 	{
 		this.skillName [skillNumber - 1].text = skillName.ToString ();
-		this.skillGpCost [skillNumber - 1].text = "" + skillGp + "GP";
+		this.skillGpCost [skillNumber - 1].text = "" + skillGp;
 	}
 		
 	//send attack to firebase

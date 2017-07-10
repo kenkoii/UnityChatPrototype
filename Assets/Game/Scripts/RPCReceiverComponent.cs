@@ -56,7 +56,7 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			}
 
 			if (newParam.Key == "SkillParam") {
-				if (!(GameData.Instance.attackerBool.Equals (GameData.Instance.isHost))) {
+				if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
 					SkillActivatorComponent.Instance.SetPlayerSkillParameter (newParam.Value.ToString ());
 				} else {
 					SkillActivatorComponent.Instance.SetEnemySkillParameter (newParam.Value.ToString ());

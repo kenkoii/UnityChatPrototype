@@ -6,29 +6,14 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class TypingIcon : MonoBehaviour, IQuestion
+public class TypingIcon : QuestionSystemBase, IQuestion
 {
-	private int currentRound = 1;
-	private int correctAnswers;
-	private int answerindex = 1;
-	public List<GameObject> answerIdentifier = new List<GameObject>();
-	private string answerWrote;
-	private bool hasSkippedQuestion = false;
-	private string questionAnswer = "";
-	private GameObject questionContainer;
+
 	public GameObject gpText;
-	public GameObject[] selectionButtons = new GameObject[12];
-	private List<GameObject> answerButtons = new List<GameObject> ();
-	public GameObject inputPrefab;
-	public GameObject answerContent;
 	public Text questionText;
 	private bool selectionIsClickable = true;
-	private Text buttonText;
-
-	void Start(){
-		buttonText = this.transform.GetChild (0).GetComponent<Text> ();
-		questionContainer = gameObject;
-	}
+	public GameObject inputPrefab;
+	public GameObject answerContent;
 
 	public void Activate (Action<int,int> Result)
 	{
@@ -42,9 +27,9 @@ public class TypingIcon : MonoBehaviour, IQuestion
 
 	public void NextRound ()
 	{
-		answerIdentifier.Clear ();
+		
 		LoadQuestion ();
-		PopulateAnswerHolder ();
+		PopulateAnswerHolder (gameObject, inputPrefab, answerContent);
 		QuestionHint ();
 	}
 
@@ -54,88 +39,7 @@ public class TypingIcon : MonoBehaviour, IQuestion
 		GetComponent<Text> ().text = questionAnswer [0].ToString ().ToUpper ();
 		answerButtons [0].GetComponent<Button> ().enabled = false;
 	}
-
-
-	private void PopulateAnswerHolder(){
-		answerButtons.Clear ();
-		for (int i = 0; i < questionAnswer.Length; i++) {
-			GameObject answerPrefab = Instantiate (inputPrefab) as GameObject; 
-			answerPrefab.transform.SetParent (gameObject.transform.GetChild (1).
-				transform.GetChild (0).GetChild (0).transform, false);
-			answerPrefab.name = "output" + (i + 1);
-			answerPrefab.GetComponent<Button> ().onClick.AddListener (() => {
-				gameObject.GetComponent<TypingIcon> ().OnAnswerClick ();
-			});
-			answerButtons.Add (answerPrefab);
-			answerPrefab.transform.GetChild (0).GetComponent<Text> ().text = "";
-			answerPrefab.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
-		}
-	}
-
-	private void LoadQuestion ()
-	{
-		Question questionLoaded = QuestionBuilder.GetQuestion ();
-		questionAnswer = questionLoaded.answer;
-		questionText.text = questionLoaded.question;
-	}
-
-	public void OnSelectionClick ()
-	{
-
-		if (!selectionIsClickable) {
-			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
-		} else {
-			answerWrote = "";
-			int k = 1;
-			foreach (GameObject findEmpty in answerButtons) {
-				if (findEmpty.transform.GetChild (0).GetComponent<Text> ().text == "") {
-					answerindex = k;
-					answerButtons [(answerindex - 1)].transform.GetChild (0).
-					GetComponent<Text> ().text 
-					= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
-					break;
-				} else {
-
-				}
-				k++;
-			}
-			foreach (GameObject readWrittenAnswer in answerButtons) {
-				answerWrote = answerWrote + (readWrittenAnswer.transform.GetChild (0).GetComponent<Text> ().text);
-			}
-			answerIdentifier.Add (EventSystem.current.currentSelectedGameObject);
-			if (answerWrote.Length == questionAnswer.Length) {
-
-				if (answerWrote.ToUpper () == questionAnswer.ToUpper ()) {
-					CheckAnswer (true);
-				} else {
-					CheckAnswer (false);
-				}
-			}
-		}
-	}
-
-	public void CheckAnswer (bool result)
-	{
-		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
-
-		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam;
-		if (result) {
-			correctAnswers += 1;
-			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
-		} else {
-			isCorrectParam = ParamNames.AnswerWrong.ToString ();
-		}
-		hasSkippedQuestion = true;
-		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
-		QuestionController.Instance.Stoptimer = false;
-		Invoke ("OnFinishQuestion", 1f);
-
-
-	}
-
+		
 	public void OnSkipClick ()
 	{
 		if (!hasSkippedQuestion) {
@@ -153,7 +57,7 @@ public class TypingIcon : MonoBehaviour, IQuestion
 		TweenCallBack ();
 		hasSkippedQuestion = false;
 		Clear ();
-		answerindex = 1;
+		answerIndex = 1;
 		currentRound = currentRound + 1;
 		NextRound ();
 		QuestionController.Instance.Stoptimer = true;
@@ -175,7 +79,7 @@ public class TypingIcon : MonoBehaviour, IQuestion
 
 	public void Clear ()
 	{
-		answerindex = 1;
+		answerIndex = 1;
 		foreach (GameObject o in answerButtons) {
 			Destroy (o);
 		}

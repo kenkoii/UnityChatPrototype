@@ -7,30 +7,7 @@ using UnityEngine.UI;
 
 public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerComponent>
 {
-	//private static int questiontype = 0;
 	public GameObject[] questionTypeModals;
-
-	//private int numberofQuestionTypes = 2;
-	//private List<string> questionTypeName = new List<string>();
-	void Start ()
-	{
-
-		//Debug.Log (questionTypeModals [0].name);
-		//questionTypeModals [3].SetActive (true);
-		//questionTypeName.Add ("SelectLetterIconModal");
-		//questionTypeName.Add ("TypingModal");
-		//questionTypeName.Add ("ChangeOrderModal");
-		//questionTypeName.Add ("WordChoiceModal");
-		//numberofQuestionTypes = questionTypeName.Count;
-		// 0 = SelectLetter
-		// 1 = Order
-		// 2 = ChangeOrder
-//		questiontype = 0;
-//
-//		SetQuestionEntry (questiontype, 3, delegate(int result) {
-//			
-//		});
-	}
 
 	public void QuestionHide(){
 
