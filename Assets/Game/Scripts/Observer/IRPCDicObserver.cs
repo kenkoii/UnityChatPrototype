@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 public interface IRPCDicObserver
 {
-	void OnNotify (Dictionary<string, System.Object> dicValue);
+	void OnNotify (Firebase.Database.DataSnapshot dataSnapShot);
 }
 

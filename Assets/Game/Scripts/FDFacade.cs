@@ -59,7 +59,7 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 			Debug.LogError (args.DatabaseError.Message);
 			return;
 		}
-		RPC.Instance.ReceiveRPC ((Dictionary<string, System.Object>)args.Snapshot.Value);
+		RPC.Instance.ReceiveRPC (args.Snapshot);
 	}
 
 	public void QueryTable (string subscriberName, Query query)
@@ -97,7 +97,7 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 			Debug.LogError (args.DatabaseError.Message);
 			return;
 		}
-		RPC.Instance.ReceiveRPC ((Dictionary<string, System.Object>)args.Snapshot.Value);
+		RPC.Instance.ReceiveRPC (args.Snapshot);
 	}
 		
 	//Run a transaction

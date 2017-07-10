@@ -10,12 +10,12 @@ public static class RPCDicObserver
 	static List<IRPCDicObserver> observers = new List<IRPCDicObserver> ();
 
 	//Send notifications if something has happened
-	public static void Notify (Dictionary<string, System.Object> dicValue)
+	public static void Notify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
 		for (int i = 0; i < observers.Count; i++) {
 			//Notify all observers even though some may not be interested in what has happened
 			//Each observer should check if it is interested in this event
-			observers [i].OnNotify (dicValue);
+			observers [i].OnNotify (dataSnapShot);
 		}
 	}
 

@@ -72,7 +72,7 @@ public class PhaseAnswerController : AbstractPhase
 	{
 		GameData.Instance.gpEarned = gp;
 		BattleView.Instance.PlayerGP += gp;
-		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
+		FDController.Instance.AnswerPhase (qtimeLeft, gp);
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			if (GameData.Instance.skillChosenCost <= BattleView.Instance.PlayerGP) {

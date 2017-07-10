@@ -20,6 +20,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	string battleStatusKey = null;
 	private bool isMatchMakeSuccess = false;
 	private DependencyStatus dependencyStatus = DependencyStatus.UnavailableOther;
+	private int roomCounter = 0;
 
 	void Start ()
 	{
@@ -61,8 +62,19 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	}
 
 	//Do something when receives rpc from facade
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
+		//TEMPORARY SOLUTION FOR PLAYER DETAILS
+		if (dataSnapShot.Key.ToString ().Equals ("Home")) {
+			BattleView.Instance.SetStateParam (dataSnapShot,true);
+		}
+		//TEMPORARY SOLUTION FOR PLAYER DETAILS
+		if (dataSnapShot.Key.ToString ().Equals ("Visitor")) {
+			isMatchMakeSuccess = true;
+			onSuccessMatchMake (true);
+			BattleView.Instance.SetStateParam (dataSnapShot,false);
+			Debug.Log ("Matching Success!");
+		}
 
 	}
 
@@ -180,7 +192,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 				} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 				}
-			}else{
+			} else {
 				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)dataSnapshot.Value;
 
 				foreach (KeyValuePair<string , System.Object> battleKey in battleStatus) {
@@ -198,8 +210,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	private void InitialStateListener ()
 	{
 		if (gameRoomKey != null) {
-			FDFacade.Instance.CreateTableChildAddedListener ("HomeListener", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_INITITAL_STATE).Child (MyConst.GAMEROOM_HOME));
-			FDFacade.Instance.CreateTableChildAddedListener ("VisitorListener", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_INITITAL_STATE).Child (MyConst.GAMEROOM_VISITOR));
+			FDFacade.Instance.CreateTableChildAddedListener ("InitialStateListener", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child(MyConst.GAMEROOM_INITITAL_STATE));
 		}
 	}
 

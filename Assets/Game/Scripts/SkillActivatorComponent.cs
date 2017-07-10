@@ -31,7 +31,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 	
 	}
 
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
 //		CheckSkillName (RPCReceiverComponent.Instance.GetSkillNameParameter());
 //		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {

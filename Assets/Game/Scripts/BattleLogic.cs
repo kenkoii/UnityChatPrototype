@@ -9,14 +9,25 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 	List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
 	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
 
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-//		Dictionary<string, System.Object> attackerParam = JsonConverter.JsonStrToDic (RPCReceiverComponent.Instance.GetAttackParameter());
-//		thisCurrentParameter.Add (GameData.Instance.attackerBool, attackerParam);
-//		if (thisCurrentParameter.Count == 2) {
-//			Attack (thisCurrentParameter);
-//			thisCurrentParameter.Clear ();
-//		} 
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		if (rpcReceive.ContainsKey ("param")) {
+			bool userHome = (bool)rpcReceive ["userHome"];
+			GameData.Instance.attackerBool = userHome;
+
+			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+			string stringParam = param ["Attack"].ToString ();
+
+			Dictionary<string, System.Object> attackerParam = JsonConverter.JsonStrToDic (stringParam);
+			thisCurrentParameter.Add (GameData.Instance.attackerBool, attackerParam);
+			if (thisCurrentParameter.Count == 2) {
+				Attack (thisCurrentParameter);
+				thisCurrentParameter.Clear ();
+			} 
+		}
+
+
 	}
 
 	public void Attack (Dictionary<bool, Dictionary<string, object>> currentParam)

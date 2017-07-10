@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GestureController : SingletonMonoBehaviour<GestureController>, IRPCDicObserver
-
 {
 	private bool hasAnswered = false;
 	public GameObject gestureButtonContainer;
@@ -16,11 +15,10 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 	public void ShowGestureButtons (Transform button)
 	{
 		//gestureButtonContainer.SetActive (true);
-		if(gestureButtonContainer.transform.localPosition.x!=0){
-			TweenController.TweenMoveTo(gestureButtonContainer.transform,new Vector2(0,gestureButtonContainer.transform.localPosition.y),0.3f);
+		if (gestureButtonContainer.transform.localPosition.x != 0) {
+			TweenController.TweenMoveTo (gestureButtonContainer.transform, new Vector2 (0, gestureButtonContainer.transform.localPosition.y), 0.3f);
 			button.gameObject.GetComponent<Image> ().sprite = closeImage;
-		}
-		else{
+		} else {
 			HideGestureButton ();
 			button.gameObject.GetComponent<Image> ().sprite = gestureImage;
 		}
@@ -28,7 +26,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	public void HideGestureButton ()
 	{
-		TweenController.TweenMoveTo(gestureButtonContainer.transform,new Vector2(718f,gestureButtonContainer.transform.localPosition.y),0.3f);
+		TweenController.TweenMoveTo (gestureButtonContainer.transform, new Vector2 (718f, gestureButtonContainer.transform.localPosition.y), 0.3f);
 		//gestureButtonContainer.SetActive (false);
 	}
 
@@ -57,10 +55,18 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 		SendGesture (4);
 	}
 
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-		
-//		SetEnemyGesture (RPCReceiverComponent.Instance.GetGestureParameter ());
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		if (rpcReceive.ContainsKey ("param")) {
+			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+			if (param.ContainsKey ("Gesture")) {
+				string stringParam = param ["Gesture"].ToString ();
+				if (!GameData.Instance.isHost) {
+					SetEnemyGesture (stringParam);
+				}
+			}
+		}
 	}
 
 	public void SetEnemyGesture (string enemyGesture)

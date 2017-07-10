@@ -20,7 +20,7 @@ public class PhaseAttackController : AbstractPhase
 	{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		param [ParamNames.Attack.ToString ()] = GameData.Instance.player.playerDamage + GameData.Instance.gpEarned;
-		RPCWrapperComponent.Instance.RPCWrapAttack (param);
+		FDController.Instance.AttackPhase (new AttackModel(JsonConverter.DicToJsonStr(param)));
 	}
 
 

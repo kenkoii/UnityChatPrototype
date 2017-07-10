@@ -76,7 +76,7 @@ public class PhaseSkillController : AbstractPhase
 	{
 		ButtonEnable (false);
 		GameTimerView.Instance.ToggleTimer (false);
-		RPCWrapperComponent.Instance.RPCWrapSkill ();
+		FDController.Instance.SkillPhase ();
 		stoptimer = false;
 	}
 
@@ -135,7 +135,7 @@ public class PhaseSkillController : AbstractPhase
 				activateSkill ();
 			};
 			skillCost ();
-			RPCWrapperComponent.Instance.RPCWrapSkill ();
+			FDController.Instance.SkillPhase ();
 			Debug.Log ("skilled!");
 		} else {
 			activateSkill ();
@@ -157,7 +157,7 @@ public class PhaseSkillController : AbstractPhase
 			ButtonEnable (false);
 			GameTimerView.Instance.ToggleTimer (false);
 				
-			RPCWrapperComponent.Instance.RPCWrapSkill ();
+			FDController.Instance.SkillPhase ();
 			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 

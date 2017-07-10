@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /* Controls the battle */
-public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
+public class BattleView : SingletonMonoBehaviour<BattleView>
 {
 	public Text[] skillName;
 	public Text[] skillGpCost;
@@ -85,11 +85,14 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 		SceneManager.LoadScene ("scene1");
 	}
 
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
-	{
-//		ReceiveInitialState (RPCReceiverComponent.Instance.GetHomeState (), true);
-//		ReceiveInitialState (RPCReceiverComponent.Instance.GetVisitorState (), false);
-		RPCDicObserver.RemoveObserver (this);
+
+
+	public void SetStateParam(Firebase.Database.DataSnapshot dataSnapShot, bool isHome){
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		if (rpcReceive.ContainsKey ("param")) {
+			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+			ReceiveInitialState (param, isHome);
+		}
 	}
 
 	private void ReceiveInitialState (Dictionary<string, System.Object> initialState, bool isHome)
@@ -97,6 +100,9 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 		string playerName = (string)initialState ["playerName"];
 		int playerLife = int.Parse (initialState ["playerLife"].ToString ());
 		int playerGp = int.Parse (initialState ["playerGP"].ToString ());
+	
+		Debug.Log (playerName);
+		Debug.Log (playerLife);
 
 		if (isHome) {
 			SetInitialPlayerState (playerName, playerLife, playerGp);

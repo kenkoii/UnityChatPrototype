@@ -4,60 +4,64 @@ using UnityEngine;
 public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, IRPCDicObserver
 {
 
-	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-//		ReceiveBattleStatus (RPCReceiverComponent.Instance.GetBattleStatus ());
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		ReceiveBattleStatus (rpcReceive);
 
 	}
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
-		int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
-		
-		switch (battleState) {
-		case MyConst.BATTLE_STATUS_ANSWER:
-		
-			GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-			GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-			GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-			GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
-		
-					 
-			if (battleCount > 1) {
-				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-					PhaseManagerComponent.Instance.StartPhase3 ();
-				} else {
-					PhaseManagerComponent.Instance.StartPhase2 ();
+		if (battleStatusDetails.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
+			string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
+			int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+			switch (battleState) {
+			case MyConst.BATTLE_STATUS_ANSWER:
+
+				GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+				GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+				GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+				GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+
+
+				if (battleCount > 1) {
+					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+						PhaseManagerComponent.Instance.StartPhase3 ();
+					} else {
+						PhaseManagerComponent.Instance.StartPhase2 ();
+					}
+					ScreenController.Instance.StopWaitOpponentScreen ();
+
+				} 
+
+				break;
+
+			case MyConst.BATTLE_STATUS_SKILL:
+				if (battleCount > 1) {
+
+					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+						PhaseManagerComponent.Instance.StartPhase2 ();
+					} else {
+						PhaseManagerComponent.Instance.StartPhase3 ();
+					}
+					ScreenController.Instance.StopWaitOpponentScreen ();
 				}
-				ScreenController.Instance.StopWaitOpponentScreen ();
-					
-			} 
-		
-			break;
-		
-		case MyConst.BATTLE_STATUS_SKILL:
-			if (battleCount > 1) {
-						
-				if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-					PhaseManagerComponent.Instance.StartPhase2 ();
+				break;
+
+			case MyConst.BATTLE_STATUS_ATTACK:
+				if (battleCount > 1) {
+					ScreenController.Instance.StopWaitOpponentScreen ();
 				} else {
-					PhaseManagerComponent.Instance.StartPhase3 ();
+					//hide skill ui 
+					FindObjectOfType<PhaseSkillController> ().ShowSkillUI (false);
 				}
-				ScreenController.Instance.StopWaitOpponentScreen ();
+
+				break;
+
 			}
-			break;
-		
-		case MyConst.BATTLE_STATUS_ATTACK:
-			if (battleCount > 1) {
-				ScreenController.Instance.StopWaitOpponentScreen ();
-			} else {
-				//hide skill ui 
-				FindObjectOfType<PhaseSkillController> ().ShowSkillUI (false);
-			}
-				
-			break;
-		
 		}
+
 	}
 }

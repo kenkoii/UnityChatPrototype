@@ -58,7 +58,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 		StartCoroutine (StartSkillDeductDelay(skill));
 		FDController.Instance.SetSkillParam (skill);
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
-			RPCWrapperComponent.Instance.RPCWrapSkill ();
+			FDController.Instance.SkillPhase ();
 		} 
 	}
 

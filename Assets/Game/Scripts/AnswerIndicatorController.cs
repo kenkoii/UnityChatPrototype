@@ -18,9 +18,17 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 		ResetAnswer ();
 	}
 
-	public void OnNotify(Dictionary<string, System.Object> rpcReceive){
-//		SetAnswerParameter (string answerParameter)
+	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
+	{
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		if (rpcReceive.ContainsKey ("param")) {
+			bool userHome = (bool)rpcReceive ["userHome"];
+			GameData.Instance.attackerBool = userHome;
 
+			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+			string stringParam = param ["AnswerIndicator"].ToString ();
+			SetAnswerParameter (stringParam);
+		}
 	}
 
 	public void SetAnswerParameter (string answerParameter)
@@ -47,14 +55,14 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 			
 			SetValidateAnswer (isCorrect, delegate(Sprite result) {
 				playerPlaceHolder [questionNumber - 1].sprite = result;
-				playerPlaceHolder[questionNumber - 1].color = isCorrect ? new Color(237f/255f,232f/255f,54f/255f):
-					playerPlaceHolder[questionNumber - 1].color = new Color(239/255f,87f/255f,86f/255f);
+				playerPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237f / 255f, 232f / 255f, 54f / 255f) :
+					playerPlaceHolder [questionNumber - 1].color = new Color (239 / 255f, 87f / 255f, 86f / 255f);
 			});
 		} else {
 			SetValidateAnswer (isCorrect, delegate(Sprite result) {
 				enemyPlaceHolder [questionNumber - 1].sprite = result;
-				enemyPlaceHolder[questionNumber - 1].color = isCorrect ?new Color(237f/255f,232f/255f,54f/255f):
-					enemyPlaceHolder[questionNumber - 1].color = new Color(239/255f,87f/255f,86f/255f);
+				enemyPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237f / 255f, 232f / 255f, 54f / 255f) :
+					enemyPlaceHolder [questionNumber - 1].color = new Color (239 / 255f, 87f / 255f, 86f / 255f);
 			});
 		}
 	}

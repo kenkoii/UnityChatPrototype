@@ -9,8 +9,8 @@ public class RPC : SingletonMonoBehaviour<RPC> {
 		RPCBoolObserver.Notify (isConnectedDB);
 	}
 
-	public void ReceiveRPC(Dictionary<string, System.Object> rpcReceive){
-		RPCDicObserver.Notify (rpcReceive);
+	public void ReceiveRPC(Firebase.Database.DataSnapshot dataSnapShot){
+		RPCDicObserver.Notify (dataSnapShot);
 	}
 
 	public void ReceiveRPCQuery(Firebase.Database.DataSnapshot dataSnapShot){
