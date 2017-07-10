@@ -66,13 +66,13 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	{
 		//TEMPORARY SOLUTION FOR PLAYER DETAILS
 		if (dataSnapShot.Key.ToString ().Equals ("Home")) {
-			BattleView.Instance.SetStateParam (dataSnapShot,true);
+			BattleView.Instance.SetStateParam (dataSnapShot, true);
 		}
 		//TEMPORARY SOLUTION FOR PLAYER DETAILS
 		if (dataSnapShot.Key.ToString ().Equals ("Visitor")) {
 			isMatchMakeSuccess = true;
 			onSuccessMatchMake (true);
-			BattleView.Instance.SetStateParam (dataSnapShot,false);
+			BattleView.Instance.SetStateParam (dataSnapShot, false);
 			Debug.Log ("Matching Success!");
 		}
 
@@ -186,7 +186,8 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	{
 		FDFacade.Instance.GetTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS), delegate(DataSnapshot dataSnapshot) {
 
-			if (dataSnapshot == null) {
+
+			if (dataSnapshot.Value == null) {
 				if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
@@ -210,7 +211,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	private void InitialStateListener ()
 	{
 		if (gameRoomKey != null) {
-			FDFacade.Instance.CreateTableChildAddedListener ("InitialStateListener", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child(MyConst.GAMEROOM_INITITAL_STATE));
+			FDFacade.Instance.CreateTableChildAddedListener ("InitialStateListener", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_INITITAL_STATE));
 		}
 	}
 

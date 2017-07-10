@@ -86,7 +86,6 @@ public class BattleView : SingletonMonoBehaviour<BattleView>
 	}
 
 
-
 	public void SetStateParam(Firebase.Database.DataSnapshot dataSnapShot, bool isHome){
 		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
 		if (rpcReceive.ContainsKey ("param")) {

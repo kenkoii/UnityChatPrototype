@@ -33,12 +33,27 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-//		CheckSkillName (RPCReceiverComponent.Instance.GetSkillNameParameter());
+//		CheckSkillName ();
 //		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
 //			SetPlayerSkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
 //		} else {
 //			SetEnemySkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
 //		}
+
+		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+		if (rpcReceive.ContainsKey ("param")) {
+			bool userHome = (bool)rpcReceive ["userHome"];
+			GameData.Instance.attackerBool = userHome;
+
+			if (rpcReceive.ContainsKey ("param")) {
+				Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+				foreach (var item in param) {
+					Debug.Log (item.Key.ToString ());
+					Debug.Log (item.Value.ToString ());
+				}
+//				string stringParam = param ["AnswerIndicator"].ToString ();
+			}
+		}
 	}
 
 	/// <summary>
