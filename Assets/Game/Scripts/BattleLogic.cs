@@ -130,9 +130,9 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 			if (secondCheck) {
 				if (GameData.Instance.isHost) {
 					if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
-						FirebaseDatabaseComponent.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						FDController.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 					} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-						FirebaseDatabaseComponent.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 
 					}
 				}

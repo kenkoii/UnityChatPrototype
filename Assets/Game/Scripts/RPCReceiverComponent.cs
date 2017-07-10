@@ -55,8 +55,8 @@ public class RPCReceiverComponent: SingletonMonoBehaviour<RPCReceiverComponent>
 			}
 
 			if (newParam.Key == "SkillParam") {
-
 				rpcAnswerIndicatorParameter = newParam.Value.ToString ();
+
 			}
 
 		}

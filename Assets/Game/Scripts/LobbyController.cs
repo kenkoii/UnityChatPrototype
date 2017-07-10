@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using PapaParse.Net;
 /* UI For searching matches */
 public class LobbyController : SingletonMonoBehaviour<LobbyController>
 {
@@ -9,20 +10,21 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject lobbyRoom;
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
+	public GameObject roomViews;
 	private int timeLeft = 3;
 	private bool stoptimer = true;
 
-	void Start(){
 
-		List<string> list = new List<string> ();
-		list = CSVParser.ParseCSV ("selectTyping");
-		Debug.Log (list [50] [0]);
-		}
+
+	void Start(){
+		QuestionBuilder.PopulateQuestion ("selectChangeTyping");
+	}
+
 	public void SearchRoom ()
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		ScreenController.Instance.StartMatchingScreen ();
-		FirebaseDatabaseComponent.Instance.SearchRoom (delegate(bool result) {
+		FDController.Instance.SearchRoom (delegate(bool result) {
 			if (result) {
 				GoToGameRoom ();	
 			} else {
@@ -46,18 +48,13 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 				modeChosen = ModeEnum.Mode2;
 				break;
 			}
-
 			GameData.Instance.modePrototype = modeChosen;
-
 		}
-
-
-
 	}
 
 	public void CancelRoomSearch ()
 	{
-		FirebaseDatabaseComponent.Instance.CancelRoomSearch ();
+		FDController.Instance.CancelRoomSearch ();
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 	}
 
@@ -66,6 +63,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.Bgm);
 		lobbyRoom.SetActive (false);
+		roomViews.SetActive (false);
 		gameRoomUI.SetActive (true);
 		gameRoomAssets.SetActive (true);
 		ScreenController.Instance.StopLoadingScreen ();

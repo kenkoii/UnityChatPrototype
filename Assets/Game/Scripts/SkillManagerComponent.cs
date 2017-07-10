@@ -56,7 +56,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 	public void StartSkill (SkillModel skill)
 	{
 		StartCoroutine (StartSkillDeductDelay(skill));
-		FirebaseDatabaseComponent.Instance.SetSkillParam (skill);
+		FDController.Instance.SetSkillParam (skill);
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 			RPCWrapperComponent.Instance.RPCWrapSkill ();
 		} 

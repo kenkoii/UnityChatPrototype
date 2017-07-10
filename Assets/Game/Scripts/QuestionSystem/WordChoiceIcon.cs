@@ -50,7 +50,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 	public void QuestionCallback (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, correctAnswers, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, correctAnswers, questionAnswer, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam;
 		if (result) {
@@ -61,7 +61,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		}
 		justAnswered = true;
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}
@@ -119,11 +119,14 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 
 
 	private void CheckAnswer(string answerClicked1, string answerClicked2){
+		foreach (GameObject g in selectionButtons) {
+			g.GetComponent<Image> ().color = new Color(94f/255,255f/255f,148f/255f);
+		}
 		if ((answerClicked1.Equals (answer1) || answerClicked1.Equals (answer2)) &&
 		   (answerClicked2.Equals (answer1) || answerClicked2.Equals (answer2))) {
 			Debug.Log ("hey");
-			answerClicked [0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
-			answerClicked [1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			//answerClicked [0].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
+			//answerClicked [1].GetComponent<Image> ().color = new Color (255f / 255f, 255f / 255f, 30f / 255f);
 			QuestionCallback (true);
 		} else {
 			Debug.Log (answerClicked1 + "/" + answerClicked2);

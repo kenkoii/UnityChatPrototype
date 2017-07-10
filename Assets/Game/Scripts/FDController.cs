@@ -1,42 +1,106 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Firebase;
 using Firebase.Database;
 using System;
 
-//using Firebase;
+#if UNITY_EDITOR
+using Firebase.Unity.Editor;
+#endif
 
-public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
+public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver, IRPCQueryObserver
 {
-	DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
+	DatabaseReference reference;
 	DatabaseReference roomReference;
 	private bool searchingRoom = false;
 	private Action<bool> onSuccessMatchMake;
 	private int joinCounter = 0;
 	string gameRoomKey = null;
 	string battleStatusKey = null;
+	private bool isMatchMakeSuccess = false;
+	private DependencyStatus dependencyStatus = DependencyStatus.UnavailableOther;
 
 	void Start ()
 	{
+		ScreenController.Instance.StartLoadingScreen (delegate() {
+			dependencyStatus = FirebaseApp.CheckDependencies ();
+			if (dependencyStatus != DependencyStatus.Available) {
+				FirebaseApp.FixDependenciesAsync ().ContinueWith (task => {
+					dependencyStatus = FirebaseApp.CheckDependencies ();
+					if (dependencyStatus == DependencyStatus.Available) {
+						InitializeFirebase ();
+					} else {
+						ScreenController.Instance.StopLoadingScreen ();
+						Debug.LogError (
+							"Could not resolve all Firebase dependencies: " + dependencyStatus);
+					}
+				});
+			} else {
+
+				InitializeFirebase ();
+			}
+		});
+	}
+
+	private void InitializeFirebase ()
+	{
+		ScreenController.Instance.StopLoadingScreen ();
+		#if UNITY_EDITOR
+		// Set this before calling into the realtime database.
+		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl (MyConst.URL_FIREBASE_DATABASE);
+		#endif
 		SetReference ();
+		FDFacade.Instance.CheckDBConnection (FirebaseDatabase.DefaultInstance.GetReferenceFromUrl (MyConst.URL_FIREBASE_DATABASE_CONNECTION));
 	}
 
 	private void SetReference ()
 	{
-		FDFacade.Instance.SetUnityEditorReference (MyConst.URL_FIREBASE_DATABASE);
+		reference = FirebaseDatabase.DefaultInstance.RootReference;
+		roomReference = reference.Child (MyConst.GAMEROOM_NAME);
 	}
 
-	//Do something when recives rpc from facade
+	//Do something when receives rpc from facade
 	public void OnNotify (Dictionary<string, System.Object> rpcReceive)
 	{
 
 	}
 
+	public void OnNotifyQuery (DataSnapshot dataSnapshot)
+	{
+		if (searchingRoom) {
+			if (dataSnapshot.HasChildren) {
+				Debug.Log ("has game rooms");
+				foreach (DataSnapshot snapshot in dataSnapshot.Children) {
+				
+					//get prototype mode type from host
+					GameData.Instance.modePrototype = (ModeEnum)int.Parse (snapshot.Child (MyConst.GAMEROOM_PROTOTYPE_MODE).Value.ToString ());
+
+					GameController.Instance.UpdateGame ();
+
+					if (snapshot.Child (MyConst.GAMEROOM_STATUS).Value.ToString ().Equals ("0")) {
+
+						gameRoomKey = snapshot.Key.ToString ();
+						JoinRoom ();
+						searchingRoom = false;
+						return;
+					}
+				}
+
+			} else {
+				Debug.Log ("has NO game rooms");
+				CreateRoom ();
+				searchingRoom = false;
+			}
+		}
+	}
+
 	public void SearchRoom (Action<bool> onResult)
 	{
 		RPCDicObserver.AddObserver (this);
+		RPCQueryObserver.AddObserver (this);
 		//Order first to search fast
-		FDFacade.Instance.CreateTableValueChangedListener ("SearchRoom", roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo ("0"));
+		FDFacade.Instance.QueryTable ("SearchRoom", roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo ("0"));
 		searchingRoom = true;
 		onSuccessMatchMake = onResult;
 	}
@@ -55,7 +119,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	{
 		FDFacade.Instance.RunTransaction (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_STATUS), delegate(MutableData mutableData) {
 			int playerCount = int.Parse (mutableData.Value.ToString ());
-
+		
 			playerCount++;
 			joinCounter++;
 
@@ -85,7 +149,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 		Dictionary<string, System.Object> entryValues = GameData.Instance.player.ToDictionary ();
 
-		string directory = "/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/";
+		string directory = MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_INITITAL_STATE + "/" + userPlace + "/param/";
 		FDFacade.Instance.CreateTableChildrenAsync (directory, reference, entryValues);
 
 
@@ -108,16 +172,16 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	private void CheckInitialPhase ()
 	{
-		FDFacade.Instance.RunTransaction (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS), delegate(MutableData mutableData) {
-			//get the battlekey, create if host
-			if (mutableData.Value == null) {
+		FDFacade.Instance.GetTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS), delegate(DataSnapshot dataSnapshot) {
+
+			if (dataSnapshot == null) {
 				if (GameData.Instance.modePrototype == ModeEnum.Mode1) {
 					UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 				} else if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 					UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
 				}
-			} else {
-				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)mutableData.Value;
+			}else{
+				Dictionary<string, System.Object> battleStatus = (Dictionary<string, System.Object>)dataSnapshot.Value;
 
 				foreach (KeyValuePair<string , System.Object> battleKey in battleStatus) {
 					battleStatusKey = battleKey.Key;
@@ -127,6 +191,8 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 			FDFacade.Instance.CreateTableChildAddedListener ("BattleStatusChildAdded", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS));
 			FDFacade.Instance.CreateTableValueChangedListener ("BattleStatusValueChanged", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS));
 		});
+
+
 	}
 
 	private void InitialStateListener ()
@@ -162,6 +228,15 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 		string directory = "/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_BATTLE_STATUS + "/" + battleStatusKey + "/";
 		FDFacade.Instance.CreateTableChildrenAsync (directory, reference, entryValues);
+	}
+
+	public void CancelRoomSearch ()
+	{
+		if (!isMatchMakeSuccess) {
+			if (GameData.Instance.isHost) {
+				DeleteRoom ();
+			} 
+		}
 	}
 
 	private void DeleteRoom ()

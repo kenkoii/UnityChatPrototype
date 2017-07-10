@@ -7,7 +7,6 @@ public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponen
 	public AbstractPhase phaseAnswerController;
 	public AbstractPhase phaseSkillController;
 	public AbstractPhase phaseAttackController;
-	public AnswerIndicatorController answer;
 
 	public void StartPhase1 ()
 	{

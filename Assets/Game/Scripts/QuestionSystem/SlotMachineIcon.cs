@@ -64,7 +64,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 
 	public void CheckAnswer(bool result){
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 		string isCorrectParam;
@@ -76,7 +76,7 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		}
 		hasSkippedQuestion = true;
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		OnFinishQuestion ();
 

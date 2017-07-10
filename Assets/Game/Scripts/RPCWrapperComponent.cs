@@ -16,20 +16,20 @@ public class RPCWrapperComponent: SingletonMonoBehaviour<RPCWrapperComponent>
 	public void RPCWrapAttack (Dictionary<string, System.Object> param)
 	{
 		ScreenController.Instance.StartWaitOpponentScreen ();
-		FirebaseDatabaseComponent.Instance.AttackPhase (new AttackModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FDController.Instance.AttackPhase (new AttackModel(JsonConverter.DicToJsonStr (param).ToString()));
 	}
 
 	public void RPCWrapSkill ()
 	{
 		ScreenController.Instance.StartWaitOpponentScreen ();
-		FirebaseDatabaseComponent.Instance.SkillPhase ();
+		FDController.Instance.SkillPhase ();
 	
 	}
 		
 	public void RPCWrapAnswer (int receiveTime, int receiveAnswer)
 	{
 		ScreenController.Instance.StartWaitOpponentScreen ();
-		FirebaseDatabaseComponent.Instance.AnswerPhase (receiveTime, receiveAnswer);
+		FDController.Instance.AnswerPhase (receiveTime, receiveAnswer);
 
 		//show skill ui after answer only in mode 1
 		if (GameData.Instance.modePrototype == ModeEnum.Mode1) {

@@ -13,4 +13,8 @@ public class RPC : SingletonMonoBehaviour<RPC> {
 		RPCDicObserver.Notify (rpcReceive);
 	}
 
+	public void ReceiveRPCQuery(Firebase.Database.DataSnapshot dataSnapShot){
+		RPCQueryObserver.NotifyQuery (dataSnapShot);
+	}
+
 }
