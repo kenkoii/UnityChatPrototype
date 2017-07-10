@@ -71,11 +71,11 @@ public class PhaseAnswerController : AbstractPhase
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
 		GameData.Instance.gpEarned = gp;
-		BattleView.Instance.playerGP += gp;
+		BattleView.Instance.PlayerGP += gp;
 		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-			if (GameData.Instance.skillChosenCost <= BattleView.Instance.playerGP) {
+			if (GameData.Instance.skillChosenCost <= BattleView.Instance.PlayerGP) {
 				if (GameData.Instance.playerSkillChosen != null) {
 					GameData.Instance.playerSkillChosen ();
 				}

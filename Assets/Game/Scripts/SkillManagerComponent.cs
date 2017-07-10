@@ -64,11 +64,11 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 
 	IEnumerator StartSkillDeductDelay(SkillModel skill){
 		yield return new WaitForSeconds (0.5f);
-		BattleView.Instance.playerGP -= skill.skillGpCost;
+		BattleView.Instance.PlayerGP -= skill.skillGpCost;
 	}
 
 	/// <summary>
-	/// Set the skill to placeholder
+	/// Set the skill to placeholder UI
 	/// </summary>
 	/// <param name="skill1">Skill1.</param>
 

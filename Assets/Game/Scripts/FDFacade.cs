@@ -15,6 +15,8 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 	private DependencyStatus dependencyStatus = DependencyStatus.UnavailableOther;
 	private DatabaseReference connectionReference;
 	private string unityEditorReference;
+	private Dictionary<string, DatabaseReference> subscriberReference = new Dictionary<string, DatabaseReference>();
+	private Dictionary<string, Query> subscriberQuery = new Dictionary<string, Query>();
 
 	//set unity reference
 	public void SetUnityEditorReference (string reference)
@@ -42,7 +44,7 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 			InitializeFirebase ();
 		}
 	}
-	//
+
 	private void InitializeFirebase ()
 	{
 
@@ -83,12 +85,25 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 	}
 
 	//Add listener to a table ValueChange
-	public void CreateTableValueChangedListener (DatabaseReference reference)
+	public void CreateTableValueChangedListener (string subscriberName, DatabaseReference reference)
 	{
-		reference.ValueChanged += HandleTableValueChanged;
+		if (subscriberReference.ContainsKey (subscriberName)) {
+			return;
+		}
+		subscriberReference.Add (subscriberName, reference);
+		subscriberReference[subscriberName].ValueChanged+= HandleTableValueChanged;
 	}
 
-	void HandleTableValueChanged (object sender, ValueChangedEventArgs args)
+	public void CreateTableValueChangedListener (string subscriberName, Query query)
+	{
+		if (subscriberQuery.ContainsKey (subscriberName)) {
+			return;
+		}
+		subscriberQuery.Add (subscriberName, query);
+		subscriberQuery[subscriberName].ValueChanged+= HandleTableValueChanged;
+	}
+
+	private void HandleTableValueChanged (object sender, ValueChangedEventArgs args)
 	{
 		if (args.DatabaseError != null) {
 			Debug.LogError (args.DatabaseError.Message);
@@ -99,12 +114,16 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 
 
 	//Add listener to a table ChildAdded
-	private void CreateTableChildAddedListener (DatabaseReference reference)
+	public void CreateTableChildAddedListener (string subscriberName, DatabaseReference reference)
 	{
-		reference.ChildAdded += HandleTableChildAdded;
+		if (subscriberReference.ContainsKey (subscriberName)) {
+			return;
+		}
+		subscriberReference.Add (subscriberName, reference);
+		subscriberReference[subscriberName].ChildAdded+= HandleTableChildAdded;
 	}
 
-	void HandleTableChildAdded (object sender, ChildChangedEventArgs args)
+	private void HandleTableChildAdded (object sender, ChildChangedEventArgs args)
 	{
 		if (args.DatabaseError != null) {
 			Debug.LogError (args.DatabaseError.Message);
@@ -125,19 +144,31 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 	}
 
 	//Read from table once
-	public Dictionary<string, System.Object> GetTableValueAsync (DatabaseReference reference, Action<string> action)
+	public Dictionary<string, System.Object> GetTableValueAsync (DatabaseReference reference, Action<DataSnapshot> dataSnapshot)
 	{
 		DataSnapshot snapshot = null;
 		reference.GetValueAsync ().ContinueWith (task => {
 
 			if (task.IsFaulted || task.IsCanceled) {
 			} else {
-				snapshot = task.Result;
+				dataSnapshot(task.Result);
 			}
 		});
 
 		return (Dictionary<string, System.Object>)snapshot.Value;
 	}
+
+	//Set table once
+	public void SetTableValueAsync (DatabaseReference reference, object objectValue)
+	{
+		reference.SetValueAsync (objectValue);
+	}
+
+	public void RemoveTableValueAsync (DatabaseReference reference)
+	{
+		reference.RemoveValueAsync ();
+	}
+
 	//Create a key from table
 	public string CreateKey (DatabaseReference reference)
 	{

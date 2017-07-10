@@ -56,7 +56,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 			}
 
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
-				BattleView.Instance.playerHP += skill.skillValue;
+				BattleView.Instance.PlayerHP += skill.skillValue;
 			}
 		}
 	}
@@ -67,7 +67,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 		foreach (SkillParameter skill in skillResult.skillList) {
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
-				BattleView.Instance.enemyHP += skill.skillValue;
+				BattleView.Instance.EnemyHP += skill.skillValue;
 			}
 		}
 	}

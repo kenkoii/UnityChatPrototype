@@ -13,21 +13,21 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 	private string playerName;
 	public Text playerNameText;
 
-	public int playerHP{ get; set; }
+	private int playerHP;
 
 	private int playerMaxHP = 10;
 	public Slider playerHPBar;
 	public Text playerHPText;
 	public Text playerGPText;
 
-	public int playerGP{ get; set; }
+	private int playerGP;
 
 	private int playerMaxGP = 10;
 	public Slider playerGPBar;
 
 	private string enemyName;
 
-	public int enemyHP { get; set; }
+	private int enemyHP;
 
 	private int enemyMaxHP = 10;
 	public Slider enemyHPBar;
@@ -36,6 +36,30 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 
 	public Text battleResultText;
 	public Button backToLobbyButton;
+
+	public int PlayerHP {
+		get{ return playerHP; }
+		set {
+			playerHP = value;
+			TweenController.TweenEnemyHPSlider (playerHP, 1, true, playerHPBar);
+		}
+	}
+
+	public int PlayerGP {
+		get{ return playerGP; }
+		set {
+			playerGP = value;
+			TweenController.TweenEnemyHPSlider (playerGP, 1, true, playerGPBar);
+		}
+	}
+
+	public int EnemyHP {
+		get{ return enemyHP; }
+		set {
+			enemyHP = value;
+			TweenController.TweenEnemyHPSlider (enemyHP, 1, true, enemyHPBar);
+		}
+	}
 
 	void Update ()
 	{
@@ -46,9 +70,6 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 
 		playerGPText.text = "" + playerGP + "/" + playerMaxGP;
 
-		TweenController.TweenEnemyHPSlider (playerHP, 1, true, playerHPBar);
-		TweenController.TweenEnemyHPSlider (playerGP, 1, true, playerGPBar);
-		TweenController.TweenEnemyHPSlider (enemyHP, 1, true, enemyHPBar);
 
 		if (playerHP < 0) {
 			playerHP = 0;
@@ -68,7 +89,7 @@ public class BattleView : SingletonMonoBehaviour<BattleView>, IRPCDicObserver
 	{
 //		ReceiveInitialState (RPCReceiverComponent.Instance.GetHomeState (), true);
 //		ReceiveInitialState (RPCReceiverComponent.Instance.GetVisitorState (), false);
-		RPCDicObserver.RemoveObserver(this);
+		RPCDicObserver.RemoveObserver (this);
 	}
 
 	private void ReceiveInitialState (Dictionary<string, System.Object> initialState, bool isHome)

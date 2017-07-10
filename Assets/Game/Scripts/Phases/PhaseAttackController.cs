@@ -23,6 +23,7 @@ public class PhaseAttackController : AbstractPhase
 		RPCWrapperComponent.Instance.RPCWrapAttack (param);
 	}
 
+
 	public override void OnEndPhase(){
 		RPCDicObserver.RemoveObserver (BattleLogic.Instance);
 		CancelInvoke ("StartTimer");

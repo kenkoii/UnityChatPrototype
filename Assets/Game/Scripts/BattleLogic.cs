@@ -109,14 +109,14 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 
 	IEnumerator CheckBattleDelay (bool secondCheck)
 	{
-		if (BattleView.Instance.enemyHP <= 0 || BattleView.Instance.playerHP <= 0) {
+		if (BattleView.Instance.EnemyHP <= 0 || BattleView.Instance.PlayerHP <= 0) {
 			ScreenController.Instance.StopWaitOpponentScreen ();
 			CameraWorksController.Instance.StartWinLoseCamera ();
 
-			if (BattleView.Instance.enemyHP > 0 && BattleView.Instance.playerHP <= 0) {
+			if (BattleView.Instance.EnemyHP > 0 && BattleView.Instance.PlayerHP <= 0) {
 				BattleView.Instance.ShowWinLose ("lose", "win", "LOSE", AudioEnum.Lose);
 
-			} else if (BattleView.Instance.playerHP > 0 && BattleView.Instance.enemyHP <= 0) {
+			} else if (BattleView.Instance.PlayerHP > 0 && BattleView.Instance.EnemyHP <= 0) {
 				BattleView.Instance.ShowWinLose ("win", "lose", "WIN", AudioEnum.Win);
 
 			} else {
@@ -153,14 +153,14 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 
 			if (attackerBool.Equals (GameData.Instance.isHost)) {
 				Debug.Log ("PLAYER DAMAGE: " + damage);
-				BattleView.Instance.enemyHP -= damage;
+				BattleView.Instance.EnemyHP -= damage;
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (1));
 				}
 
 			} else {
 				Debug.Log ("ENEMY DAMAGE: " + damage);
-				BattleView.Instance.playerHP -= damage;
+				BattleView.Instance.PlayerHP -= damage;
 				if (sameAttack == false) {
 					StartCoroutine (StartAttackSequence (2));
 				}

@@ -439,6 +439,10 @@ public class FirebaseDatabaseComponent : SingletonMonoBehaviour<FirebaseDatabase
 		}
 	}
 
+	public void SendRPC(){
+	}
+
+
 	public void SetAttackParam (AttackModel attack)
 	{
 		SetParam (attack.ToDictionary ());

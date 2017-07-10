@@ -17,7 +17,7 @@ public class PhaseSkillController : AbstractPhase
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
-		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.playerGP) {
+		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.PlayerGP) {
 			button.interactable = false;
 		} else {
 			button.interactable = true;
