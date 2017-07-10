@@ -21,11 +21,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	private List<GameObject> answerButtons = new List<GameObject>();
 	public GameObject inputPrefab;
 	public GameObject outputPrefab;
-	private GameObject questionContainer;
 
-	void Start(){
-		questionContainer = gameObject;
-	}
 
 	public void Activate (Action<int,int> Result)
 	{
@@ -166,7 +162,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	public void QuestionDoneCallback (bool result)
 	{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gpText, gameObject);
+		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam;
 		if (result) {
