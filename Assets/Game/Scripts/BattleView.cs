@@ -36,6 +36,7 @@ public class BattleView : SingletonMonoBehaviour<BattleView>
 
 	public Text battleResultText;
 	public Button backToLobbyButton;
+	public Image backToLobbyImage;
 
 	public int PlayerHP {
 		get{ return playerHP; }
@@ -143,6 +144,7 @@ public class BattleView : SingletonMonoBehaviour<BattleView>
 		battleResultText.text = param3;
 		battleResultText.enabled = true;
 		backToLobbyButton.enabled = true;
+		backToLobbyImage.enabled = true;
 		AudioController.Instance.PlayAudio (param4);
 	}
 

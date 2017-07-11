@@ -9,7 +9,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 	
 	private SkillModel[] skill = new SkillModel[3];
 
-	private List<SkillModel> skillList = new List<SkillModel> ();
+	public List<SkillModel> skillList = new List<SkillModel> ();
 
 	//TESTING ONLY!!!!
 	void Start ()
@@ -39,7 +39,8 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 		string skillParam3 = JsonUtility.ToJson (splist3);
 		skillList.Add (new SkillModel (ParamNames.Rejuvination, 4, "Regenerates HP which is highly affected by number of correct answers", skillParam3));
 
-	
+	//------------
+
 		SetSkill (0, skillList [0]);
 		SetSkill (1, skillList [1]);
 		SetSkill (2, skillList [2]);
@@ -72,7 +73,7 @@ public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponen
 	/// </summary>
 	/// <param name="skill1">Skill1.</param>
 
-	private void SetSkill (int skillIndex, SkillModel skill)
+	public void SetSkill (int skillIndex, SkillModel skill)
 	{
 		this.skill [skillIndex] = skill;
 		BattleView.Instance.SetSkillUI (skillIndex + 1, skill.skillName, skill.skillGpCost);
