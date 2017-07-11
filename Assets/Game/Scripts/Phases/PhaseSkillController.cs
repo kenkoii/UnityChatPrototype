@@ -1,17 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
 
 public class PhaseSkillController : BasePhase
 {
-	public Button skillButton1;
-	public Button skillButton2;
-	public Button skillButton3;
+	public Button[] skillButton;
 	public GameObject skillDescription;
 	public Text skillDescriptionText;
-
 	public Button attackButton;
-
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
@@ -30,9 +27,9 @@ public class PhaseSkillController : BasePhase
 			ButtonEnable (true);
 		} else {
 
-			SkillButtonInteractable (1, skillButton1);
-			SkillButtonInteractable (2, skillButton2);
-			SkillButtonInteractable (3, skillButton3);
+			SkillButtonInteractable (1, skillButton[0]);
+			SkillButtonInteractable (2, skillButton[1]);
+			SkillButtonInteractable (3, skillButton[2]);
 
 		}
 
@@ -49,18 +46,11 @@ public class PhaseSkillController : BasePhase
 	public override void OnEndPhase ()
 	{
 		RPCDicObserver.RemoveObserver(SkillActivatorComponent.Instance);
-		ShowSkillUI (false);
-
+		ButtonEnable (false);
+		attackButton.gameObject.SetActive (false);
 		CancelInvoke ("StartTimer");
 	}
-
-	public void ShowSkillUI (bool toggle, bool isIncludeDescription = true)
-	{
-		attackButton.gameObject.SetActive (toggle);
-		if (isIncludeDescription) {
-			skillDescription.SetActive (toggle);
-		}
-	}
+		
 
 	public void AttackButton ()
 	{
@@ -72,18 +62,19 @@ public class PhaseSkillController : BasePhase
 
 	public void ButtonEnable (bool buttonEnable)
 	{
-		skillButton1.interactable = buttonEnable;
-		skillButton2.interactable = buttonEnable;
-		skillButton3.interactable = buttonEnable;
+		skillButton[0].interactable = buttonEnable;
+		skillButton[1].interactable = buttonEnable;
+		skillButton[2].interactable = buttonEnable;
 		attackButton.interactable = buttonEnable;
 
 	}
 
 	public void SelectSkill (int skillNumber)
 	{
-		
-		SelectSkillReduce (skillNumber);
-
+		if (skillButton [skillNumber - 1].interactable) {
+			TweenController.TweenScaleToLarge (EventSystem.current.currentSelectedGameObject.transform, Vector3.one, 0.3f);
+			SelectSkillReduce (skillNumber);
+		}
 	}
 		
 
@@ -92,9 +83,7 @@ public class PhaseSkillController : BasePhase
 		SkillDescriptionReduce (SkillManagerComponent.Instance.GetSkill (skillNumber).skillDescription, true);
 
 	}
-
-
-
+		
 	private void SkillDescriptionReduce (string description, bool isShow)
 	{
 		skillDescriptionText.text = description;
