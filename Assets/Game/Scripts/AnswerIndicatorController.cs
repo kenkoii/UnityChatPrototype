@@ -26,8 +26,10 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 			GameData.Instance.attackerBool = userHome;
 
 			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
-			string stringParam = param ["AnswerIndicator"].ToString ();
-			SetAnswerParameter (stringParam);
+			if (param.ContainsKey ("AnswerIndicator")) {
+				string stringParam = param ["AnswerIndicator"].ToString ();
+				SetAnswerParameter (stringParam);
+			}
 		}
 	}
 

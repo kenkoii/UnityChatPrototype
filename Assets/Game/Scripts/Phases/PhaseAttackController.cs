@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class PhaseAttackController : AbstractPhase
+public class PhaseAttackController : BasePhase
 {
 	public override void OnStartPhase ()
 	{

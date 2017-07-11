@@ -4,9 +4,9 @@ using System.Collections.Generic;
 /* Manages phases */
 public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponent>
 {
-	public AbstractPhase phaseAnswerController;
-	public AbstractPhase phaseSkillController;
-	public AbstractPhase phaseAttackController;
+	public BasePhase phaseAnswerController;
+	public BasePhase phaseSkillController;
+	public BasePhase phaseAttackController;
 
 	public void StartPhase1 ()
 	{
