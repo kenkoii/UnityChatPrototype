@@ -17,7 +17,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 
 
 	void Start(){
-		QuestionBuilder.PopulateQuestion ("selectChangeTyping");
+		//QuestionBuilder.PopulateQuestion ("selectChangeTyping");
 	}
 
 	public void SearchRoom ()

@@ -46,6 +46,7 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 	}
 
 	private void ShowAnswer(List<GameObject> answerButtons){
+
 		for (int i = 0; i < answerButtons.Count; i++) {
 			if (questionTypeComponent.name == "WordChoiceModal") {
 				
@@ -54,7 +55,6 @@ public class QuestionSpecialEffects : MonoBehaviour  {
 				answerButtons [i].transform.GetChild (0).GetComponent<Text> ().text = 
 					answerSplit [i].ToString ().ToUpper ();
 
-				Debug.Log (i);
 				if (i >= answerSplit.Length) {
 					break;
 				}

@@ -17,7 +17,7 @@ public class TypingIcon : QuestionSystemBase, IQuestion
 
 	public void Activate (Action<int,int> Result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
+		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextRound ();
@@ -37,15 +37,8 @@ public class TypingIcon : QuestionSystemBase, IQuestion
 	{
 		answerButtons [0].transform.GetChild (0).
 		GetComponent<Text> ().text = questionAnswer [0].ToString ().ToUpper ();
+		answerIndex += 1;
 		answerButtons [0].GetComponent<Button> ().enabled = false;
-	}
-		
-	public void OnSkipClick ()
-	{
-		if (!hasSkippedQuestion) {
-			CheckAnswer (false);
-			hasSkippedQuestion = true;
-		}
 	}
 
 	public void TweenCallBack(){
