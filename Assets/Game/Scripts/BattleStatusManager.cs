@@ -69,7 +69,7 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 				break;
 
 			}
-//		}
+		}
 
 	}
 }
