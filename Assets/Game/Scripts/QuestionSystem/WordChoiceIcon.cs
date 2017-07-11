@@ -97,7 +97,6 @@ public class WordChoiceIcon : QuestionSystemBase, IQuestion
 		int numberOfAnswers = 2;
 		List <int> randomList = new List<int>();
 		string[] temp = questionAnswer.Split ('/');
-		Debug.Log (temp[0]);
 		int whileindex = 0;
 		for (int i = 0; i < selectionButtons.Length; i++) {
 			int randomnum = UnityEngine.Random.Range (0, 4); 
