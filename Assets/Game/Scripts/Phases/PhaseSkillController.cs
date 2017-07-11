@@ -43,9 +43,9 @@ public class PhaseSkillController : BasePhase
 
 	public override void OnEndPhase ()
 	{
-		RPCDicObserver.RemoveObserver(SkillActivatorComponent.Instance);
 		ButtonEnable (false);
 		attackButton.gameObject.SetActive (false);
+
 		CancelInvoke ("StartTimer");
 	}
 		

@@ -9,6 +9,7 @@ public class PhaseAttackController : BasePhase
 		Debug.Log ("Starting attack phase");
 		AnswerIndicatorController.Instance.ResetAnswer ();
 		RPCDicObserver.AddObserver (BattleLogic.Instance);
+
 		GameTimerView.Instance.ToggleTimer (false);
 		stoptimer = true;
 		timeLeft = 20;

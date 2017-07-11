@@ -33,8 +33,10 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
+		
 		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
 		if (rpcReceive.ContainsKey ("param")) {
+
 			bool userHome = (bool)rpcReceive ["userHome"];
 			GameData.Instance.attackerBool = userHome;
 
@@ -67,10 +69,12 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 			if (skill.skillKey == ParamNames.Damage.ToString ()) {
 				GameData.Instance.player.playerDamage += skill.skillValue;
+				Debug.Log ("skill player damage activated");
 			}
 
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.PlayerHP += skill.skillValue;
+				Debug.Log ("skill player heal activated");
 			}
 		}
 	}
@@ -82,6 +86,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 		foreach (SkillParameter skill in skillResult.skillList) {
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.EnemyHP += skill.skillValue;
+				Debug.Log ("skill enemy heal activated");
 			}
 		}
 	}
