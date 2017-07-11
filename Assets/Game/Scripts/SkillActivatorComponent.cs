@@ -33,25 +33,24 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-//		CheckSkillName ();
-//		if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
-//			SetPlayerSkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
-//		} else {
-//			SetEnemySkillParameter (RPCReceiverComponent.Instance.GetSkillParameter());
-//		}
-
 		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
 		if (rpcReceive.ContainsKey ("param")) {
 			bool userHome = (bool)rpcReceive ["userHome"];
 			GameData.Instance.attackerBool = userHome;
 
-			if (rpcReceive.ContainsKey ("param")) {
-				Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
-				foreach (var item in param) {
-					Debug.Log (item.Key.ToString ());
-					Debug.Log (item.Value.ToString ());
+			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+			if (param.ContainsKey ("SkillParam")) {
+				string stringParam = param ["SkillParam"].ToString ();
+				if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
+					SetPlayerSkillParameter (stringParam);
+				} else {
+					SetEnemySkillParameter (stringParam);
 				}
-//				string stringParam = param ["AnswerIndicator"].ToString ();
+
+			}
+			if (param.ContainsKey ("SkillName")) {
+				string stringParam = param ["SkillName"].ToString ();
+				CheckSkillName (stringParam);
 			}
 		}
 	}
