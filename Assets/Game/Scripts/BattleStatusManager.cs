@@ -17,12 +17,14 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 		foreach (var item in battleStatusDetails) {
 			if (Object.ReferenceEquals (item.Value.GetType (), newBattleStatus.GetType ())) {
 				newBattleStatus = (Dictionary<string, object>)item.Value;
+
 			}
 		}
+			
 
 		if (newBattleStatus.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
-			string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
-			int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
+			string battleState = newBattleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+			int battleCount = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
 			Debug.Log ("Current Battle State: " +battleState);
 			Debug.Log ("Current Battle Count: " +battleCount);
@@ -67,7 +69,7 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 				break;
 
 			}
-		}
+//		}
 
 	}
 }
