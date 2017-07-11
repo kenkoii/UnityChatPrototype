@@ -301,6 +301,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void AnswerPhase (int receiveTime, int receiveAnswer)
 	{
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		int modulusNum = 1;
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 2;
@@ -334,6 +335,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void SkillPhase ()
 	{
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		int modulusNum = 2;
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			modulusNum = 1;
@@ -361,6 +363,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void AttackPhase (AttackModel param)
 	{
+		ScreenController.Instance.StartWaitOpponentScreen ();
 		GetLatestKey (3, delegate(string resultString) {
 			FDFacade.Instance.RunTransaction (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString), delegate(MutableData mutableData) {
 				mutableData.Value = PhaseMutate (mutableData, MyConst.BATTLE_STATUS_ATTACK, delegate(Dictionary<string, System.Object> battleStatus, int battleCount) {

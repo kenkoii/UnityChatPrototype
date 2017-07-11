@@ -81,6 +81,7 @@ public class PhaseSkillController : BasePhase
 
 	public void SelectSkill (int skillNumber)
 	{
+		
 		SelectSkillReduce (skillNumber);
 
 	}
