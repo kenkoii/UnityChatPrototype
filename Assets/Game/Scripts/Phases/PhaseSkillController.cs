@@ -26,11 +26,9 @@ public class PhaseSkillController : BasePhase
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
 		} else {
-
 			SkillButtonInteractable (1, skillButton[0]);
 			SkillButtonInteractable (2, skillButton[1]);
 			SkillButtonInteractable (3, skillButton[2]);
-
 		}
 
 		attackButton.interactable = true;

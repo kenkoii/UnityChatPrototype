@@ -14,60 +14,65 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
 		Dictionary<string, System.Object> newBattleStatus = new Dictionary<string, object> ();
+		List<Dictionary<string, System.Object>> newBattleStatusList = new List<Dictionary<string, object>> ();
 		foreach (var item in battleStatusDetails) {
 			if (Object.ReferenceEquals (item.Value.GetType (), newBattleStatus.GetType ())) {
-				newBattleStatus = (Dictionary<string, object>)item.Value;
+				newBattleStatusList.Add((Dictionary<string, object>)item.Value);
 
 			}
 		}
-			
 
-		if (newBattleStatus.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
-			string battleState = newBattleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
-			int battleCount = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
+		//get last value
+		newBattleStatus = newBattleStatusList [newBattleStatusList.Count - 1];
 
-			Debug.Log ("Current Battle State: " +battleState);
-			Debug.Log ("Current Battle Count: " +battleCount);
+		if (newBattleStatusList.Count > 0) {
+			if (newBattleStatus.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
+				string battleState = newBattleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
+				int battleCount = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
 
-			switch (battleState) {
-			case MyConst.BATTLE_STATUS_ANSWER:
+				Debug.Log ("Current Battle State: " + battleState);
+				Debug.Log ("Current Battle Count: " + battleCount);
 
-				GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-				GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-				GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-				GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+				switch (battleState) {
+				case MyConst.BATTLE_STATUS_ANSWER:
+
+					GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+					GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
+					GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+					GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
 
 
-				if (battleCount > 1) {
-					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-						PhaseManagerComponent.Instance.StartPhase3 ();
-					} else {
-						PhaseManagerComponent.Instance.StartPhase2 ();
+					if (battleCount > 1) {
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							PhaseManagerComponent.Instance.StartPhase3 ();
+						} else {
+							PhaseManagerComponent.Instance.StartPhase2 ();
+						}
+						ScreenController.Instance.StopWaitOpponentScreen ();
+
+					} 
+
+					break;
+
+				case MyConst.BATTLE_STATUS_SKILL:
+					if (battleCount > 1) {
+
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							PhaseManagerComponent.Instance.StartPhase2 ();
+						} else {
+							PhaseManagerComponent.Instance.StartPhase3 ();
+						}
+						ScreenController.Instance.StopWaitOpponentScreen ();
 					}
-					ScreenController.Instance.StopWaitOpponentScreen ();
+					break;
 
-				} 
-
-				break;
-
-			case MyConst.BATTLE_STATUS_SKILL:
-				if (battleCount > 1) {
-
-					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-						PhaseManagerComponent.Instance.StartPhase2 ();
-					} else {
-						PhaseManagerComponent.Instance.StartPhase3 ();
+				case MyConst.BATTLE_STATUS_ATTACK:
+					if (battleCount > 1) {
+						ScreenController.Instance.StopWaitOpponentScreen ();
 					}
-					ScreenController.Instance.StopWaitOpponentScreen ();
-				}
-				break;
+					break;
 
-			case MyConst.BATTLE_STATUS_ATTACK:
-				if (battleCount > 1) {
-					ScreenController.Instance.StopWaitOpponentScreen ();
 				}
-				break;
-
 			}
 		}
 
