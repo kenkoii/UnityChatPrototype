@@ -4,8 +4,6 @@ using System;
 
 public class PhaseSkillController : BasePhase
 {
-	public GameObject[] battleUI;
-
 	public Button skillButton1;
 	public Button skillButton2;
 	public Button skillButton3;
@@ -41,11 +39,6 @@ public class PhaseSkillController : BasePhase
 		attackButton.interactable = true;
 		attackButton.gameObject.SetActive (true);
 
-
-		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI [i].SetActive (true);
-		}
-
 		timeLeft = 5;
 		stoptimer = true;
 		InvokeRepeating ("StartTimer", 0, 1);
@@ -66,9 +59,6 @@ public class PhaseSkillController : BasePhase
 		attackButton.gameObject.SetActive (toggle);
 		if (isIncludeDescription) {
 			skillDescription.SetActive (toggle);
-		}
-		for (int i = 0; i < battleUI.Length; i++) {
-			battleUI [i].SetActive (toggle);
 		}
 	}
 

@@ -57,14 +57,14 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 			
 			SetValidateAnswer (isCorrect, delegate(Sprite result) {
 				playerPlaceHolder [questionNumber - 1].sprite = result;
-				playerPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237f / 255f, 232f / 255f, 54f / 255f) :
-					playerPlaceHolder [questionNumber - 1].color = new Color (239 / 255f, 87f / 255f, 86f / 255f);
+				playerPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237, 232, 54)/255 :
+					playerPlaceHolder [questionNumber - 1].color = new Color (239, 87, 86)/255;
 			});
 		} else {
 			SetValidateAnswer (isCorrect, delegate(Sprite result) {
 				enemyPlaceHolder [questionNumber - 1].sprite = result;
-				enemyPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237f / 255f, 232f / 255f, 54f / 255f) :
-					enemyPlaceHolder [questionNumber - 1].color = new Color (239 / 255f, 87f / 255f, 86f / 255f);
+				enemyPlaceHolder [questionNumber - 1].color = isCorrect ? new Color (237, 232, 54)/255 :
+					enemyPlaceHolder [questionNumber - 1].color = new Color (239, 87, 86)/255;
 			});
 		}
 	}
@@ -81,8 +81,8 @@ public class AnswerIndicatorController : SingletonMonoBehaviour<AnswerIndicatorC
 	public void ResetAnswer ()
 	{
 		for (int i = 0; i < playerPlaceHolder.Length; i++) {
-			playerPlaceHolder [i].sprite = empty;
-			enemyPlaceHolder [i].sprite = empty;
+			playerPlaceHolder [i].color = new Color (7,61,58)/255;
+			enemyPlaceHolder [i].color = new Color (7,61,58)/255;
 		}
 		Debug.Log ("reset answers");
 	}

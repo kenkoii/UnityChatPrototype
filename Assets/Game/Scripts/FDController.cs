@@ -66,13 +66,21 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	{
 		//TEMPORARY SOLUTION FOR PLAYER DETAILS
 		if (dataSnapShot.Key.ToString ().Equals ("Home")) {
-			BattleView.Instance.SetStateParam (dataSnapShot, true);
+			if (GameData.Instance.isHost) {
+				BattleView.Instance.SetStateParam (dataSnapShot, true);
+			} else {
+				BattleView.Instance.SetStateParam (dataSnapShot, false);
+			}
 		}
 		//TEMPORARY SOLUTION FOR PLAYER DETAILS
 		if (dataSnapShot.Key.ToString ().Equals ("Visitor")) {
 			isMatchMakeSuccess = true;
 			onSuccessMatchMake (true);
-			BattleView.Instance.SetStateParam (dataSnapShot, false);
+			if (GameData.Instance.isHost) {
+				BattleView.Instance.SetStateParam (dataSnapShot, false);
+			} else {
+				BattleView.Instance.SetStateParam (dataSnapShot, true);
+			}
 			Debug.Log ("Matching Success!");
 		}
 
