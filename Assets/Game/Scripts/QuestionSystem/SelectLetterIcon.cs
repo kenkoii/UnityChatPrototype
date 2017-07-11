@@ -11,12 +11,12 @@ public class SelectLetterIcon :  QuestionSystemBase , IQuestion
 {
 	public GameObject inputPrefab;
 	public GameObject gpText;
-	public GameObject[] selectionButtons = new GameObject[12];
+    public GameObject[] selectionButtons = new GameObject[12];
 	public GameObject answerContent;
 
 	public void Activate (Action<int,int> result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
+		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion ();

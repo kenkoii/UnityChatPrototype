@@ -6,26 +6,17 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class ChangeOrderIcon : MonoBehaviour, IQuestion
+public class ChangeOrderIcon : QuestionSystemBase, IQuestion
 {
-	private int currentRound = 1;
-	private int correctAnswers;
-	private int answerindex = 1;
-	private GameObject[] answerIdentifier = new GameObject[10];
-	private string answerWrote;
-	private bool justSkippedQuestion = false;
-	private string questionAnswer = "";
-	private string question = "";
-	public GameObject gpText;
-	private List<GameObject> selectionButtons = new List<GameObject>();
-	private List<GameObject> answerButtons = new List<GameObject>();
+	
 	public GameObject inputPrefab;
 	public GameObject outputPrefab;
-
-
+	public GameObject answerContent;
+	public GameObject selectionContent;
+	public GameObject gpText;
 	public void Activate (Action<int,int> Result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping");
+		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion ();
@@ -37,55 +28,19 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	public void NextQuestion ()
 	{
 		LoadQuestion ();
-		PopulateInputHolders ();
+		PopulateSelectionHolder (gameObject, inputPrefab, selectionContent);
+		PopulateAnswerHolder (gameObject, inputPrefab, answerContent);
 		ShuffleAlgo ();
 
-	}
-
-	private void LoadQuestion ()
-	{
-		Question questionLoaded = QuestionBuilder.GetQuestion ();
-		questionAnswer = questionLoaded.answer;
-		question = questionLoaded.question;
-			gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
-	}
-
-	private void PopulateInputHolders ()
-	{
-		selectionButtons.Clear ();
-		answerButtons.Clear();
-		for (int i = 0; i < questionAnswer.Length; i++) {
-			GameObject input = Instantiate (outputPrefab) as GameObject; 
-			input.transform.SetParent (gameObject.transform.GetChild (2).
-				transform.GetChild (0).GetChild (0).transform, false);
-			input.name = "input" + (i + 1);
-			input.GetComponent<Button> ().onClick.AddListener (() => {
-				gameObject.GetComponent<ChangeOrderIcon> ().SelectionOnClick ();
-			});
-			selectionButtons.Add(input);
-
-			input.transform.GetChild (0).GetComponent<Text> ().text = "";
-
-			GameObject output = Instantiate (inputPrefab) as GameObject; 
-			output.transform.SetParent (gameObject.transform.GetChild (1).
-				transform.GetChild (0).GetChild (0).transform, false);
-			output.name = "output" + (i + 1);
-			output.GetComponent<Button> ().onClick.AddListener (() => {
-				gameObject.GetComponent<ChangeOrderIcon> ().AnswerOnClick ();
-			});
-			answerButtons.Add(output);
-			output.transform.GetChild (0).GetComponent<Text> ().text = "";
-			output.GetComponent<Image> ().color = new Color(136f/255,236f/255f,246f/255f);
-		}
 	}
 
 	public void OnFinishQuestion ()
 	{
 		TweenCallBack ();
-		justSkippedQuestion = false;
+		hasSkippedQuestion = false;
 		Clear ();
 		QuestionController.Instance.Stoptimer = true;
-		answerindex = 1;
+		answerIndex = 1;
 		currentRound = currentRound + 1;
 
 		NextQuestion ();
@@ -97,90 +52,9 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 		}
 	}
 
-	public void OnSkipClick ()
-	{
-		if (!justSkippedQuestion) {
-			QuestionDoneCallback (false);
-			justSkippedQuestion = true;
-		}
-	}
-
-	public void SelectionOnClick ()
-	{
-		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
-		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
-		} else {
-			answerWrote = "";
-			int i = 1;
-			foreach (GameObject findEmpty in answerButtons) {
-				if (findEmpty.transform.GetChild (0).GetComponent<Text> ().text == "") {
-					answerindex = i;
-					answerButtons [(answerindex - 1)].transform.GetChild (0).
-					GetComponent<Text> ().text 
-					= EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text;
-					EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text = "";
-					break;
-				} else {
-					
-				}
-				i++;
-			}
-
-			foreach (GameObject readWrittenAnswer in answerButtons) {
-				answerWrote = answerWrote + (readWrittenAnswer.transform.GetChild (0).GetComponent<Text> ().text);
-			}
-			answerIdentifier[answerindex-1] = EventSystem.current.currentSelectedGameObject;
-			if (answerWrote.Length == questionAnswer.Length) {
-				if (answerWrote.ToUpper () == questionAnswer.ToUpper ()) {
-					QuestionDoneCallback (true);
-				} else {
-					QuestionDoneCallback (false);
-				}
-			}
-		}
-	}
-
-	public void AnswerOnClick ()
-	{
-		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
-		string answerclicked = "";
-		if (EventSystem.current.currentSelectedGameObject.transform.GetChild (0).GetComponent<Text> ().text == "") {
-			EventSystem.current.currentSelectedGameObject.transform.DOShakePosition (0.2f, 30.0f, 50, 0f, true);
-		} else {
-			for (int i = 1; i < selectionButtons.Count+ 1; i++) {
-				if (EventSystem.current.currentSelectedGameObject.name == ("output" + i)) {
-					answerclicked = answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text;
-					answerButtons [i - 1].transform.GetChild (0).GetComponent<Text> ().text = "";
-					answerIdentifier [i - 1].transform.GetChild (0).GetComponent<Text> ().text = 
-						answerclicked;
-				}
-			}
-		}
-	}
-
-	public void QuestionDoneCallback (bool result)
-	{
-		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
-		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-		string isCorrectParam;
-		if (result) {
-			correctAnswers += 1;
-			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
-		} else {
-			isCorrectParam = ParamNames.AnswerWrong.ToString ();
-		}
-		justSkippedQuestion = true;
-		param [isCorrectParam] = currentRound;
-		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
-		QuestionController.Instance.Stoptimer = false;
-		Invoke ("OnFinishQuestion", 1f);
-	}
-
 	public void TweenCallBack ()
 	{
-		gpText.transform.DOScale (new Vector3 (1, 1, 1), 1.0f);
+		TweenController.TweenTextScale (gpText.transform, Vector3.one, 1.0f);
 		gpText.GetComponent<Text> ().text = " ";
 	}
 
@@ -224,7 +98,7 @@ public class ChangeOrderIcon : MonoBehaviour, IQuestion
 	public void Clear ()
 	{
 
-		answerindex = 1;
+		answerIndex = 1;
 		foreach (GameObject i in selectionButtons) {
 			Destroy (i);
 		}

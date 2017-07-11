@@ -7,21 +7,18 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SlotMachineIcon : MonoBehaviour, IQuestion{
-	private int currentRound = 1;
-	private int correctAnswers;
-	private bool hasSkippedQuestion = false;
-	private string questionAnswer = "";
+public class SlotMachineIcon : QuestionSystemBase, IQuestion{
+
 	public GameObject gpText;
 	public GameObject[] roulletes = new GameObject[12];
-	private List<GameObject> answerButtons = new List<GameObject> ();
 	public Text questionText;
 	private List<GameObject> roulleteText = new List<GameObject> ();
 	private bool gotAnswer = true;
 	private SlotMachineOnChange smoc;
 	private List<Color> previousSlotColor = new List<Color>();
+
 	public void Activate(Action<int,int> result){
-		QuestionBuilder.PopulateQuestion ("slotmachine");
+		QuestionBuilder.PopulateQuestion ("slotmachine",gameObject);
 		roulleteText.Clear ();
 		answerButtons.Clear ();
 		gotAnswer = true;
@@ -41,67 +38,22 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 		CheckAnswer (true);
 	}
 	public void NextQuestion(){
+		
 		LoadQuestion ();
 		findSlotMachines ();
 		ShuffleAlgo ();
+		smoc.WrittenAnswer = "";
 	}
 	void Update(){
-		if (questionAnswer == smoc.WrittenAnswer && gotAnswer) {
+		Debug.Log (smoc.WrittenAnswer);
+		if ((questionAnswer == smoc.WrittenAnswer )&& gotAnswer) {
 			gotAnswer = false;
+			smoc.WrittenAnswer = "";
 			CheckAnswer (true);
-			SlotMachineOnChange smoc = new SlotMachineOnChange ();
-			smoc.ClearAnswers ();
+
 		}
 	}
-	private void LoadQuestion ()
-	{
-		Question questionLoaded = QuestionBuilder.GetQuestion ();
-		Debug.Log (questionLoaded.question + "/" + questionLoaded.answer);
-		questionAnswer = questionLoaded.answer;
-		string question = questionLoaded.question;
-		gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
-	}
-
-	public void CheckAnswer(bool result){
-		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
-		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
-		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
-
-		string isCorrectParam;
-		if (result) {
-			correctAnswers += 1;
-			isCorrectParam = ParamNames.AnswerCorrect.ToString ();
-		} else {
-			isCorrectParam = ParamNames.AnswerWrong.ToString ();
-		}
-		hasSkippedQuestion = true;
-		param [isCorrectParam] = currentRound;
-		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
-		QuestionController.Instance.Stoptimer = false;
-		OnFinishQuestion ();
-
-	}
-
-	public void OnSkipClick(){
-		if (!hasSkippedQuestion) {
-			CheckAnswer (false);
-			SlotMachineOnChange smoc = new SlotMachineOnChange ();
-			smoc.ClearAnswers ();
-			hasSkippedQuestion = true;
-		}
-	}
-
-	public void getAnswer(string ans){
-		if (gotAnswer) {
-			if (questionAnswer == ans) {
-				gotAnswer = false;
-				CheckAnswer (true);
-				SlotMachineOnChange smoc = new SlotMachineOnChange ();
-				smoc.ClearAnswers ();
-			}
-		}
-	}
-
+		
 	public void TweenCallBack ()
 	{
 		TweenController.TweenTextScale (gpText.transform, Vector3.one, 1.0f);
@@ -115,8 +67,9 @@ public class SlotMachineIcon : MonoBehaviour, IQuestion{
 			content = roulletes [i];
 			for (int j = 0; j < 3; j++) {
 				roulleteText.Add (content.transform.GetChild(j).gameObject);
-			}
+		 	}
 		}
+		Debug.Log (questionAnswer+"/"+questionAnswer.Length	);
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			roulletes [i].transform.parent.parent.parent.parent.gameObject.SetActive (true);
 		}

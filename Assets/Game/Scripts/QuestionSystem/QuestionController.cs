@@ -48,7 +48,7 @@ public class QuestionController : SingletonMonoBehaviour<QuestionController>
 		InvokeRepeating ("StartTimer", 0, 1);
 	}
 
-	public void SetQuestion (IQuestion questiontype, int qTime, Action<int, int> result)
+	public void SetQuestion (IQuestion questiontype, int qTime, Action<int, int> Result)
 	{
 		for (int i = 0; i < 12; i++) {
 			Destroy (GameObject.Find ("input" + i));
@@ -56,7 +56,7 @@ public class QuestionController : SingletonMonoBehaviour<QuestionController>
 
 		}
 		timeLeft = qTime;
-		questiontype.Activate (result);
+		questiontype.Activate (Result);
 		stoptimer = true;
 	}
 

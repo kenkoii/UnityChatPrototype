@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public abstract class QuestionSystemBase : MonoBehaviour{
+public abstract class BaseQuestion : MonoBehaviour{
 
 	protected int currentRound = 1;
 	protected int correctAnswers;

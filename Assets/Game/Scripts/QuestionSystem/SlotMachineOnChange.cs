@@ -30,6 +30,7 @@ public class SlotMachineOnChange : MonoBehaviour {
 	private List <RectTransform> items = new List<RectTransform>();
 	public string WrittenAnswer{
 		get{ return writtenAnswer;}
+		set{ writtenAnswer = value;}
 	}
 	//private bool stopScrolling = false;
 
@@ -71,32 +72,31 @@ public class SlotMachineOnChange : MonoBehaviour {
 	}
 	public void getAnswer(GameObject g){
 		itemGot = g;
+
 		switch (myScrollRect.transform.parent.parent.name) {
 		case "Roullete1":
-			roullete1Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete1Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
 		case "Roullete2":
-			roullete2Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete2Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
 		case "Roullete3":
-			roullete3Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete3Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
 		case "Roullete4":
-			roullete4Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete4Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
 		case "Roullete5":
-			roullete5Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete5Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
 		case "Roullete6":
-			roullete6Answer = g.transform.GetChild(0).GetComponent<Text>().text;
+			roullete6Answer = g.activeInHierarchy ? g.transform.GetChild(0).GetComponent<Text>().text : "";
 			break;
+		
 		}
-
+	
 		writtenAnswer = roullete1Answer + roullete2Answer + roullete3Answer + roullete4Answer + roullete5Answer + roullete6Answer;
-		SlotMachineIcon smi = new SlotMachineIcon ();
-
-		smi.getAnswer (writtenAnswer);
-
+	
 	}
 	public void OnButtonDown(){
 		getContentPosition ();
@@ -206,6 +206,10 @@ public class SlotMachineOnChange : MonoBehaviour {
 			|| distanceDiff=="-179" || distanceDiff=="-178"
 		
 		) {
+			myScrollRect.enabled = false;
+			myScrollRect.enabled = true;
+		}
+		if (pos.y == 0f) {
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
