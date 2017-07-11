@@ -26,10 +26,6 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 			}
 		}
 
-
-
-
-
 		if (newBattleStatusList.Count > 0) {
 			//get last value
 			newBattleStatus = newBattleStatusList [newBattleStatusList.Count - 1];
@@ -58,13 +54,6 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 							PhaseManagerComponent.Instance.StartPhase2 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
-
-						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-						} else {
-							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
-						}
-
 					} 
 
 					break;
@@ -78,13 +67,6 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 							PhaseManagerComponent.Instance.StartPhase3 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
-					
-						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-							FDController.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-						} else {
-							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-						}
-
 					}
 					break;
 
