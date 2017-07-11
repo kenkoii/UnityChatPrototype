@@ -13,9 +13,19 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
-		if (battleStatusDetails.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
+		Dictionary<string, System.Object> newBattleStatus = new Dictionary<string, object> ();
+		foreach (var item in battleStatusDetails) {
+			if (Object.ReferenceEquals (item.Value.GetType (), newBattleStatus.GetType ())) {
+				newBattleStatus = (Dictionary<string, object>)item.Value;
+			}
+		}
+
+		if (newBattleStatus.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
 			string battleState = battleStatusDetails [MyConst.BATTLE_STATUS_STATE].ToString ();
 			int battleCount = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_COUNT].ToString ());
+
+			Debug.Log ("Current Battle State: " +battleState);
+			Debug.Log ("Current Battle Count: " +battleCount);
 
 			switch (battleState) {
 			case MyConst.BATTLE_STATUS_ANSWER:
@@ -53,11 +63,7 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 			case MyConst.BATTLE_STATUS_ATTACK:
 				if (battleCount > 1) {
 					ScreenController.Instance.StopWaitOpponentScreen ();
-				} else {
-					//hide skill ui 
-					FindObjectOfType<PhaseSkillController> ().ShowSkillUI (false);
 				}
-
 				break;
 
 			}
