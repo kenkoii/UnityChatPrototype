@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/* Sets initial game preferences*/
 public class GameController : SingletonMonoBehaviour<GameController>
 {
 	[SerializeField] private int playerLife = 45;
@@ -33,3 +34,5 @@ public class GameController : SingletonMonoBehaviour<GameController>
 
 
 }
+
+

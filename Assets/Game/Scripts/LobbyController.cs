@@ -11,6 +11,11 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject gameRoomAssets;
 	public ToggleGroup toggleGroup;
 	public GameObject roomViews;
+	private int timeLeft = 3;
+	private bool stoptimer = true;
+
+
+
 	void Start(){
 		QuestionBuilder.PopulateQuestion ("selectChangeTyping");
 	}
@@ -19,7 +24,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 		ScreenController.Instance.StartMatchingScreen ();
-		FirebaseDatabaseComponent.Instance.SearchRoom (delegate(bool result) {
+		FDController.Instance.SearchRoom (delegate(bool result) {
 			if (result) {
 				GoToGameRoom ();	
 			} else {
@@ -49,7 +54,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 
 	public void CancelRoomSearch ()
 	{
-		FirebaseDatabaseComponent.Instance.CancelRoomSearch ();
+		FDController.Instance.CancelRoomSearch ();
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 	}
 
@@ -61,9 +66,38 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		roomViews.SetActive (false);
 		gameRoomUI.SetActive (true);
 		gameRoomAssets.SetActive (true);
-		BattleController.Instance.StartPreTimer ();
 		ScreenController.Instance.StopLoadingScreen ();
+		StartPreTimer ();
+		CameraWorksController.Instance.StartIntroCamera ();
+		RPCDicObserver.AddObserver (GestureController.Instance);
+		RPCDicObserver.AddObserver (BattleStatusManager.Instance);
+
 	}
 
+	/// <summary>
+	/// Delay before start of battle
+	/// </summary>
+	public void StartPreTimer ()
+	{
+		timeLeft = 3;
+		stoptimer = true;
+		InvokeRepeating ("StartTimer", 0, 1);
+	}
+
+	private void StartTimer ()
+	{
+		if (stoptimer) {
+			GameTimerView.Instance.ToggleTimer (true);
+			if (timeLeft > 0) {
+				GameTimerView.Instance.gameTimerText.text = "" + timeLeft;
+				timeLeft--;
+				return;
+			} 
+			PhaseManagerComponent.Instance.StartPhase1 ();
+			GameTimerView.Instance.ToggleTimer (false);
+			stoptimer = false;
+			CancelInvoke ("StartTimer");
+		}
+	}
 
 }

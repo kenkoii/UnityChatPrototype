@@ -61,7 +61,7 @@ public class WordChoiceIcon : MonoBehaviour, IQuestion
 		}
 		justAnswered = true;
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 		QuestionController.Instance.Stoptimer = false;
 		Invoke ("OnFinishQuestion", 1f);
 	}

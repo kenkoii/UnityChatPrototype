@@ -3,17 +3,16 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerController>, IPhase
+public class PhaseAnswerController : AbstractPhase
 {
-
 	public GameObject questionSelect;
 	private bool hasAnswered = false;
-	private bool stoptimer = false;
-	private int timeLeft;
 
-	public void OnStartPhase ()
+
+	public override void OnStartPhase ()
 	{
 		Debug.Log ("Starting Answer Phase");
+		RPCDicObserver.AddObserver(AnswerIndicatorController.Instance);
 		hasAnswered = false;
 
 		timeLeft = 5;
@@ -23,8 +22,9 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 
 	}
 
-	public void OnEndPhase ()
+	public override void OnEndPhase ()
 	{
+		RPCDicObserver.RemoveObserver(AnswerIndicatorController.Instance);
 		if (questionSelect.activeInHierarchy) {
 			questionSelect.SetActive (false);
 		}
@@ -58,6 +58,7 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 
 			HideUI ();
 			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+				
 				QuestionStart (gp, qtimeLeft);
 			});
 				
@@ -70,14 +71,11 @@ public class PhaseAnswerController : SingletonMonoBehaviour<PhaseAnswerControlle
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
 		GameData.Instance.gpEarned = gp;
-		BattleController.Instance.SetPlayerGP (gp);
-		if (gp != 0) {
-			TweenController.TweenPlayerGPSlider (BattleController.Instance.playerGP, 1, true, BattleController.Instance.playerGPBar);
-		}
-		RPCWrapperComponent.Instance.RPCWrapAnswer (qtimeLeft, gp);
+		BattleView.Instance.PlayerGP += gp;
+		FDController.Instance.AnswerPhase (qtimeLeft, gp);
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-			if (GameData.Instance.skillChosenCost <= BattleController.Instance.playerGP) {
+			if (GameData.Instance.skillChosenCost <= BattleView.Instance.PlayerGP) {
 				if (GameData.Instance.playerSkillChosen != null) {
 					GameData.Instance.playerSkillChosen ();
 				}

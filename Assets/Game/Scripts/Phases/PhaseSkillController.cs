@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>, IPhase
+public class PhaseSkillController : AbstractPhase
 {
 	public GameObject[] battleUI;
 
@@ -11,23 +11,22 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	public Button skillButton3;
 	public GameObject skillDescription;
 	public Text skillDescriptionText;
-	private bool stoptimer = false;
-	private int timeLeft;
+
 	public Button attackButton;
 
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
-		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleController.Instance.playerGP) {
+		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.PlayerGP) {
 			button.interactable = false;
 		} else {
 			button.interactable = true;
 		}
 	}
 
-	public void OnStartPhase ()
+	public override void OnStartPhase ()
 	{
-		
+		RPCDicObserver.AddObserver(SkillActivatorComponent.Instance);
 		Debug.Log ("Starting Skill Phase");
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
@@ -54,9 +53,11 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	
 	}
 
-	public void OnEndPhase ()
+	public override void OnEndPhase ()
 	{
-		ShowSkillUI (true);
+		RPCDicObserver.RemoveObserver(SkillActivatorComponent.Instance);
+		ShowSkillUI (false);
+
 		CancelInvoke ("StartTimer");
 	}
 
@@ -75,7 +76,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 	{
 		ButtonEnable (false);
 		GameTimerView.Instance.ToggleTimer (false);
-		RPCWrapperComponent.Instance.RPCWrapSkill ();
+		FDController.Instance.SkillPhase ();
 		stoptimer = false;
 	}
 
@@ -134,7 +135,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 				activateSkill ();
 			};
 			skillCost ();
-			RPCWrapperComponent.Instance.RPCWrapSkill ();
+			FDController.Instance.SkillPhase ();
 			Debug.Log ("skilled!");
 		} else {
 			activateSkill ();
@@ -156,7 +157,7 @@ public class PhaseSkillController : SingletonMonoBehaviour<PhaseSkillController>
 			ButtonEnable (false);
 			GameTimerView.Instance.ToggleTimer (false);
 				
-			RPCWrapperComponent.Instance.RPCWrapSkill ();
+			FDController.Instance.SkillPhase ();
 			Debug.Log ("stopped phase2 timer");
 			stoptimer = false;
 

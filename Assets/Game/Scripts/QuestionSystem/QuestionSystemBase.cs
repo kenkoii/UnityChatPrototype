@@ -73,7 +73,7 @@ public abstract class QuestionSystemBase : MonoBehaviour{
 		Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 		string isCorrectParam = isCorrect ? ParamNames.AnswerCorrect.ToString () : ParamNames.AnswerWrong.ToString ();
 		param [isCorrectParam] = currentRound;
-		FirebaseDatabaseComponent.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
+		FDController.Instance.SetAnswerParam (new AnswerModel(JsonConverter.DicToJsonStr (param).ToString()));
 	}
 
 	protected void CheckAnswerHolder ()
