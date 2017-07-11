@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PhaseSkillController : AbstractPhase
+public class PhaseSkillController : BasePhase
 {
 	public GameObject[] battleUI;
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class AbstractPhase : MonoBehaviour {
+public abstract class BasePhase : MonoBehaviour {
 	protected bool stoptimer = false;
 	protected int timeLeft;
 

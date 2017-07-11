@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.EventSystems;
 
-public class PhaseAnswerController : AbstractPhase
+public class PhaseAnswerController : BasePhase
 {
 	public GameObject questionSelect;
 	private bool hasAnswered = false;
