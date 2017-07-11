@@ -319,11 +319,12 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 						battleStatus [MyConst.BATTLE_STATUS_VANSWER] = receiveAnswer.ToString ();
 						battleStatus [MyConst.BATTLE_STATUS_VTIME] = receiveTime.ToString ();
 					}
-
-					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
-					} else {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+					if (battleCount == 2) {
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						}
 					}
 				});
 			});
@@ -340,14 +341,16 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 		} else {
 			modulusNum = 2;
 		}
-		Debug.Log("hi");
+		Debug.Log ("hi");
 		GetLatestKey (modulusNum, delegate(string resultString) {
 			FDFacade.Instance.RunTransaction (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString), delegate(MutableData mutableData) {
 				mutableData.Value = PhaseMutate (mutableData, MyConst.BATTLE_STATUS_SKILL, delegate(Dictionary<string, System.Object> battleStatus, int battleCount) {
-					if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-						UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
-					} else {
-						UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+					if (battleCount == 2) {
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						} else {
+							UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						}
 					}
 				});
 			});
@@ -379,7 +382,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 			battleStatus [MyConst.BATTLE_STATUS_COUNT] = battleCount.ToString ();
 			action (battleStatus, battleCount);
 		} 
-		Debug.Log ("NEW BATTLE COUNT" +battleCount);
+		Debug.Log ("NEW BATTLE COUNT" + battleCount);
 		return battleStatus;
 	}
 
