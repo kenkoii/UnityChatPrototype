@@ -80,9 +80,9 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 						ScreenController.Instance.StopWaitOpponentScreen ();
 					
 						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-							FDController.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+							FDController.Instance.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
 						} else {
-							FDController.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
 						}
 
 					}
