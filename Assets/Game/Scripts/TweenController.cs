@@ -42,6 +42,9 @@ public static class TweenController{
 		text.transform.DOScale (endValue,duration).SetEase(Ease.InElastic,30,1);
 	}
 
+	public static void TweenScaleToSmall(Transform obj,Vector3 endValue, float duration){
+		obj.transform.DOScale (endValue,0.05f);
+	}
 	public static void TweenScaleToLarge(Transform text, Vector3 endValue, float duration){
 		text.transform.DOScale (new Vector3(0.1f,0.1f,0.1f),0.05f);
 		text.transform.DOScale (endValue, duration).SetEase (Ease.OutElastic, 10, 1);

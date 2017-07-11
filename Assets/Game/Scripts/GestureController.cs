@@ -14,20 +14,25 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	public void ShowGestureButtons (Transform button)
 	{
-		//gestureButtonContainer.SetActive (true);
-		if (gestureButtonContainer.transform.localPosition.x != 0) {
-			TweenController.TweenMoveTo (gestureButtonContainer.transform, new Vector2 (0, gestureButtonContainer.transform.localPosition.y), 0.3f);
+		if (!gestureButtonContainer.activeInHierarchy) {
+			gestureButtonContainer.SetActive (true);
+			TweenController.TweenScaleToLarge (gestureButtonContainer.transform, new Vector3(1,1,1), 0.4f);
+
 			button.gameObject.GetComponent<Image> ().sprite = closeImage;
 		} else {
-			HideGestureButton ();
+//			TweenController.TweenScaleToLarge (gestureButtonContainer.transform, new Vector3(1,1,1), 0.2f);
+			Invoke ("ScaleToSmall", 0.05f);
 			button.gameObject.GetComponent<Image> ().sprite = gestureImage;
 		}
 	}
 
+	public void ScaleToSmall(){
+		TweenController.TweenScaleToSmall (gestureButtonContainer.transform, new Vector3(0.7f,0.7f,0.7f), 0.1f);
+		Invoke ("HideGestureButton", 0.05f);
+	}
 	public void HideGestureButton ()
 	{
-		TweenController.TweenMoveTo (gestureButtonContainer.transform, new Vector2 (718f, gestureButtonContainer.transform.localPosition.y), 0.3f);
-		//gestureButtonContainer.SetActive (false);
+		gestureButtonContainer.SetActive (false);
 	}
 
 
