@@ -6,26 +6,34 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
-		ReceiveBattleStatus (rpcReceive);
-
+		try {
+			Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+			ReceiveBattleStatus (rpcReceive);
+		} catch (System.Exception e) {
+			//
+		}
 	}
 
 	public void ReceiveBattleStatus (Dictionary<string, System.Object> battleStatusDetails)
 	{
 		Dictionary<string, System.Object> newBattleStatus = new Dictionary<string, object> ();
 		List<Dictionary<string, System.Object>> newBattleStatusList = new List<Dictionary<string, object>> ();
+
 		foreach (var item in battleStatusDetails) {
 			if (Object.ReferenceEquals (item.Value.GetType (), newBattleStatus.GetType ())) {
-				newBattleStatusList.Add((Dictionary<string, object>)item.Value);
+				newBattleStatusList.Add ((Dictionary<string, object>)item.Value);
 
 			}
 		}
 
-		//get last value
-		newBattleStatus = newBattleStatusList [newBattleStatusList.Count - 1];
+
+
+
 
 		if (newBattleStatusList.Count > 0) {
+			//get last value
+			newBattleStatus = newBattleStatusList [newBattleStatusList.Count - 1];
+
 			if (newBattleStatus.ContainsKey (MyConst.BATTLE_STATUS_STATE)) {
 				string battleState = newBattleStatus [MyConst.BATTLE_STATUS_STATE].ToString ();
 				int battleCount = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_COUNT].ToString ());
@@ -36,19 +44,26 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 				switch (battleState) {
 				case MyConst.BATTLE_STATUS_ANSWER:
 
-					GameData.Instance.hAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HANSWER].ToString ());
-					GameData.Instance.hTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_HTIME].ToString ());
-					GameData.Instance.vAnswer = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VANSWER].ToString ());
-					GameData.Instance.vTime = int.Parse (battleStatusDetails [MyConst.BATTLE_STATUS_VTIME].ToString ());
+					GameData.Instance.hAnswer = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_HANSWER].ToString ());
+					GameData.Instance.hTime = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_HTIME].ToString ());
+					GameData.Instance.vAnswer = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_VANSWER].ToString ());
+					GameData.Instance.vTime = int.Parse (newBattleStatus [MyConst.BATTLE_STATUS_VTIME].ToString ());
 
 
 					if (battleCount > 1) {
+						Debug.Log ("switching phases");
 						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 							PhaseManagerComponent.Instance.StartPhase3 ();
 						} else {
 							PhaseManagerComponent.Instance.StartPhase2 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
+
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						} else {
+							FDController.Instance.UpdateBattleStatus (MyConst.BATTLE_STATUS_SKILL, 0);
+						}
 
 					} 
 
@@ -56,13 +71,20 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 
 				case MyConst.BATTLE_STATUS_SKILL:
 					if (battleCount > 1) {
-
+						Debug.Log ("switching phases");
 						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 							PhaseManagerComponent.Instance.StartPhase2 ();
 						} else {
 							PhaseManagerComponent.Instance.StartPhase3 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
+					
+						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
+							FDController.UpdateAnswerBattleStatus (MyConst.BATTLE_STATUS_ANSWER, 0, 0, 0, 0, 0);
+						} else {
+							FDController.UpdateBattleStatus (MyConst.BATTLE_STATUS_ATTACK, 0);
+						}
+
 					}
 					break;
 
