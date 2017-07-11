@@ -70,6 +70,9 @@ public class PhaseAnswerController : BasePhase
 
 	private void QuestionStart (int gp, int qtimeLeft)
 	{
+		Debug.Log (gp);
+		Debug.Log (GameData.Instance.gpEarned);
+
 		GameData.Instance.gpEarned = gp;
 		BattleView.Instance.PlayerGP += gp;
 		FDController.Instance.AnswerPhase (qtimeLeft, gp);

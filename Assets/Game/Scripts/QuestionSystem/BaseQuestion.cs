@@ -89,6 +89,7 @@ public abstract class BaseQuestion : MonoBehaviour{
 		QuestionSpecialEffects spe = new QuestionSpecialEffects ();
 		Debug.Log (answerButtons.Count);
 		spe.DeployEffect (result, answerButtons, questionAnswer, gameObject);
+		correctAnswers = result ?  correctAnswers + 1:correctAnswers ;
 		UpdateFirebaseAnswerModel (result);
 		hasSkippedQuestion = true;
 		QuestionController.Instance.Stoptimer = false;

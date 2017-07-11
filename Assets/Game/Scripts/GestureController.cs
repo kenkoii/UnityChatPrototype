@@ -62,7 +62,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-		
+		try{
 		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
 		if (rpcReceive.ContainsKey ("param")) {
 			bool userHome = (bool)rpcReceive ["userHome"];
@@ -74,6 +74,10 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 				if (GameData.Instance.attackerBool.Equals (!GameData.Instance.isHost))
 					SetEnemyGesture (stringParam);
 			}
+		}
+		}
+		catch(System.Exception e){
+			//
 		}
 
 	}
