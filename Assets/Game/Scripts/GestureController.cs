@@ -57,13 +57,15 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
-		if (rpcReceive.ContainsKey ("param")) {
-			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
-			if (param.ContainsKey ("Gesture")) {
-				string stringParam = param ["Gesture"].ToString ();
-				if (!GameData.Instance.isHost) {
+		if (!GameData.Instance.isHost) {
+			Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+			if (rpcReceive.ContainsKey ("param")) {
+				Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+				if (param.ContainsKey ("Gesture")) {
+					string stringParam = param ["Gesture"].ToString ();
+
 					SetEnemyGesture (stringParam);
+				
 				}
 			}
 		}
