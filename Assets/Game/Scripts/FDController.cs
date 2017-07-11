@@ -123,6 +123,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 		FDFacade.Instance.QueryTable ("SearchRoom", roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo ("0"));
 		searchingRoom = true;
 		onSuccessMatchMake = onResult;
+
 	}
 
 	private void CreateRoom ()
@@ -257,14 +258,14 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 				DeleteRoom ();
 			} 
 		}
+		gameRoomKey = null;
+		searchingRoom = false;
+		onSuccessMatchMake (false);
 	}
 
 	private void DeleteRoom ()
 	{
 		FDFacade.Instance.RemoveTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey));
-		gameRoomKey = null;
-		searchingRoom = false;
-		onSuccessMatchMake (false);
 	}
 
 	public void SetAttackParam (AttackModel attack)
@@ -341,7 +342,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 		} else {
 			modulusNum = 2;
 		}
-		Debug.Log ("hi");
 		GetLatestKey (modulusNum, delegate(string resultString) {
 			FDFacade.Instance.RunTransaction (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS).Child (resultString), delegate(MutableData mutableData) {
 				mutableData.Value = PhaseMutate (mutableData, MyConst.BATTLE_STATUS_SKILL, delegate(Dictionary<string, System.Object> battleStatus, int battleCount) {
