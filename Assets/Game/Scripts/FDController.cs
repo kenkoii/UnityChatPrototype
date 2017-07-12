@@ -88,7 +88,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void OnNotifyQuery (DataSnapshot dataSnapshot)
 	{
-		Debug.Log ("Searching rooms :" + searchingRoom);
 		if (searchingRoom) {
 			if (dataSnapshot.HasChildren) {
 				Debug.Log ("has game rooms");

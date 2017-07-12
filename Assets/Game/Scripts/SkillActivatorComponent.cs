@@ -69,12 +69,12 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 			if (skill.skillKey == ParamNames.Damage.ToString ()) {
 				GameData.Instance.player.playerDamage += skill.skillValue;
-				Debug.Log ("skill player damage activated");
+				Debug.Log ("skill player "+skill.skillKey + " value " + skill.skillValue);
 			}
 
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.PlayerHP += skill.skillValue;
-				Debug.Log ("skill player heal activated");
+				Debug.Log ("skill player "+skill.skillKey + " value " + skill.skillValue);
 			}
 		}
 	}
@@ -86,7 +86,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 		foreach (SkillParameter skill in skillResult.skillList) {
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.EnemyHP += skill.skillValue;
-				Debug.Log ("skill enemy heal activated");
+				Debug.Log ("skill enemy "+skill.skillKey + " value " + skill.skillValue);
 			}
 		}
 	}

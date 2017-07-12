@@ -81,7 +81,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		CameraWorksController.Instance.StartIntroCamera ();
 		RPCDicObserver.AddObserver (GestureController.Instance);
 		RPCDicObserver.AddObserver (BattleStatusManager.Instance);
-
+		RPCDicObserver.AddObserver(SkillActivatorComponent.Instance);
 	}
 
 	/// <summary>
