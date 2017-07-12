@@ -144,6 +144,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 			if (GameData.Instance.isHost) {
 				DeleteRoom ();
 				GameData.Instance.isHost = false;
+				//return;
 			} 
 		}
 		RPCDicObserver.RemoveObserver (this);
@@ -157,6 +158,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	private void DeleteRoom ()
 	{
+		//add check room deleted successfully using childremove in fdfacade
 		FDFacade.Instance.RemoveTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey));
 	}
 
