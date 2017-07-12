@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System;
-
+using UnityEngine;
 /* Global variables*/
 public class GameData: SingletonMonoBehaviour<GameData>
 {
+	public Canvas gameCanvas;
+
 	public PlayerModel player{ get; set; }
 
 	public bool isHost{ get; set; }
