@@ -53,6 +53,11 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 		subscriberReference[subscriberName].ValueChanged+= HandleTableValueChanged;
 	}
 
+	public void RemoveReference (string subscriberName)
+	{
+		subscriberReference.Remove (subscriberName);
+	}
+
 	private void HandleTableValueChanged (object sender, ValueChangedEventArgs args)
 	{
 		if (args.DatabaseError != null) {
@@ -70,6 +75,12 @@ public class FDFacade : SingletonMonoBehaviour<FDFacade>
 		subscriberQuery.Add (subscriberName, query);
 		subscriberQuery[subscriberName].ValueChanged+= HandleQuery;
 	}
+
+	public void RemoveQuery (string subscriberName)
+	{
+		subscriberQuery.Remove (subscriberName);
+	}
+
 
 	private void HandleQuery (object sender, ValueChangedEventArgs args)
 	{
