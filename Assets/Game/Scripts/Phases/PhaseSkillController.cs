@@ -21,7 +21,6 @@ public class PhaseSkillController : BasePhase
 
 	public override void OnStartPhase ()
 	{
-		RPCDicObserver.AddObserver(SkillActivatorComponent.Instance);
 		Debug.Log ("Starting Skill Phase");
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			ButtonEnable (true);
