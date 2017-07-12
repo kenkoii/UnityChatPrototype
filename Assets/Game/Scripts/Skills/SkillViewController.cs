@@ -4,33 +4,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 public class SkillViewController : MonoBehaviour {
-	public GameObject skillView;
+	public GameObject skillPlaceHolder;
 	public GameObject skillOverViewScreen;
 	public GameObject skillOverViewDesc;
 	public GameObject skillDamage;
 	public GameObject skillHeal;
 	public GameObject skillName;
-	public GameObject[] skillArray = new GameObject[3];
-	private SkillModel skill1;
-	private SkillModel skill2;
-	private SkillModel skill3;
-
-	// Use this for initialization
-	void Start () {
-		skill1 = SkillManagerComponent.Instance.GetSkill (1);
-		skill2 = SkillManagerComponent.Instance.GetSkill (2);
-		skill3 = SkillManagerComponent.Instance.GetSkill (3);
-	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
 
-	public void OnClickSkillItem(){
+	public void OnClickSkillItem(){	
 		skillOverViewScreen.SetActive (true);
 		TweenController.TweenScaleToLarge (skillOverViewScreen.transform,new Vector3(1,1,1),0.2f);
-		skillOverViewScreen.transform.GetChild(1).GetChild(0).GetComponentInChildren<Image>().sprite = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<Image> ().sprite;
+		skillPlaceHolder.transform.GetChild(0).GetComponentInChildren<Image>().sprite = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<Image> ().sprite;
 		switch (EventSystem.current.currentSelectedGameObject.name) {
 		case "BicPunch":
 			skillOverViewDesc.GetComponentInChildren<Text> ().text = SkillManagerComponent.Instance.skillList[0].skillDescription;
