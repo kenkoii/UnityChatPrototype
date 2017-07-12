@@ -209,7 +209,8 @@ public class SlotMachineOnChange : MonoBehaviour {
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
-		if (pos.y == 0f) {
+		Debug.Log (pos.y);
+		if (pos.y <= 0f) {
 			myScrollRect.enabled = false;
 			myScrollRect.enabled = true;
 		}
