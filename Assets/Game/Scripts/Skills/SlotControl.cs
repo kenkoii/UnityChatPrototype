@@ -26,10 +26,7 @@ public class SlotControl : MonoBehaviour , IDropHandler{
 		if (!item)
 		{
 			DragHandler dh = new DragHandler ();
-			Debug.Log (dh.skillNumber);
 			DragHandler.item.transform.SetParent(transform);
-			//SkillManagerComponent.Instance.SetSkill (position, 
-			//	SkillManagerComponent.Instance.skillList[DragHandler.GetSkillNumber()]);
 			int skillIndex = 0;
 			switch(item.name){
 			case "BicPunch":
