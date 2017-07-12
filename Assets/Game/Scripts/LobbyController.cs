@@ -35,6 +35,11 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
+				matchSword.GetComponentInChildren<Animation> ().Play ("MatchIdle");
+				AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+				matchingText.text = "Find Match";
+				TweenController.TweenMoveTo (matchingText.transform, new Vector2 (matchingText.transform.localPosition.x, matchingText.transform.localPosition.y - 160f), 0.5f);
+				TweenController.TweenMoveTo (menu.transform, new Vector2 (menu.transform.localPosition.x, menu.transform.localPosition.y + 160f), 0.5f);
 			}
 			ScreenController.Instance.StopMatchingScreen ();
 		});
@@ -61,12 +66,6 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public void CancelRoomSearch ()
 	{
 		FDController.Instance.CancelRoomSearch ();
-		matchSword.GetComponentInChildren<Animation> ().Play ("MatchIdle");
-		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
-		matchingText.text = "Find Match";
-		TweenController.TweenMoveTo (matchingText.transform, new Vector2 (matchingText.transform.localPosition.x, matchingText.transform.localPosition.y - 160f), 0.5f);
-		TweenController.TweenMoveTo (menu.transform, new Vector2 (menu.transform.localPosition.x, menu.transform.localPosition.y + 160f), 0.5f);
-
 	}
 
 

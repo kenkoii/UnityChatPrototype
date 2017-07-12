@@ -13,7 +13,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 {
 	DatabaseReference reference;
 	DatabaseReference roomReference;
-	private bool searchingRoom = false;
+	private bool searchingRoom;
 	private Action<bool> onSuccessMatchMake;
 	private int joinCounter = 0;
 	string gameRoomKey = null;
@@ -88,6 +88,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void OnNotifyQuery (DataSnapshot dataSnapshot)
 	{
+		Debug.Log ("Searching rooms :" + searchingRoom);
 		if (searchingRoom) {
 			if (dataSnapshot.HasChildren) {
 				Debug.Log ("has game rooms");
@@ -117,11 +118,12 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 	public void SearchRoom (Action<bool> onResult)
 	{
+		searchingRoom = true;
 		RPCDicObserver.AddObserver (this);
 		RPCQueryObserver.AddObserver (this);
 		//Order first to search fast
 		FDFacade.Instance.QueryTable ("SearchRoom", roomReference.OrderByChild (MyConst.GAMEROOM_STATUS).EqualTo ("0"));
-		searchingRoom = true;
+
 		onSuccessMatchMake = onResult;
 
 	}
@@ -134,6 +136,28 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 		//set prototype mode type
 		FDFacade.Instance.SetTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_PROTOTYPE_MODE), "" + (int)GameData.Instance.modePrototype);
+	}
+
+	public void CancelRoomSearch ()
+	{
+		if (!isMatchMakeSuccess) {
+			if (GameData.Instance.isHost) {
+				DeleteRoom ();
+				GameData.Instance.isHost = false;
+			} 
+		}
+		RPCDicObserver.RemoveObserver (this);
+		RPCQueryObserver.RemoveObserver (this);
+		gameRoomKey = null;
+		searchingRoom = false;
+		onSuccessMatchMake (false);
+		FDFacade.Instance.RemoveQuery ("SearchRoom");
+
+	}
+
+	private void DeleteRoom ()
+	{
+		FDFacade.Instance.RemoveTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey));
 	}
 
 	public void JoinRoom ()
@@ -249,23 +273,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 
 		string directory = "/" + MyConst.GAMEROOM_NAME + "/" + gameRoomKey + "/" + MyConst.GAMEROOM_BATTLE_STATUS + "/" + battleStatusKey + "/";
 		FDFacade.Instance.CreateTableChildrenAsync (directory, reference, entryValues);
-	}
-
-	public void CancelRoomSearch ()
-	{
-		if (!isMatchMakeSuccess) {
-			if (GameData.Instance.isHost) {
-				DeleteRoom ();
-			} 
-		}
-		gameRoomKey = null;
-		searchingRoom = false;
-		onSuccessMatchMake (false);
-	}
-
-	private void DeleteRoom ()
-	{
-		FDFacade.Instance.RemoveTableValueAsync (reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey));
 	}
 
 	public void SetAttackParam (AttackModel attack)
