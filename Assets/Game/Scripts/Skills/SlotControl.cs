@@ -4,6 +4,10 @@ using System.Collections;
 
 public class SlotControl : MonoBehaviour , IDropHandler{
 	public int position;
+	private SkillModel[] skill = new SkillModel[3];
+	void start(){
+		
+	}
 	public GameObject item
 	{
 		get
@@ -21,11 +25,25 @@ public class SlotControl : MonoBehaviour , IDropHandler{
 	{
 		if (!item)
 		{
+			DragHandler dh = new DragHandler ();
+			Debug.Log (dh.skillNumber);
 			DragHandler.item.transform.SetParent(transform);
+			//SkillManagerComponent.Instance.SetSkill (position, 
+			//	SkillManagerComponent.Instance.skillList[DragHandler.GetSkillNumber()]);
+			int skillIndex = 0;
+			switch(item.name){
+			case "BicPunch":
+				skillIndex= 0;
+				break;
+			case "Sunder":
+				 skillIndex = 1;
+				break;
+			case "Rejuvenation":
+				skillIndex = 2;
+				break;
+			}
 			SkillManagerComponent.Instance.SetSkill (position, 
-				SkillManagerComponent.Instance.GetSkill (
-					item.GetComponent<DragHandler> ().GetSkillNumber ()));
-			
+				SkillManagerComponent.Instance.skillList[skillIndex]);
 		}
 	}
 	#endregion

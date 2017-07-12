@@ -5,17 +5,14 @@ using UnityEngine.EventSystems;
 
 public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-	public static GameObject item;    // i changed itembeigdraged to item.
+	public static GameObject item;   
 	Transform startParent;
 	Vector3 startPosition;
 	bool start = true;
 	public int skillNumber = 1;
-
 	public int GetSkillNumber(){
 		return skillNumber;
 	}
-
-	//Sprite sprite;
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
@@ -32,19 +29,17 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	{
 
 		transform.position = Input.mousePosition;
+		//transform.position =  GetComponentInParent<Canvas>().worldCamera.ScreenToWorldPoint( Input.mousePosition);
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
 		item = null;
-
 		if(transform.parent == startParent)
 		{
 			transform.position = startPosition;
 		}
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
-
-		//item.GetComponent<LayoutElement>().ignoreLayout = false;
 	}
 
 }

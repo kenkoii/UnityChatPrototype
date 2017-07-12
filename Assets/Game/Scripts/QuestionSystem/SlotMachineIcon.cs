@@ -42,13 +42,13 @@ public class SlotMachineIcon : QuestionSystemBase, IQuestion{
 		LoadQuestion ();
 		findSlotMachines ();
 		ShuffleAlgo ();
-		smoc.WrittenAnswer = "";
 	}
 	void Update(){
 		Debug.Log (smoc.WrittenAnswer);
-		if ((questionAnswer == smoc.WrittenAnswer )&& gotAnswer) {
+		string ans = smoc.WrittenAnswer.Substring(0, smoc.WrittenAnswer.Length - (smoc.WrittenAnswer.Length - questionAnswer.Length));
+		if ((questionAnswer == ans )&& gotAnswer) {
+			
 			gotAnswer = false;
-			smoc.WrittenAnswer = "";
 			CheckAnswer (true);
 
 		}
