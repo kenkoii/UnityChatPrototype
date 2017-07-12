@@ -19,26 +19,26 @@ public class ViewGroupController : MonoBehaviour {
 		TweenController.TweenMoveTo (viewGroup.transform, -skillView.transform.localPosition, 0.5f);
 			colorToDefault ();
 			skill.gameObject.GetComponentInChildren<Image> ().color = new Color32 (66, 135, 199, 255);
-		TweenController.TweenTextScale(skill.transform, new Vector3(1.08f,1.08f,1.08f), 0.2f);
+		TweenController.TweenTextScale(skill.transform.GetChild(0).transform, new Vector3(1.3f,1.3f,1.3f), 0.2f);
 	}
 	public void LerpBackToHome(Button home){
 		TweenController.TweenMoveTo(viewGroup.transform, new Vector2(0,0), 0.5f);
 		colorToDefault ();
 		home.gameObject.GetComponentInChildren<Image> ().color = new Color32 (66, 135, 199, 255);
-		TweenController.TweenTextScale(home.transform, new Vector3(1.08f,1.08f,1.08f), 0.2f);
+		TweenController.TweenTextScale(home.transform.GetChild(0).transform, new Vector3(1.3f,1.3f,1.3f), 0.2f);
 	}
 	public void LerpToMatch(Button match){
 		TweenController.TweenMoveTo(viewGroup.transform, -matchView.transform.localPosition, 0.5f);
 		colorToDefault ();
 		match.gameObject.GetComponentInChildren<Image> ().color = new Color32 (66, 135, 199, 255);
-		TweenController.TweenTextScale(match.transform, new Vector3(1.08f,1.08f,1.08f), 0.2f);
+		TweenController.TweenTextScale(match.transform.GetChild(0).transform, new Vector3(1.3f,1.3f,1.3f), 0.2f);
 	}
 	public void colorToDefault(){
 		skillButton.gameObject.GetComponentInChildren<Image> ().color =  new Color32 (20, 65, 96, 255);
 		matchButton.gameObject.GetComponentInChildren<Image> ().color =  new Color32 (20, 65, 96, 255);
 		homeButton.gameObject.GetComponentInChildren<Image> ().color =  new Color32 (20, 65, 96, 255);
-		TweenController.TweenTextScale(skillButton.transform, Vector3.one, 0.2f);
-		TweenController.TweenTextScale(matchButton.transform, Vector3.one, 0.2f);
-		TweenController.TweenTextScale(homeButton.transform, Vector3.one, 0.2f);
+		TweenController.TweenTextScale(skillButton.transform.GetChild(0).transform, Vector3.one, 0.2f);
+		TweenController.TweenTextScale(matchButton.transform.GetChild(0).transform, Vector3.one, 0.2f);
+		TweenController.TweenTextScale(homeButton.transform.GetChild(0).transform, Vector3.one, 0.2f);
 	}
 }

@@ -46,11 +46,10 @@ public class SlotMachineIcon : QuestionSystemBase, IQuestion{
 	void Update(){
 		Debug.Log (smoc.WrittenAnswer);
 		string ans = smoc.WrittenAnswer.Substring(0, smoc.WrittenAnswer.Length - (smoc.WrittenAnswer.Length - questionAnswer.Length));
+		Debug.Log (ans);
 		if ((questionAnswer == ans )&& gotAnswer) {
-			
 			gotAnswer = false;
 			CheckAnswer (true);
-
 		}
 	}
 		
