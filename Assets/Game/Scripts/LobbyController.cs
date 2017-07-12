@@ -13,9 +13,9 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject roomViews;
 	private int timeLeft = 3;
 	private bool stoptimer = true;
-
-
-
+	public GameObject matchSword;
+	public Text matchingText;
+	public GameObject menu;
 	void Start(){
 		//QuestionBuilder.PopulateQuestion ("selectChangeTyping");
 	}
@@ -23,6 +23,12 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public void SearchRoom ()
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+		//matchSword.GetComponentInChildren<Animation> ().Play ("FindMatchAnimation");
+		matchSword.GetComponentInChildren<Animation> ().PlayQueued("FindMatchAnimation", QueueMode.PlayNow);
+		matchSword.GetComponentInChildren<Animation> ().PlayQueued("MatchingLoop", QueueMode.CompleteOthers).wrapMode =WrapMode.Loop;
+		matchingText.text = "Matching...";
+		TweenController.TweenMoveTo (matchingText.transform, new Vector2 (matchingText.transform.localPosition.x, matchingText.transform.localPosition.y + 160f), 0.5f);
+		TweenController.TweenMoveTo (menu.transform, new Vector2 (menu.transform.localPosition.x, menu.transform.localPosition.y - 160f), 0.5f);
 		ScreenController.Instance.StartMatchingScreen ();
 		FDController.Instance.SearchRoom (delegate(bool result) {
 			if (result) {
@@ -55,7 +61,12 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public void CancelRoomSearch ()
 	{
 		FDController.Instance.CancelRoomSearch ();
+		matchSword.GetComponentInChildren<Animation> ().Play ("MatchIdle");
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
+		matchingText.text = "Find Match";
+		TweenController.TweenMoveTo (matchingText.transform, new Vector2 (matchingText.transform.localPosition.x, matchingText.transform.localPosition.y - 160f), 0.5f);
+		TweenController.TweenMoveTo (menu.transform, new Vector2 (menu.transform.localPosition.x, menu.transform.localPosition.y + 160f), 0.5f);
+
 	}
 
 

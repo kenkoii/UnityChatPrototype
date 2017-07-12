@@ -30,15 +30,11 @@ public class PhaseSkillController : BasePhase
 			SkillButtonInteractable (2, skillButton[1]);
 			SkillButtonInteractable (3, skillButton[2]);
 		}
-
 		attackButton.interactable = true;
 		attackButton.gameObject.SetActive (true);
-
 		timeLeft = 5;
 		stoptimer = true;
 		InvokeRepeating ("StartTimer", 0, 1);
-
-	
 	}
 
 	public override void OnEndPhase ()

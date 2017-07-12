@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GestureController : SingletonMonoBehaviour<GestureController>, IRPCDicObserver
 {
@@ -21,8 +22,9 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 			button.gameObject.GetComponent<Image> ().sprite = closeImage;
 		} else {
 //			TweenController.TweenScaleToLarge (gestureButtonContainer.transform, new Vector3(1,1,1), 0.2f);
-			Invoke ("ScaleToSmall", 0.05f);
 			button.gameObject.GetComponent<Image> ().sprite = gestureImage;
+			Invoke ("ScaleToSmall", 0.05f);
+
 		}
 	}
 
@@ -39,6 +41,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 	public void ShowPlayerGesture1 ()
 	{
 		ShowGesture (true, "Gesture1");
+
 		SendGesture (1);
 	}
 
@@ -107,6 +110,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	private void SendGesture (int gestureNumber)
 	{
+		EventSystem.current.currentSelectedGameObject.GetComponent<Image> ().sprite = gestureImage;
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
 		FDController.Instance.SetGestureParam (new GestureModel (JsonConverter.DicToJsonStr (param).ToString ()));
 	}
