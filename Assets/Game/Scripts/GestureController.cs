@@ -10,7 +10,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 	public GameObject gestureButtonContainer;
 	public Sprite closeImage;
 	public Sprite gestureImage;
-
+	public GameObject gestureButton;
 	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
 
 	public void ShowGestureButtons (Transform button)
@@ -110,7 +110,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 
 	private void SendGesture (int gestureNumber)
 	{
-		EventSystem.current.currentSelectedGameObject.GetComponent<Image> ().sprite = gestureImage;
+		gestureButton.GetComponent<Image> ().sprite = gestureImage;
 		param [ParamNames.Gesture.ToString ()] = gestureNumber;
 		FDController.Instance.SetGestureParam (new GestureModel (JsonConverter.DicToJsonStr (param).ToString ()));
 	}
