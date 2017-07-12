@@ -16,10 +16,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public GameObject matchSword;
 	public Text matchingText;
 	public GameObject menu;
-	void Start(){
-		//QuestionBuilder.PopulateQuestion ("selectChangeTyping");
-	}
-
+	public Button searchRoomButton;
 	public void SearchRoom ()
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
@@ -30,11 +27,14 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		TweenController.TweenMoveTo (matchingText.transform, new Vector2 (matchingText.transform.localPosition.x, matchingText.transform.localPosition.y + 160f), 0.5f);
 		TweenController.TweenMoveTo (menu.transform, new Vector2 (menu.transform.localPosition.x, menu.transform.localPosition.y - 160f), 0.5f);
 		ScreenController.Instance.StartMatchingScreen ();
+		searchRoomButton.interactable = false;
 		FDController.Instance.SearchRoom (delegate(bool result) {
 			if (result) {
 				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
+
+				searchRoomButton.interactable = true;
 				matchSword.GetComponentInChildren<Animation> ().Play ("MatchIdle");
 				AudioController.Instance.PlayAudio (AudioEnum.ClickButton);
 				matchingText.text = "Find Match";

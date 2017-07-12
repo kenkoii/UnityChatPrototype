@@ -18,10 +18,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	{
 		item = gameObject;
 		startPosition = transform.position;
-		startParent = transform.parent;
-
 		GetComponent<CanvasGroup>().blocksRaycasts = false;
-		item.transform.SetParent(item.transform.parent.parent);
 	}
 
 
@@ -38,10 +35,11 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public void OnEndDrag(PointerEventData eventData)
 	{
 		item = null;
-		if(transform.parent == startParent)
-		{
+		//if (transform.parent == startParent) {
 			transform.position = startPosition;
-		}
+		//} else {
+			
+		//}
 		GetComponent<CanvasGroup>().blocksRaycasts = true;
 	}
 
