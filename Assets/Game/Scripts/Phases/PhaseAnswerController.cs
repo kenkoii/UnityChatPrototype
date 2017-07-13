@@ -11,6 +11,7 @@ public class PhaseAnswerController : BasePhase
 
 	public override void OnStartPhase ()
 	{
+		FindObjectOfType<PhaseSkillController> ().ShowAutoActivateButtons (true);
 		Debug.Log ("Starting Answer Phase");
 		RPCDicObserver.AddObserver(AnswerIndicatorController.Instance);
 		hasAnswered = false;
@@ -76,6 +77,9 @@ public class PhaseAnswerController : BasePhase
 		GameData.Instance.gpEarned = gp;
 		BattleView.Instance.PlayerGP += gp;
 		FDController.Instance.AnswerPhase (qtimeLeft, gp);
+
+		//for mode 3
+		FindObjectOfType<PhaseSkillController> ().CheckSkillActivate ();
 
 		if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
 			if (GameData.Instance.skillChosenCost <= BattleView.Instance.PlayerGP) {
