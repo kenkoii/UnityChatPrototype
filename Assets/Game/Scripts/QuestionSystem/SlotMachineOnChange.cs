@@ -217,7 +217,6 @@ public class SlotMachineOnChange : MonoBehaviour {
 
 		if(!_hasDisabledGridComponents)
 			DisableGridComponents();
-
 		for(int i=0;i<items.Count;i++)
 		{
 			if(_isVertical)

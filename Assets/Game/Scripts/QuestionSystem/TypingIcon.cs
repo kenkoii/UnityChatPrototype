@@ -6,18 +6,22 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class TypingIcon : QuestionSystemBase, IQuestion
+public class TypingIcon : BaseQuestion, IQuestion
 {
-
 	public GameObject gpText;
 	public Text questionText;
 	private bool selectionIsClickable = true;
 	public GameObject inputPrefab;
 	public GameObject answerContent;
 
+	private QuestionSystemEnums.QuestionType[] questionTypes = new QuestionSystemEnums.QuestionType[3]{
+		QuestionSystemEnums.QuestionType.Antonym,
+		QuestionSystemEnums.QuestionType.Synonym,
+		QuestionSystemEnums.QuestionType.Definition
+	};
+
 	public void Activate (Action<int,int> Result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextRound ();
@@ -27,8 +31,7 @@ public class TypingIcon : QuestionSystemBase, IQuestion
 
 	public void NextRound ()
 	{
-		
-		LoadQuestion ();
+		LoadQuestion (questionTypes[UnityEngine.Random.Range(0,questionTypes.Length)]);
 		PopulateAnswerHolder (gameObject, inputPrefab, answerContent);
 		QuestionHint ();
 	}

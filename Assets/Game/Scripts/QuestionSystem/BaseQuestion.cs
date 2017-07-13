@@ -17,26 +17,24 @@ public abstract class BaseQuestion : MonoBehaviour{
 	protected GameObject[] answerIdentifier = new GameObject[30];
 	protected QuestionSystemEnums.SelectionType selectionType;
 
-	protected void LoadQuestion ()
+	protected void LoadQuestion (QuestionSystemEnums.QuestionType questionType)
 	{
-		Question questionLoaded = QuestionBuilder.GetQuestion ();
-		Debug.Log ((Random.value > 0.5f));
-
-		if (questionLoaded.questionType == QuestionSystemEnums.QuestionType.Antonym || questionLoaded.questionType == QuestionSystemEnums.QuestionType.Synonym) {
-			questionAnswer = questionLoaded.questionType == QuestionSystemEnums.QuestionType.Synonym ? questionLoaded.synonym : questionLoaded.antonym;
-		} else {
-			questionAnswer = questionLoaded.answer;
-		}
-		selectionType = questionLoaded.selectionType;
-		string question = questionLoaded.questionType +": "+questionLoaded.question;
+		Question questionLoaded = QuestionBuilder.GetQuestion (questionType);
+		string question = questionLoaded.question;
 		gameObject.transform.GetChild (0).GetComponent<Text> ().text = question;
+		questionAnswer = questionLoaded.answers.Length == 2 ? 
+			(questionLoaded.answers[0].ToUpper()+"/"+questionLoaded.answers[1].ToUpper()):
+			questionLoaded.answers[UnityEngine.Random.Range(0,questionLoaded.answers.Length)].ToUpper() ;
 	}
-
-
-
+		
 	protected void PopulateAnswerHolder (GameObject g, GameObject outputPrefab, GameObject answerContent)
 	{
 		answerButtons.Clear ();
+		string[] temp = questionAnswer.Split ('/');
+		if(temp.Length>1){
+			questionAnswer = temp [UnityEngine.Random.Range (0,temp.Length)];
+			Debug.Log (questionAnswer);
+		}
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			GameObject answerPrefab = Instantiate (outputPrefab) as GameObject; 
 			answerPrefab.transform.SetParent (answerContent.transform, false);
@@ -52,7 +50,6 @@ public abstract class BaseQuestion : MonoBehaviour{
 
 	public void PopulateSelectionHolder (GameObject g, GameObject outputPrefab, GameObject selectionContent){
 		selectionButtons.Clear ();
-
 		for (int i = 0; i < questionAnswer.Length; i++) {
 			GameObject input = Instantiate (outputPrefab) as GameObject; 
 			input.transform.SetParent (selectionContent.transform, false);

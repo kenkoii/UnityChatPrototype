@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class WordChoiceIcon : QuestionSystemBase, IQuestion
+public class WordChoiceIcon : BaseQuestion, IQuestion
 {
 
 	private bool justAnswered = false;
@@ -16,11 +16,11 @@ public class WordChoiceIcon : QuestionSystemBase, IQuestion
 	public GameObject gpText;
 	public Text questionType;
 	public Text questionText;
-	public GameObject[] selectionButtons = new GameObject[4];
+	new public GameObject[] selectionButtons = new GameObject[4];
 
 	public void Activate (Action<int,int> Result)
 	{
-		QuestionBuilder.PopulateQuestion ("wordchoice",gameObject);
+//		QuestionBuilder.PopulateQuestion ("wordchoice",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion ();
@@ -30,13 +30,14 @@ public class WordChoiceIcon : QuestionSystemBase, IQuestion
 		
 	public void NextQuestion ()
 	{
-		LoadQuestion ();
+		LoadQuestion (QuestionSystemEnums.QuestionType.Synonym);
 		SelectionInit ();
 	}
 		
 	public void TweenCallBack(){
 		gpText.transform.DOScale (new Vector3(1,1,1),1.0f);
 		gpText.GetComponent<Text> ().text = " ";
+
 	}
 
 	public void OnFinishQuestion(){

@@ -7,16 +7,21 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SelectLetterIcon :  QuestionSystemBase , IQuestion
+public class SelectLetterIcon :  BaseQuestion , IQuestion
 {
 	public GameObject inputPrefab;
 	public GameObject gpText;
-    public GameObject[] selectionButtons = new GameObject[12];
+	new  public GameObject[] selectionButtons = new GameObject[12];
 	public GameObject answerContent;
+
+	private QuestionSystemEnums.QuestionType[] questionTypes = new QuestionSystemEnums.QuestionType[3]{
+		QuestionSystemEnums.QuestionType.Antonym,
+		QuestionSystemEnums.QuestionType.Synonym,
+		QuestionSystemEnums.QuestionType.Definition
+	};
 
 	public void Activate (Action<int,int> result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion ();
@@ -26,7 +31,7 @@ public class SelectLetterIcon :  QuestionSystemBase , IQuestion
 	public void NextQuestion ()
 	{
 		ClearAnswerList ();
-		LoadQuestion ();
+		LoadQuestion (questionTypes[UnityEngine.Random.Range(0,questionTypes.Length)]);
 		PopulateAnswerHolder (gameObject, inputPrefab, answerContent);
 		SelectionInit ();
 
@@ -56,6 +61,8 @@ public class SelectLetterIcon :  QuestionSystemBase , IQuestion
 	public void SelectionInit ()
 	{
 		answerGameObject.Clear ();
+
+
 		int numberOfLetters = questionAnswer.Length;
 		string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		List <int> randomList = new List<int>();
