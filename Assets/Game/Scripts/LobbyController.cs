@@ -33,7 +33,6 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 				GoToGameRoom ();	
 			} else {
 				Debug.Log ("Cancelled Search");
-
 				searchRoomButton.interactable = true;
 				matchSword.GetComponentInChildren<Animation> ().Play ("MatchIdle");
 				AudioController.Instance.PlayAudio (AudioEnum.ClickButton);

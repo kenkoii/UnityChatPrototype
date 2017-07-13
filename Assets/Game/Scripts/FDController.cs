@@ -66,6 +66,7 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	{
 		//TEMPORARY SOLUTION FOR PLAYER DETAILS
 		if (dataSnapShot.Key.ToString ().Equals ("Home")) {
+			Debug.Log ("hi");
 			if (GameData.Instance.isHost) {
 				BattleView.Instance.SetStateParam (dataSnapShot, true);
 			} else {
@@ -83,7 +84,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 			}
 			Debug.Log ("Matching Success!");
 		}
-
 	}
 
 	public void OnNotifyQuery (DataSnapshot dataSnapshot)
@@ -152,7 +152,10 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 		searchingRoom = false;
 		onSuccessMatchMake (false);
 		FDFacade.Instance.RemoveQuery ("SearchRoom");
-
+		FDFacade.Instance.RemoveReference ("InitialStateListener");
+		FDFacade.Instance.RemoveReference ("BattleStatusValueChanged");
+		FDFacade.Instance.RemoveReference ("BattleStatusChildAdded");
+		FDFacade.Instance.RemoveReference ("RPCListener");
 	}
 
 	private void DeleteRoom ()
@@ -238,7 +241,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 			FDFacade.Instance.CreateTableChildAddedListener ("BattleStatusChildAdded", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS));
 			FDFacade.Instance.CreateTableValueChangedListener ("BattleStatusValueChanged", reference.Child (MyConst.GAMEROOM_NAME).Child (gameRoomKey).Child (MyConst.GAMEROOM_BATTLE_STATUS));
 		});
-
 
 	}
 
