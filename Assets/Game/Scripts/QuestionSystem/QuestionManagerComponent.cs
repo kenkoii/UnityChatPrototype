@@ -8,17 +8,24 @@ using UnityEngine.UI;
 public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerComponent>
 {
 	public GameObject[] questionTypeModals;
-
+	public GameObject questionUI;
 	public void QuestionHide(){
-
 		for (int i = 0; i < questionTypeModals.Length; i++) {
 			//Debug.Log (questionTypeModals[i].name);
 			questionTypeModals [i].SetActive (false);
 		}
 	}
-
+	void Start(){
+		QuestionBuilder.PopulateQuestion ("QuestionSystemCsv");
+		SelectLetterIcon typingicon = FindObjectOfType<SelectLetterIcon>();
+		QuestionController.Instance.SetQuestion (typingicon, 15, null);
+	}
 	public void SetQuestionEntry(int questionType, int questionTime, Action<int, int> onResult){
 		questionTypeModals[questionType].SetActive (true);
+
+		//questionUI.SetActive (true);
+	//	ChangeOrderIcon chaord = new ChangeOrderIcon ();
+	//QuestionController.Instance.SetQuestion (chaord, questionTime, onResult);
 
 		switch (questionType) {
 		case 0:
@@ -53,7 +60,7 @@ public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerCo
 			break;
 		}
 
-
+			
 			
 	}
 

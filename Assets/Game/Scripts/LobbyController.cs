@@ -17,6 +17,8 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 	public Text matchingText;
 	public GameObject menu;
 	public Button searchRoomButton;
+
+
 	public void SearchRoom ()
 	{
 		AudioController.Instance.PlayAudio (AudioEnum.ClickButton);

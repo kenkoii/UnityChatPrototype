@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class ChangeOrderIcon : QuestionSystemBase, IQuestion
+public class ChangeOrderIcon : BaseQuestion, IQuestion
 {
 	
 	public GameObject inputPrefab;
@@ -14,9 +14,16 @@ public class ChangeOrderIcon : QuestionSystemBase, IQuestion
 	public GameObject answerContent;
 	public GameObject selectionContent;
 	public GameObject gpText;
+
+	private QuestionSystemEnums.QuestionType[] questionTypes = new QuestionSystemEnums.QuestionType[3]{
+		QuestionSystemEnums.QuestionType.Antonym,
+		QuestionSystemEnums.QuestionType.Synonym,
+		QuestionSystemEnums.QuestionType.Definition
+	};
+
 	public void Activate (Action<int,int> Result)
 	{
-		QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
+		//QuestionBuilder.PopulateQuestion ("SelectChangeTyping",gameObject);
 		currentRound = 1;
 		correctAnswers = 0;
 		NextQuestion ();
@@ -27,11 +34,10 @@ public class ChangeOrderIcon : QuestionSystemBase, IQuestion
 
 	public void NextQuestion ()
 	{
-		LoadQuestion ();
+		LoadQuestion (questionTypes[UnityEngine.Random.Range(0,questionTypes.Length)]);
 		PopulateSelectionHolder (gameObject, inputPrefab, selectionContent);
 		PopulateAnswerHolder (gameObject, inputPrefab, answerContent);
 		ShuffleAlgo ();
-
 	}
 
 	public void OnFinishQuestion ()

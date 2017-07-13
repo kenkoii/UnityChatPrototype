@@ -11,107 +11,85 @@ public static class QuestionBuilder
 	private static string questionString;
 	private static string antonymString;
 	private static string synonymString;
+	public static QuestionSystemEnums.QuestionType questionType;
 	private static List<string> questionsDone = new List<string> ();
-	private static List<Question> questionList = new List<Question> ();
+	private static List<QuestionList> questionList = new List<QuestionList> ();
 	private static List<string> wrongChoices = new List<string> ();
 	private static List<int> wrongChoicesDone = new List<int> ();
 	public static List<Dictionary<string,System.Object>> parsedData = new List<Dictionary<string,System.Object>> ();
 
-	public static void PopulateQuestion (string questionName, GameObject g)
+	public static void PopulateQuestion (string questionName)
 	{
-		questionTypeChosen = g.name;
 		questionList.Clear ();
 		parsedData = getParsedCSV (questionName);
-		if (questionName == "wordchoice") {
-			for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
-				questionList.Add (new Question (parsedData [listIndex] ["Given"].ToString (),
-					"None", parsedData [listIndex] ["Synonym"].ToString (),
-					parsedData [listIndex] ["Antonym"].ToString (), 0, 0));
-				wrongChoices.Add (parsedData [listIndex] ["Choices"].ToString ());
-			}
-		} else if (questionName == "slotmachine") {
-			for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
-				questionList.Add (new Question (parsedData [listIndex] ["Given"].ToString (),
-					"None", parsedData [listIndex] ["Synonym"].ToString (),
-					parsedData [listIndex] ["Antonym"].ToString (), 0, 0));
-			}
-		}
-		else{
-			for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
-				questionList.Add (new Question (parsedData [listIndex] ["Definition"].ToString (),
-					parsedData [listIndex] ["Answer"].ToString (),"None","None", 0,0));
-			}
-		}
 
-
+		for (int listIndex = 0; listIndex < parsedData.Count - 1; listIndex++) {
+			bool hasSynonym = parsedData [listIndex] ["sy"].ToString() == "1" ? true : false;
+			bool hasAntonym = parsedData [listIndex] ["an"].ToString() == "1" ? true : false;
+			bool hasDefinition = parsedData [listIndex] ["de"].ToString() == "1" ? true : false;
+			questionList.Add (new QuestionList(
+				parsedData[listIndex]["definition"].ToString(),
+				parsedData[listIndex]["answer"].ToString(),
+				(parsedData[listIndex]["synonym1"].ToString()+"/"+parsedData[listIndex]["synonym2"]),
+				(parsedData[listIndex]["antonym1"].ToString()+"/"+parsedData[listIndex]["antonym2"]),
+				hasDefinition,hasSynonym,hasAntonym
+			));
+			wrongChoices.Add (parsedData[listIndex]["answer"].ToString());
+		}
 	}
 
-	public static Question GetQuestion ()
+	public static Question GetQuestion (QuestionSystemEnums.QuestionType qType)
 	{
-		QuestionChecker (true);
-		Question questionGot = new Question (questionString, questionAnswer,synonymString,antonymString, GetQuestionType(),GetSelectionType());
+		int randomize = 0;
+		bool questionViable = false;
+		string question = "";
+		List<string> answersList = new List<string>();
+		questionType = qType;
+		while(!questionViable) {
+			randomize = UnityEngine.Random.Range (0, questionList.Count);
 
+			switch (questionType) {
+			case QuestionSystemEnums.QuestionType.Antonym:
+				if (questionList [randomize].hasAntonym) {
+					string[] antonym = questionList [randomize].antonym.Split('/');
+					answersList.Add(antonym [0]);
+					answersList.Add(antonym [1]);
+					question = questionList [randomize].answer;
+					questionViable = true;
+				}
+				break;
+			case QuestionSystemEnums.QuestionType.Synonym:
+				if (questionList [randomize].hasSynonym) {
+					string[] synonym = questionList [randomize].synonym.Split('/');
+					answersList.Add(synonym [0]);
+					answersList.Add(synonym [1]);
+					question = questionList [randomize].answer;
+					questionViable = true;
+				}
+				break;
+			case QuestionSystemEnums.QuestionType.Definition:
+				if (questionList [randomize].hasDefinition) {
+					answersList.Add(questionList[randomize].answer);
+					question = questionList [randomize].definition;
+					questionViable = true;
+				}
+				break;
+			}
+			if (questionsDone.Contains (question)) {
+				questionViable = false;
+			}
+		}
+
+		Question questionGot = new Question (question,answersList.ToArray());
+		questionsDone.Add (question);
 		return questionGot;
 	}
 
-	public static QuestionSystemEnums.QuestionType GetQuestionType(){
-		QuestionSystemEnums.QuestionType questionType = 0;
-		switch (questionTypeChosen) {
-		case "SelectLetterIconModal:":
-			questionType = QuestionSystemEnums.QuestionType.Definition;
-			break;
-		case "TypingModal":
-			questionType = QuestionSystemEnums.QuestionType.Definition;
-			break;
-		case "ChangeOrderModal":
-			questionType = QuestionSystemEnums.QuestionType.Definition;
-			break;
-		case "WordChoiceModal":
-			questionType = (Random.value > 0.5f) ? QuestionSystemEnums.QuestionType.Synonym : QuestionSystemEnums.QuestionType.Antonym;
-			break;
-		case "SlotMachineModal":
-			questionType = (Random.value > 0.5f) ? QuestionSystemEnums.QuestionType.Synonym : QuestionSystemEnums.QuestionType.Antonym;
-			break;
-		}
-
-		return questionType;
-	}
-
-	public static QuestionSystemEnums.AnswerType GetAnswerType(){
-		QuestionSystemEnums.AnswerType answerType = QuestionSystemEnums.AnswerType.FillLetter;
-		return answerType;
-	}
-
-	public static QuestionSystemEnums.SelectionType GetSelectionType(){
-		QuestionSystemEnums.SelectionType selectionType = 0;
-		switch (questionTypeChosen) {
-		case "SelectLetterIconModal:":
-			selectionType = QuestionSystemEnums.SelectionType.SelectLetter;
-			break;
-		case "TypingModal":
-			selectionType = QuestionSystemEnums.SelectionType.Typing;
-			break;
-		case "ChangeOrderModal":
-			selectionType = QuestionSystemEnums.SelectionType.ChangeOrder;
-			break;
-		case "WordChoiceModal":
-			selectionType = QuestionSystemEnums.SelectionType.WordChoice;
-			break;
-		case "SlotMachineModal":
-			selectionType = QuestionSystemEnums.SelectionType.SlotMachine;
-			break;
-		}
-		return selectionType;
-	}
 
 	private static void QuestionChecker (bool initRandom)
 	{
-		if (initRandom) {
-			QuestionRandomizer ();
-			return;
-		}
-		if (questionsDone.Contains (questionString) || questionAnswer.Equals("None")) {
-			QuestionRandomizer ();
+		if (questionsDone.Contains (questionString)) {
+			GetQuestion (questionType);
 			return;
 		}
 		questionsDone.Add (questionString);
@@ -126,17 +104,7 @@ public static class QuestionBuilder
 		string wrongChoice = wrongChoices [randomnum];
 		return wrongChoice;
 	}
-
-	private static void QuestionRandomizer ()
-	{
-		int randomize = UnityEngine.Random.Range (0, questionList.Count);
-		questionAnswer = questionList [randomize].answer.ToUpper ().ToString ();	
-		synonymString = questionList [randomize].synonym.ToUpper ().ToString ();
-		antonymString = questionList [randomize].antonym.ToUpper ().ToString ();
-		questionString = questionList [randomize].question;
-		QuestionChecker (false);
-	}
-
+		
 	public static List<Dictionary<string,System.Object>> getParsedCSV (string csv)
 	{
 		int csvHeaderLines = 1;

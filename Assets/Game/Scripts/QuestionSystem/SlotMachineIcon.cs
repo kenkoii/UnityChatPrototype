@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Net;
 using System.IO;
 
-public class SlotMachineIcon : QuestionSystemBase, IQuestion{
+public class SlotMachineIcon : BaseQuestion, IQuestion{
 
 	public GameObject gpText;
 	public GameObject[] roulletes = new GameObject[12];
@@ -18,7 +18,7 @@ public class SlotMachineIcon : QuestionSystemBase, IQuestion{
 	private List<Color> previousSlotColor = new List<Color>();
 
 	public void Activate(Action<int,int> result){
-		QuestionBuilder.PopulateQuestion ("slotmachine",gameObject);
+//		QuestionBuilder.PopulateQuestion ("slotmachine",gameObject);
 		roulleteText.Clear ();
 		answerButtons.Clear ();
 		gotAnswer = true;
@@ -39,7 +39,7 @@ public class SlotMachineIcon : QuestionSystemBase, IQuestion{
 	}
 	public void NextQuestion(){
 		
-		LoadQuestion ();
+		LoadQuestion (QuestionSystemEnums.QuestionType.Definition);
 		findSlotMachines ();
 		ShuffleAlgo ();
 	}
