@@ -33,27 +33,30 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
-		
-		Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
-		if (rpcReceive.ContainsKey ("param")) {
+		try {
+			Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
+			if (rpcReceive.ContainsKey ("param")) {
 
-			bool userHome = (bool)rpcReceive ["userHome"];
-			GameData.Instance.attackerBool = userHome;
+				bool userHome = (bool)rpcReceive ["userHome"];
+				GameData.Instance.attackerBool = userHome;
 
-			Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
-			if (param.ContainsKey ("SkillParam")) {
-				string stringParam = param ["SkillParam"].ToString ();
-				if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
-					SetPlayerSkillParameter (stringParam);
-				} else {
-					SetEnemySkillParameter (stringParam);
+				Dictionary<string, System.Object> param = (Dictionary<string, System.Object>)rpcReceive ["param"];
+				if (param.ContainsKey ("SkillParam")) {
+					string stringParam = param ["SkillParam"].ToString ();
+					if (GameData.Instance.attackerBool.Equals (GameData.Instance.isHost)) {
+						SetPlayerSkillParameter (stringParam);
+					} else {
+						SetEnemySkillParameter (stringParam);
+					}
+
 				}
-
+				if (param.ContainsKey ("SkillName")) {
+					string stringParam = param ["SkillName"].ToString ();
+					CheckSkillName (stringParam);
+				}
 			}
-			if (param.ContainsKey ("SkillName")) {
-				string stringParam = param ["SkillName"].ToString ();
-				CheckSkillName (stringParam);
-			}
+		} catch (System.Exception e) {
+			//
 		}
 	}
 
@@ -69,12 +72,12 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 
 			if (skill.skillKey == ParamNames.Damage.ToString ()) {
 				GameData.Instance.player.playerDamage += skill.skillValue;
-				Debug.Log ("skill player "+skill.skillKey + " value " + skill.skillValue);
+				Debug.Log ("skill player " + skill.skillKey + " value " + skill.skillValue);
 			}
 
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.PlayerHP += skill.skillValue;
-				Debug.Log ("skill player "+skill.skillKey + " value " + skill.skillValue);
+				Debug.Log ("skill player " + skill.skillKey + " value " + skill.skillValue);
 			}
 		}
 	}
@@ -86,7 +89,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 		foreach (SkillParameter skill in skillResult.skillList) {
 			if (skill.skillKey == ParamNames.Recover.ToString ()) {
 				BattleView.Instance.EnemyHP += skill.skillValue;
-				Debug.Log ("skill enemy "+skill.skillKey + " value " + skill.skillValue);
+				Debug.Log ("skill enemy " + skill.skillKey + " value " + skill.skillValue);
 			}
 		}
 	}

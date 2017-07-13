@@ -62,4 +62,11 @@ public static class TweenController{
 		obj.transform.DOLocalMove (endValue,duration,true);
 	}
 
+	public static void TweenImageFadeInFadeOut(Image image){
+		Sequence mySequence = DOTween.Sequence();
+		mySequence.SetLoops (-1);
+		mySequence.Append (image.DOFade(0,1));
+		mySequence.Append (image.DOFade(1,1));
+	}
+
 }

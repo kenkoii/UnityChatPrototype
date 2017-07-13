@@ -7,12 +7,14 @@ public class ConnectionStatus : MonoBehaviour, IRPCBoolObserver {
 
 	void Start(){
 		RPCBoolObserver.AddObserver (this);
+
 	}
 
 	public void OnNotify (bool isConnectedDB)
 	{
 		if (!isConnectedDB) {
 			connectionIndicator.enabled = true;
+			TweenController.TweenImageFadeInFadeOut (connectionIndicator);
 		} else {
 			connectionIndicator.enabled = false;
 		}

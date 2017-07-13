@@ -5,9 +5,10 @@ using UnityEngine;
 public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 {
 
-	List<bool> userHome = new List<bool> ();
-	List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
-	Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
+	private List<bool> userHome = new List<bool> ();
+	private List<Dictionary<string, System.Object>> param = new List<Dictionary<string, object>> ();
+	private Dictionary<bool, Dictionary<string, object>> thisCurrentParameter = new Dictionary<bool, Dictionary<string, object>> ();
+	private int attackCount = 0;
 
 	public void OnNotify (Firebase.Database.DataSnapshot dataSnapShot)
 	{
@@ -157,6 +158,7 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 		}
 	}
 
+
 	private void AttackParameter (bool attackerBool, Dictionary<string, System.Object> attackerParam, bool sameAttack = false)
 	{
 		if (attackerParam [ParamNames.Attack.ToString ()] != null) {
@@ -180,21 +182,24 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 
 	}
 
+
+
 	IEnumerator StartAttackSequence (int sequenceType)
 	{
 
 		switch (sequenceType) {
 		case 1:
+			
 			StartAttackSequenceReduce (AudioEnum.Attack, true, "attack");
 			yield return new WaitForSeconds (0.5f);
 			StartAttackSequenceReduce (AudioEnum.Hit, false, "hit");
-			CheckBattleStatus (false);
+			CheckAttackCount ();
 			break;
 		case 2:
 			StartAttackSequenceReduce (AudioEnum.Hit, true, "hit");
 			yield return new WaitForSeconds (0.5f);
 			StartAttackSequenceReduce (AudioEnum.Attack, false, "attack");
-			CheckBattleStatus (true);
+			CheckAttackCount ();
 			break;
 		case 3:
 			StartAttackSequenceReduce (AudioEnum.Attack, true, "attack");
@@ -208,6 +213,16 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 
 		}
 
+	}
+
+	private void CheckAttackCount(){
+		attackCount++;
+		if (attackCount == 2) {
+			CheckBattleStatus (true);
+			attackCount = 0;
+		} else {
+			CheckBattleStatus (false);
+		}
 	}
 
 	private void StartAttackSequenceReduce (AudioEnum audioType, bool isPlayer, string animParam)
