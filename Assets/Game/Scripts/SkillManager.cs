@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 
-public class SkillManagerComponent : SingletonMonoBehaviour<SkillManagerComponent>
+public class SkillManager : SingletonMonoBehaviour<SkillManager>
 {
 	
 	private SkillModel[] skill = new SkillModel[3];

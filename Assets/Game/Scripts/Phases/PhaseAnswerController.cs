@@ -40,7 +40,7 @@ public class PhaseAnswerController : BasePhase
 		hasAnswered = true;
 		questionSelect.SetActive (false);
 		//call question callback here
-		QuestionManagerComponent.Instance.SetQuestionEntry (questionNumber, GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+		QuestionManager.Instance.SetQuestionEntry (questionNumber, GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 			QuestionStart (gp, qtimeLeft);
 		});
 
@@ -58,7 +58,7 @@ public class PhaseAnswerController : BasePhase
 			} 
 
 			HideUI ();
-			QuestionManagerComponent.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
+			QuestionManager.Instance.SetQuestionEntry (UnityEngine.Random.Range (0, 2), GameData.Instance.answerQuestionTime, delegate(int gp, int qtimeLeft) {
 				
 				QuestionStart (gp, qtimeLeft);
 			});

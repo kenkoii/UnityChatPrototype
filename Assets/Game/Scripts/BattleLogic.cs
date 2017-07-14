@@ -149,7 +149,7 @@ public class BattleLogic:SingletonMonoBehaviour<BattleLogic>, IRPCDicObserver
 					}
 				}
 				yield return new WaitForSeconds (3);
-				PhaseManagerComponent.Instance.StartPhase1 ();
+				PhaseManager.Instance.StartPhase1 ();
 				//reset effects done by skill and battle data
 
 				GameController.Instance.ResetPlayerDamage ();

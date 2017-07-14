@@ -20,7 +20,6 @@ public class FDController : SingletonMonoBehaviour<FDController>,IRPCDicObserver
 	string battleStatusKey = null;
 	private bool isMatchMakeSuccess = false;
 	private DependencyStatus dependencyStatus = DependencyStatus.UnavailableOther;
-	private int roomCounter = 0;
 
 	void Start ()
 	{

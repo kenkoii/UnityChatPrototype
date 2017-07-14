@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComponent>, IRPCDicObserver
+public class SkillActivator: SingletonMonoBehaviour<SkillActivator>, IRPCDicObserver
 {
 	/// <summary>
 	/// Animates the skill.
@@ -56,7 +56,7 @@ public class SkillActivatorComponent : SingletonMonoBehaviour<SkillActivatorComp
 				}
 			}
 		} catch (System.Exception e) {
-			//
+			//do something with exception in future
 		}
 	}
 

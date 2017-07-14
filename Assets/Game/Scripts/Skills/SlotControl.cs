@@ -4,7 +4,7 @@ using System.Collections;
 
 public class SlotControl : MonoBehaviour , IDropHandler{
 	public int position;
-	private SkillModel[] skill = new SkillModel[3];
+	private SkillModel[] skill = new SkillModel[3];//VARIABLE NEVER USED
 	void start(){
 		
 	}
@@ -25,7 +25,7 @@ public class SlotControl : MonoBehaviour , IDropHandler{
 	{
 		if (!item)
 		{
-			DragHandler dh = new DragHandler ();
+			DragHandler dh = new DragHandler ();//VARIABLE NEVER USED
 			DragHandler.item.transform.SetParent(transform);
 			int skillIndex = 0;
 			switch(item.name){
@@ -39,8 +39,8 @@ public class SlotControl : MonoBehaviour , IDropHandler{
 				skillIndex = 2;
 				break;
 			}
-			SkillManagerComponent.Instance.SetSkill (position, 
-				SkillManagerComponent.Instance.skillList[skillIndex]);
+			SkillManager.Instance.SetSkill (position, 
+				SkillManager.Instance.skillList[skillIndex]);
 		}
 	}
 	#endregion

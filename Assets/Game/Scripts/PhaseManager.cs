@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 /* Manages phases */
-public class PhaseManagerComponent : SingletonMonoBehaviour<PhaseManagerComponent>
+public class PhaseManager : SingletonMonoBehaviour<PhaseManager>
 {
 	public BasePhase phaseAnswerController;
 	public BasePhase phaseSkillController;

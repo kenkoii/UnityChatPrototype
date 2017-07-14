@@ -8,10 +8,6 @@ using UnityEngine;
 public class Console : MonoBehaviour
 {
 	public GameObject consoleButton;
-	public float clampValueUp = 40;
-	public float clampValueDown = 40;
-	public float clampValueLeft = 40;
-	public float clampValueRight = 40;
 
 	struct Log
 	{

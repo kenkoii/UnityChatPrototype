@@ -10,7 +10,7 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 			Dictionary<string, System.Object> rpcReceive = (Dictionary<string, System.Object>)dataSnapShot.Value;
 			ReceiveBattleStatus (rpcReceive);
 		} catch (System.Exception e) {
-			//
+			//do something with exception
 		}
 	}
 
@@ -49,9 +49,9 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 					if (battleCount > 1) {
 						Debug.Log ("switching phases");
 						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-							PhaseManagerComponent.Instance.StartPhase3 ();
+							PhaseManager.Instance.StartPhase3 ();
 						} else {
-							PhaseManagerComponent.Instance.StartPhase2 ();
+							PhaseManager.Instance.StartPhase2 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
 					} 
@@ -62,9 +62,9 @@ public class BattleStatusManager : SingletonMonoBehaviour<BattleStatusManager>, 
 					if (battleCount > 1) {
 						Debug.Log ("switching phases");
 						if (GameData.Instance.modePrototype == ModeEnum.Mode2) {
-							PhaseManagerComponent.Instance.StartPhase2 ();
+							PhaseManager.Instance.StartPhase2 ();
 						} else {
-							PhaseManagerComponent.Instance.StartPhase3 ();
+							PhaseManager.Instance.StartPhase3 ();
 						}
 						ScreenController.Instance.StopWaitOpponentScreen ();
 					}

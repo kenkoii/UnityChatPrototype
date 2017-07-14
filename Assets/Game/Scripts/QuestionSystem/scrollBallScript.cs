@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class scrollBallScript : MonoBehaviour {
-	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();
+	private Dictionary<string, System.Object> param = new Dictionary<string, System.Object> ();//VARIABLE NEVER USED
 	public float speed = 200.0f;
 	Transform r2d;
 	private int indicatornum = 1;

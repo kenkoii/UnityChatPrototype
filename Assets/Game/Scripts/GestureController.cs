@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class GestureController : SingletonMonoBehaviour<GestureController>, IRPCDicObserver
 {
-	private bool hasAnswered = false;
 	public GameObject gestureButtonContainer;
 	public Sprite closeImage;
 	public Sprite gestureImage;
@@ -80,7 +79,7 @@ public class GestureController : SingletonMonoBehaviour<GestureController>, IRPC
 		}
 		}
 		catch(System.Exception e){
-			//
+			//do something with exception in future
 		}
 
 	}
