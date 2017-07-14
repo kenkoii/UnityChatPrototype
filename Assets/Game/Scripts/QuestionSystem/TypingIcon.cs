@@ -10,7 +10,7 @@ public class TypingIcon : BaseQuestion, IQuestion
 {
 	public GameObject gpText;
 	public Text questionText;
-	private bool selectionIsClickable = true;
+	private bool selectionIsClickable = true;//VARIABLE NEVER USED
 	public GameObject inputPrefab;
 	public GameObject answerContent;
 

@@ -10,14 +10,14 @@ public class PhaseSkillController : BasePhase
 	public GameObject skillDescription;
 	public Text skillDescriptionText;
 	public Button attackButton;
-	private bool[] skillButtonToggleOn;
+	private bool[] skillButtonToggleOn = new bool[3];
 	public GameObject[] skillToggleEffect;
 
 
 
 	private void SkillButtonInteractable (int skillNumber, Button button)
 	{
-		if (SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.PlayerGP) {
+		if (SkillManager.Instance.GetSkill (skillNumber).skillGpCost > BattleView.Instance.PlayerGP) {
 			button.interactable = false;
 		} else {
 			button.interactable = true;
@@ -111,7 +111,7 @@ public class PhaseSkillController : BasePhase
 
 	public void SkillDescription (int skillNumber)
 	{
-		SkillDescriptionReduce (SkillManagerComponent.Instance.GetSkill (skillNumber).skillDescription, true);
+		SkillDescriptionReduce (SkillManager.Instance.GetSkill (skillNumber).skillDescription, true);
 
 	}
 
@@ -129,10 +129,10 @@ public class PhaseSkillController : BasePhase
 	private void SelectSkillReduce (int skillNumber)
 	{
 		SelectSkillActivate (delegate() {
-			SkillManagerComponent.Instance.ActivateSkill (skillNumber);
+			SkillManager.Instance.ActivateSkill (skillNumber);
 
 		}, delegate() {
-			GameData.Instance.skillChosenCost = SkillManagerComponent.Instance.GetSkill (skillNumber).skillGpCost;
+			GameData.Instance.skillChosenCost = SkillManager.Instance.GetSkill (skillNumber).skillGpCost;
 
 		});
 	

@@ -8,7 +8,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 	public static GameObject item;   
 	Transform startParent;
 	Vector3 startPosition;
-	bool start = true;
+	bool start = true;//VARIABLE NEVER USED
 	public int skillNumber = 1;
 	public int GetSkillNumber(){
 		return skillNumber;

@@ -5,7 +5,7 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class QuestionManagerComponent : SingletonMonoBehaviour<QuestionManagerComponent>
+public class QuestionManager: SingletonMonoBehaviour<QuestionManager>
 {
 	public GameObject[] questionTypeModals;
 	public GameObject questionUI;

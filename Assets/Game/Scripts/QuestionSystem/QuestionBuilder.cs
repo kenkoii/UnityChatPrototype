@@ -8,7 +8,7 @@ public static class QuestionBuilder
 {
 	private static string questionTypeChosen;
 	private static string questionAnswer;
-	private static string questionString;
+	private static string questionString;//NO VALUE STORED
 	private static string antonymString;
 	private static string synonymString;
 	public static QuestionSystemEnums.QuestionType questionType;

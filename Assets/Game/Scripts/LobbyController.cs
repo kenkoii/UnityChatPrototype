@@ -82,7 +82,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 		CameraWorksController.Instance.StartIntroCamera ();
 		RPCDicObserver.AddObserver (GestureController.Instance);
 		RPCDicObserver.AddObserver (BattleStatusManager.Instance);
-		RPCDicObserver.AddObserver(SkillActivatorComponent.Instance);
+		RPCDicObserver.AddObserver(SkillActivator.Instance);
 	}
 
 	/// <summary>
@@ -104,7 +104,7 @@ public class LobbyController : SingletonMonoBehaviour<LobbyController>
 				timeLeft--;
 				return;
 			} 
-			PhaseManagerComponent.Instance.StartPhase1 ();
+			PhaseManager.Instance.StartPhase1 ();
 			GameTimerView.Instance.ToggleTimer (false);
 			stoptimer = false;
 			CancelInvoke ("StartTimer");
